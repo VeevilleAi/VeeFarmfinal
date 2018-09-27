@@ -1,0 +1,14 @@
+<android.support.v7.widget.Toolbar android:id="@+id/my_toolbar"
+    android:layout_width="match_parent"
+    android:layout_height="?attr/actionBarSize"
+    android:background="@color/colorPrimary"
+    app:titleTextColor="#FFFFFF"
+    android:elevation="4dp"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:theme="@style/toolbar_theme"
+
+    app:titleTextAppearance="@style/Toolbar.TitleText"
+    app:subtitleTextAppearance="@style/Toolbar.SubTitleText"
+    xmlns:app="http://schemas.android.com/apk/res-auto" />
+
+

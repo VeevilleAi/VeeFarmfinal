@@ -1,0 +1,123 @@
+{
+  "project_info": {
+    "project_number": "689443953968",
+    "firebase_url": "https://veefarm-173606.firebaseio.com",
+    "project_id": "veefarm-173606",
+    "storage_bucket": "veefarm-173606.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:689443953968:android:8a51c5e19a6af9ec",
+        "android_client_info": {
+          "package_name": "com.example.bob.fcmchatapp"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "689443953968-3e0r4flogv91r1ceqipippaii4c4dp5n.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.bob.fcmchatapp",
+            "certificate_hash": "ff8292aa5321607a1946d731d68e0e2b44500257"
+          }
+        },
+        {
+          "client_id": "689443953968-9mqvmapjkfo1nt21v425k5pfl79gnpde.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.bob.fcmchatapp",
+            "certificate_hash": "4dce69a39677f239e8cac96265dd9416b0a67f09"
+          }
+        },
+        {
+          "client_id": "689443953968-7snv060pq4orh1g2oan6htmb436n53h9.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDLJKpG1orpNBOKrlPm7ggaozD856mGkzA"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "689443953968-qnh5cf7bmv8umbof6t5ka2n77da0j8u3.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:689443953968:android:77959cf119a845b7",
+        "android_client_info": {
+          "package_name": "com.veeville.farm"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "689443953968-j8aqmbt25elcmku5eu2p2cs8acj01buh.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.veeville.farm",
+            "certificate_hash": "4a0d84bb045d215dd3305ebbdb57b43bbcf30630"
+          }
+        },
+        {
+          "client_id": "689443953968-8pn0clmt577utigaeqm96u4uj8epaf3f.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.veeville.farm",
+            "certificate_hash": "0e8dd25d8335e1f5ee1eabd9ff347efdd368368e"
+          }
+        },
+        {
+          "client_id": "689443953968-tcjljh3l53aij3vu4055i43b3136ekma.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.veeville.farm",
+            "certificate_hash": "4dce69a39677f239e8cac96265dd9416b0a67f09"
+          }
+        },
+        {
+          "client_id": "689443953968-7snv060pq4orh1g2oan6htmb436n53h9.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDLJKpG1orpNBOKrlPm7ggaozD856mGkzA"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "689443953968-qnh5cf7bmv8umbof6t5ka2n77da0j8u3.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

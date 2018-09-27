@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="control_background">#ffffff</color>
+    <color name="colorPrimary">#ffc20e</color>
+    <color name="colorPrimaryDark">#ffc20e</color>
+    <color name="colorAccent">#FFFFFF</color>
+    <color name="white">#FFFFFF</color>
+    <color name="yellow">#ffcf40</color>
+    <color name="black">#000000</color>
+    <color name="green">#81C784</color>
+    <color name="gray">#D3D3D3</color>
+    <color name="red">#FF0000</color>
+    <color name="background">#cfdcdc</color>
+    <color name="green_switch">#78AB46</color>
+</resources>

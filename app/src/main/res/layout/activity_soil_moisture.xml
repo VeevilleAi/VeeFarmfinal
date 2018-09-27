@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    >
+    <include layout="@layout/toolbar"
+        android:id="@+id/my_toolbar"
+        />
+    <android.support.v7.widget.RecyclerView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@+id/my_toolbar"
+        android:id="@+id/soil_moisture_recyclerview"
+        >
+    </android.support.v7.widget.RecyclerView>
+</RelativeLayout>

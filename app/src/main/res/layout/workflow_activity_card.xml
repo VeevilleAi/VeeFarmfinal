@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    app:cardCornerRadius="15dp"
+    android:theme="@style/AppTheme"
+    android:id="@+id/cardview"
+    >
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="10dp"
+        tools:ignore="UselessParent">
+
+
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:weightSum="4"
+        >
+
+        <CheckBox
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:text="@string/things_to_do"
+            android:layout_weight="1"
+            android:id="@+id/checkbox_text_id"
+            />
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_weight="3"
+            android:id="@+id/more_info_about_schedule_task"
+            >
+            <ImageView
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+                android:src="@drawable/ic_down"
+                android:layout_gravity="left"
+                android:id="@+id/expand_info_image"
+                android:layout_centerInParent="true"
+
+                android:contentDescription="@string/todo"
+                tools:ignore="RtlHardcoded" />
+
+        </RelativeLayout>
+
+    </LinearLayout>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:id="@+id/more_info_layout_hide"
+            android:visibility="gone"
+
+            >
+
+            <CheckBox
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:visibility="invisible"
+                />
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/more_info_text"
+                android:paddingBottom="5dp"
+                android:text="@string/hi_this_isexplanation_about_work_pending_isexplanation_about_work_pending_isexplanation_about_work_pending_isexplanation_about_work_pending"
+                />
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+</RelativeLayout>

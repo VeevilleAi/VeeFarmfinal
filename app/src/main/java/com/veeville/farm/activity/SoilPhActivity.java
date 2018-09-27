@@ -1,0 +1,86 @@
+package com.veeville.farm.activity;
+
+import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.Toolbar;
+import android.view.MenuItem;
+
+import com.veeville.farm.R;
+import com.veeville.farm.adapter.SoilPHActivityAdapter;
+import com.veeville.farm.helper.DashBoardDataClasses;
+
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.List;
+import java.util.Locale;
+import java.util.Objects;
+
+public class SoilPhActivity extends AppCompatActivity {
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_soil_ph);
+        setUpToolbar();
+        setUpSoilPhRecyclerview();
+
+    }
+
+    private void setUpToolbar() {
+
+        Toolbar toolbar = findViewById(R.id.my_toolbar);
+        toolbar.setTitle("Soil pH");
+        setSupportActionBar(toolbar);
+        Objects.requireNonNull(getSupportActionBar()).setDisplayHomeAsUpEnabled(true);
+    }
+
+    void setUpSoilPhRecyclerview() {
+
+        RecyclerView soilPHRecyclerview = findViewById(R.id.soil_ph_recyclerview);
+        LinearLayoutManager manager = new LinearLayoutManager(getApplicationContext());
+        soilPHRecyclerview.setLayoutManager(manager);
+        SoilPHActivityAdapter adapter = new SoilPHActivityAdapter(formData());
+        soilPHRecyclerview.setAdapter(adapter);
+
+    }
+
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+
+        onBackPressed();
+        return super.onOptionsItemSelected(item);
+
+    }
+
+    List<DashBoardDataClasses.SoilPH> formData() {
+
+        List<DashBoardDataClasses.SoilPH> soilPHList = new ArrayList<>();
+        List<String> months = new ArrayList<>();
+
+        months.add(getDate(0));
+        months.add(getDate(-7));
+        months.add(getDate(-14));
+        months.add(getDate(-21));
+        for (int i = 0; i < 4; i++) {
+            DashBoardDataClasses.SoilPH ph = new DashBoardDataClasses.SoilPH(months.get(i), "Bengaluru", "6.1");
+            soilPHList.add(ph);
+        }
+        return soilPHList;
+
+    }
+
+    String getDate(int days) {
+
+        String format = "dd MMM yyyy";
+        SimpleDateFormat dateFormat = new SimpleDateFormat(format, Locale.getDefault());
+        Calendar calendar = Calendar.getInstance();
+        calendar.add(Calendar.DAY_OF_MONTH, days);
+        return dateFormat.format(calendar.getTime());
+
+    }
+}
