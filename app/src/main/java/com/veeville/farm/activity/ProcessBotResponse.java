@@ -192,13 +192,16 @@ public class ProcessBotResponse {
 
             }
         } else {
+            removeResponseMessage();
             HashMap<String, JsonElement> map = result.getParameters();
             String code = map.get("number").getAsString();
             try {
                 PhoneAuthCredential credential = PhoneAuthProvider.getCredential(verifixationIdMain, code);
                 if (!isUserRegisteredByNumber()) {
-                    String message = "Please enter the OTP";
+                    String message = "Verification successful";
                     signInWithPhoneAuthCredential(credential, message);
+                    ChatMessagesHelperFunctions helperFunctions = new ChatMessagesHelperFunctions(context);
+                    helperFunctions.insertResponseTextMessage(message);
                     AppSingletonClass.isOTPsent = false;
                 }
             } catch (Exception e) {
@@ -699,7 +702,13 @@ public class ProcessBotResponse {
                 // now need to ask the user to enter the code and then construct a credential
                 // by combining the code with a verification ID.
                 Log.d(TAG, "onCodeSent:" + verificationId);
-                Toast.makeText(context, "please enter OTP from text message", Toast.LENGTH_SHORT).show();
+                ChatMessagesHelperFunctions helperFunctions = new ChatMessagesHelperFunctions(context);
+                String message = "Please enter the OTP";
+                helperFunctions.insertResponseTextMessage(message);
+                ChatmessageDataClasses.ResponseTextMessage responseTextMessage = new ChatmessageDataClasses.ResponseTextMessage(message);
+                messages.add(responseTextMessage);
+                addMessagesToRecyclerview();
+                //Toast.makeText(context, "please enter OTP from text message", Toast.LENGTH_SHORT).show();
                 verifixationIdMain = verificationId;
 
             }
@@ -765,7 +774,6 @@ public class ProcessBotResponse {
             super.onPreExecute();
         }
 
-        @SafeVarargs
         @Override
         protected final Integer doInBackground(String... stringArray) {
             try {

@@ -21,7 +21,6 @@ import java.util.Objects;
 
 public class CropWorkFlow extends AppCompatActivity {
 
-
     private final String TAG = "CropWorkFlow";
 
     @Override

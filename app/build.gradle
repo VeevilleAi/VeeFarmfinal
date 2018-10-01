@@ -1,15 +1,13 @@
 apply plugin: 'com.android.application'
 apply plugin: 'io.fabric'
 android {
-
-
     compileSdkVersion 27
     defaultConfig {
         applicationId "com.veeville.farm"
         minSdkVersion 21
         targetSdkVersion 27
-        versionCode 1
-        versionName "1.0.0"
+        versionCode 6
+        versionName "1.0.1"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
     }
 
