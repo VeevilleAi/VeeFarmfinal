@@ -34,7 +34,10 @@ import com.veeville.farm.helper.ChatmessageDataClasses;
 import com.veeville.farm.helper.InputImageClass;
 import com.veeville.farm.helper.OptionMenuItems;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
+import java.util.Random;
 
 /**
  * Created by user on 10-07-2017.
@@ -45,6 +48,7 @@ public class BotAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
 {
     private List<Object> messagelist;
     private Context context;
+    private boolean jumbleSentence = false;
     private final String TAG = "BotAdapter";
     private QuickReplyAdapter.QuickReplyOption option;
 
@@ -54,6 +58,9 @@ public class BotAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
         this.option = quickReplyOption;
     }
 
+    public void setJumbleSentence(boolean jumbleSentence){
+        this.jumbleSentence = jumbleSentence;
+    }
     @Override
     public int getItemViewType(int position) {
         Log.d(TAG, "getItemViewType: ");
@@ -238,7 +245,6 @@ public class BotAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
                 context.startActivity(intent);
             }
         });
-
     }
 
     private void handleWeatherCardData(WeatherCardHolder holder, int position) {
@@ -530,6 +536,24 @@ public class BotAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
 
         ChatmessageDataClasses.ResponseTextMessage responseData = (ChatmessageDataClasses.ResponseTextMessage) messagelist.get(position);
         myholderOutput.singlemesssage.setText(responseData.responseTextMessage);
+        if(jumbleSentence){
+            myholderOutput.singlemesssage.setRotation(180);
+            StringBuilder buffer = new StringBuilder();
+            String[] strings = responseData.responseTextMessage.split(" ");
+            List<String> list = new ArrayList<>(Arrays.asList(strings));
+            Log.d(TAG, "handleOverviewOutPutData: "+list.size());
+            while (list.size()>0) {
+                Random random = new Random();
+
+                int currentPosition = random.nextInt(list.size());
+                Log.d(TAG, "handleOverviewOutPutData: "+currentPosition);
+                buffer.append(list.get(currentPosition)).append("\t");
+                list.remove(currentPosition);
+            }
+            myholderOutput.singlemesssage.setText(buffer.toString());
+        }else {
+            myholderOutput.singlemesssage.setRotation(0);
+        }
     }
 
 
@@ -537,6 +561,24 @@ public class BotAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
 
         ChatmessageDataClasses.InputTextMessage inputData = (ChatmessageDataClasses.InputTextMessage) messagelist.get(position);
         myholderInput.singlemesssage.setText(inputData.inputTextMessage);
+        if(jumbleSentence){
+            myholderInput.singlemesssage.setRotation(180);
+            StringBuilder buffer = new StringBuilder();
+            String[] strings = inputData.inputTextMessage.split(" ");
+            List<String> list = new ArrayList<>(Arrays.asList(strings));
+            Log.d(TAG, "handleOverviewOutPutData: "+list.size());
+            while (list.size()>0) {
+                Random random = new Random();
+
+                int currentPosition = random.nextInt(list.size());
+                Log.d(TAG, "handleOverviewOutPutData: "+currentPosition);
+                buffer.append(list.get(currentPosition)).append("\t");
+                list.remove(currentPosition);
+            }
+            myholderInput.singlemesssage.setText(buffer.toString());
+        }else {
+            myholderInput.singlemesssage.setRotation(0);
+        }
     }
 
 

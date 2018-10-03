@@ -1,6 +1,6 @@
 package com.veeville.farm.activity;
 
-import android.Manifest;
+import  android.Manifest;
 import android.app.Activity;
 import android.content.ActivityNotFoundException;
 import android.content.Context;
@@ -96,6 +96,7 @@ public class ChatActivity extends AppCompatActivity implements QuickReplyAdapter
     private SwitchCompat aSwitch;
     private ArrayList<Object> vQnaList;
     boolean tookPicture = false;
+    Handler handler = new Handler();
     private int SELECT_PICTURE = 101;
 
     @Override
@@ -236,6 +237,7 @@ public class ChatActivity extends AppCompatActivity implements QuickReplyAdapter
         chatrecyclerview.setLayoutManager(linearLayoutManager);
         adapter = new BotAdapter(chatMessages, getApplicationContext(), this);
         chatrecyclerview.setAdapter(adapter);
+        runWhileLoop();
     }
 
 
@@ -571,6 +573,7 @@ public class ChatActivity extends AppCompatActivity implements QuickReplyAdapter
         AIRequest aiRequest = new AIRequest();
         aiRequest.setQuery(query);
         new MyAsyncTask().execute(aiRequest);
+        handler.postDelayed(runnable,3000);
 
     }
 
@@ -939,7 +942,34 @@ public class ChatActivity extends AppCompatActivity implements QuickReplyAdapter
         } else {
             helperFunctions.insertResponseTextMessage(textMessage);
         }
+    }
 
+    Runnable runnable = new Runnable() {
+        @Override
+        public void run() {
+            ChatBotDatabase database = new ChatBotDatabase(getApplicationContext());
+            boolean isRegistered = database.isUserRegistered();
+            if(!isRegistered) {
+                adapter.setJumbleSentence(true);
+                adapter.notifyDataSetChanged();
+                handler.postDelayed(runnableTemp,1000);
+
+
+            }else {
+                adapter.setJumbleSentence(false);
+            }
+        }
+    };
+
+    Runnable runnableTemp = new Runnable() {
+        @Override
+        public void run() {
+            adapter.setJumbleSentence(false);
+        }
+    };
+
+    void runWhileLoop(){
+        handler.postDelayed(runnable,3000);
     }
 
 }
