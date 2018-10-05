@@ -27,10 +27,18 @@
                 android:layout_margin="20dp"
                 android:adjustViewBounds="true"
                 android:contentDescription="@string/todo" />
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/gallery"
+                android:layout_centerHorizontal="true"
+                android:text="&#946;"
+                android:textStyle="bold"
+                />
         </RelativeLayout>
         <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_height="wrap_content"
             android:orientation="vertical"
             android:layout_weight="1"
             >
@@ -43,17 +51,25 @@
                 />
             <ImageView
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
+                android:layout_height="wrap_content"
                 android:layout_centerInParent="true"
                 android:id="@+id/camera_for_disease_detection"
                 android:src="@drawable/weed_detection_camera"
                 android:layout_margin="20dp"
                 android:adjustViewBounds="true"
                 android:contentDescription="@string/todo" />
+           <TextView
+               android:layout_width="wrap_content"
+               android:layout_height="wrap_content"
+               android:text="&#946;"
+               android:textStyle="bold"
+                android:layout_centerHorizontal="true"
+               android:layout_below="@+id/camera_for_disease_detection"
+               />
         </RelativeLayout>
         <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_height="wrap_content"
             android:orientation="vertical"
             android:layout_weight="1"
             >
@@ -66,12 +82,20 @@
                 />
             <ImageView
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
+                android:layout_height="wrap_content"
                 android:layout_centerInParent="true"
                 android:id="@+id/disease"
                 android:adjustViewBounds="true"
                 android:layout_margin="20dp"
-                android:src="@drawable/weed_detection_camera"
+                android:src="@drawable/disease"
                 android:contentDescription="@string/todo" />
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="&#946;"
+                android:textStyle="bold"
+                android:layout_centerHorizontal="true"
+                android:layout_below="@+id/disease"
+                />
         </RelativeLayout>
     </LinearLayout>

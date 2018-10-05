@@ -11,16 +11,41 @@
     app:cardElevation="2dp"
     app:cardBackgroundColor="@color/yellow"
     >
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:maxWidth="250dp"
-        android:padding="10dp"
-        android:textColor="@color/white"
-        android:id="@+id/singletextmessage"
-        android:textIsSelectable="true"
-        android:text="@string/response_message"
-        />
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        >
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:maxWidth="250dp"
+            android:padding="10dp"
+            android:paddingRight="5dp"
+            android:paddingTop="5dp"
+            android:textColor="@color/white"
+            android:id="@+id/singletextmessage"
+            android:textIsSelectable="true"
+            android:text="@string/response_message"
+            />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="03:20 AM"
+            android:textSize="10sp"
+            android:textColor="@color/white"
+            android:layout_gravity="right"
+            android:paddingBottom="5dp"
+            android:paddingRight="5dp"
+            android:visibility="gone"
+            android:id="@+id/time"
+
+            />
+
+    </LinearLayout>
+
 
 
 </android.support.v7.widget.CardView>

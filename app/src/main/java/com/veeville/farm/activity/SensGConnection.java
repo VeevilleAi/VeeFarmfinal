@@ -229,7 +229,8 @@ public class SensGConnection {
             ChatmessageDataClasses.SoilTemperature.TempValue values = new ChatmessageDataClasses.SoilTemperature.TempValue("", tempList.get(i) + "");
             valuesList.add(values);
         }
-        return new ChatmessageDataClasses.SoilTemperature("Today", "Bengaluru", valuesList);
+        long timestamp = System.currentTimeMillis();
+        return new ChatmessageDataClasses.SoilTemperature("Today", "Bengaluru", valuesList,timestamp);
     }
 
     ChatmessageDataClasses.Light getLight() {
@@ -243,7 +244,8 @@ public class SensGConnection {
             mitures = mitures - 10;
 
         }
-        return new ChatmessageDataClasses.Light("Today", "Bengaluru", valuesList);
+        long timestamp = System.currentTimeMillis();
+        return new ChatmessageDataClasses.Light("Today", "Bengaluru", valuesList,timestamp);
     }
 
     private String gettimeForTime(int minutes) {

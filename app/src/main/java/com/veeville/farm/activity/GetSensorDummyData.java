@@ -25,7 +25,8 @@ public class GetSensorDummyData {
             ChatmessageDataClasses.Light.LightValues values = new ChatmessageDataClasses.Light.LightValues(value, i1 + "");
             lightValues.add(values);
         }
-        return new ChatmessageDataClasses.Light("Today", "beengaluru", lightValues);
+        long timestamp = System.currentTimeMillis();
+        return new ChatmessageDataClasses.Light("Today", "beengaluru", lightValues,timestamp);
     }
 
     protected ChatmessageDataClasses.Humidity insertHumidity() {
@@ -67,7 +68,8 @@ public class GetSensorDummyData {
             ChatmessageDataClasses.SoilTemperature.TempValue values = new ChatmessageDataClasses.SoilTemperature.TempValue(value, "" + i1);
             soilMoistureValues2.add(values);
         }
-        return new ChatmessageDataClasses.SoilTemperature("Today", "Bengaluru", soilMoistureValues2);
+        long timestamp = System.currentTimeMillis();
+        return new ChatmessageDataClasses.SoilTemperature("Today", "Bengaluru", soilMoistureValues2,timestamp);
     }
 
     protected ChatmessageDataClasses.SoilMoisture insertSoilMoisture() {
@@ -86,6 +88,7 @@ public class GetSensorDummyData {
             ChatmessageDataClasses.SoilMoisture.SoilMoistureValues values = new ChatmessageDataClasses.SoilMoisture.SoilMoistureValues(value, "" + i1, "" + i2);
             soilMoistureValues2.add(values);
         }
-        return new ChatmessageDataClasses.SoilMoisture("July", "Bengaluru", soilMoistureValues2);
+        long timestamp = System.currentTimeMillis();
+        return new ChatmessageDataClasses.SoilMoisture("July", "Bengaluru", soilMoistureValues2,timestamp);
     }
 }

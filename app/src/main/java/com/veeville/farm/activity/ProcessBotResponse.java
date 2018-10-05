@@ -63,19 +63,21 @@ public class ProcessBotResponse {
     private String selectedLanguage;
     private String TAG = "ProcessBotResponse";
     private ProcessedResult processedResult;
+    private UpdateMessageForRegistration updateMessageForRegistration;
 
-
-    ProcessBotResponse(Result result, Context context, ProcessedResult processedResult, String selectedLanguage) {
+    ProcessBotResponse(Result result, Context context, ProcessedResult processedResult, String selectedLanguage,UpdateMessageForRegistration updateMessageForRegistration) {
         this.result = result;
         this.context = context;
         this.processedResult = processedResult;
         this.selectedLanguage = selectedLanguage;
+        this.updateMessageForRegistration = updateMessageForRegistration;
     }
 
 
     //adding reply message from Dialogflow to recyclerview
     private void addSpeechToMessage(String speech) {
-        ChatmessageDataClasses.ResponseTextMessage message = new ChatmessageDataClasses.ResponseTextMessage(speech);
+        long timestamp = System.currentTimeMillis();
+        ChatmessageDataClasses.ResponseTextMessage message = new ChatmessageDataClasses.ResponseTextMessage(speech,timestamp);
         ChatMessagesHelperFunctions chatMessagesHelperFunctions = new ChatMessagesHelperFunctions(context);
         chatMessagesHelperFunctions.insertResponseTextMessage(speech);
         messages.add(message);
@@ -83,14 +85,11 @@ public class ProcessBotResponse {
 
     //got the result from after translating to given language
     private void translate(String speech) {
-        addSpeechToMessage(speech);
+
         getPayload();
         if (!result.isActionIncomplete())
-            performAction();
-        else {
-            Log.d(TAG, "getSpeechResponse: action param incomplete");
-            addMessagesToRecyclerview();
-        }
+            performAction(speech);
+
     }
 
     void getResultBack() {
@@ -99,72 +98,76 @@ public class ProcessBotResponse {
     }
 
     // performing task based on action
-    private void performAction() {
+    private void performAction(String speech) {
         String action = result.getAction();
         Log.d(TAG, "performOnAction: action complete:" + action);
         switch (action) {
             case "how.to.grow.vegetable":
+                addSpeechToMessage(speech);
                 handleVideoIntents();
                 break;
             case "how.to.grow.fruit":
+                addSpeechToMessage(speech);
                 handleVideoIntents();
                 break;
             case "price.fruit":
-                removeResponseMessage();
                 getPriceOfFruitANdVegetable();
                 break;
             case "price.vegetable":
-                removeResponseMessage();
                 getPriceOfFruitANdVegetable();
                 break;
             case "weather":
-                removeResponseMessage();
                 processWeatherData();
                 break;
             case "action.humidity":
+                addSpeechToMessage(speech);
                 addSensorData(action);
                 break;
             case "action.SoilPH":
+                addSpeechToMessage(speech);
                 addSensorData(action);
                 break;
             case "action.soil.temperature":
+                addSpeechToMessage(speech);
                 addSensorData(action);
                 break;
             case "action.light":
+                addSpeechToMessage(speech);
                 addSensorData(action);
                 break;
             case "action.soil.moisture":
+                addSpeechToMessage(speech);
                 addSensorData(action);
                 break;
             case "microsoft.qnamaker":
+                addSpeechToMessage(speech);
                 formQuestionForQnaMaker();
                 break;
             case "country":
+                addSpeechToMessage(speech);
                 AppSingletonClass.isOTPsent = false;
                 addMessagesToRecyclerview();
-            case "country-name.mobile-number":
-                handleMobileNumberAuthontication();
+                updateMessageForRegistration.updateMessageForRegistrayion("Thanks for that!\n" + "Can you also give us your phone number?");
+                updateMessageForRegistration.makeMessagesNormal(true);
                 break;
+            case "country-name.mobile-number":
+                handleMobileNumberAuthontication(speech);
+                break;
+            case "input.welcome":
+                addSpeechToMessage(speech);
+                addMessagesToRecyclerview();
             default:
                 addMessagesToRecyclerview();
                 break;
         }
     }
 
-    private void removeResponseMessage() {
 
-        for (Object o : messages) {
-            if (o instanceof ChatmessageDataClasses.ResponseTextMessage) {
-                boolean isRemoved = messages.remove(o);
-                Log.d(TAG, "removeResponseMessage: " + isRemoved);
-            }
-        }
-
-    }
-
-    private void handleMobileNumberAuthontication() {
+    private void handleMobileNumberAuthontication(String speech) {
 
         if (!AppSingletonClass.isOTPsent) {
+            addSpeechToMessage(speech);
+            updateMessageForRegistration.updateMessageForRegistrayion("Excellent!\n" + "You will now receive an OTP, please share that too.");
             HashMap<String, JsonElement> map = result.getParameters();
             if (map.containsKey("country") && map.containsKey("number")) {
                 String country = map.get("country").getAsString();
@@ -192,18 +195,16 @@ public class ProcessBotResponse {
 
             }
         } else {
-            removeResponseMessage();
             HashMap<String, JsonElement> map = result.getParameters();
             String code = map.get("number").getAsString();
             try {
                 PhoneAuthCredential credential = PhoneAuthProvider.getCredential(verifixationIdMain, code);
-                if (!isUserRegisteredByNumber()) {
-                    String message = "Verification successful";
-                    signInWithPhoneAuthCredential(credential, message);
-                    ChatMessagesHelperFunctions helperFunctions = new ChatMessagesHelperFunctions(context);
-                    helperFunctions.insertResponseTextMessage(message);
-                    AppSingletonClass.isOTPsent = false;
-                }
+                String message = "Neat!\n" + "We have confirmed your number. No more topsy turvy for you anymore.";
+
+                signInWithPhoneAuthCredential(credential, message);
+
+                AppSingletonClass.isOTPsent = false;
+
             } catch (Exception e) {
                 Log.e(TAG, "handleMobileNumberAuthontication: " + e.toString());
                 e.printStackTrace();
@@ -262,9 +263,9 @@ public class ProcessBotResponse {
     }
 
     private void mobileRegistration() {
-
+        long timestamp = System.currentTimeMillis();
         String message = "Please tell me in which country you live ? so I can give you relevent information.";
-        ChatmessageDataClasses.ResponseTextMessage textMessage = new ChatmessageDataClasses.ResponseTextMessage(message);
+        ChatmessageDataClasses.ResponseTextMessage textMessage = new ChatmessageDataClasses.ResponseTextMessage(message,timestamp);
         messages.add(textMessage);
         ChatMessagesHelperFunctions functions = new ChatMessagesHelperFunctions(context);
         functions.insertResponseTextMessage(message);
@@ -273,7 +274,7 @@ public class ProcessBotResponse {
     }
 
     private ChatmessageDataClasses.VegFruitPrice getFruitPrice(String name) {
-
+        long timestamp = System.currentTimeMillis();
         ChatBotDatabase database = new ChatBotDatabase(context);
         List<Fruit> price = database.getPriceOfFruitOrVegetable(name);
         String title;
@@ -282,7 +283,7 @@ public class ProcessBotResponse {
         if (price.size() == 0) {
             desc = "as of now i dont know the price of " + name + ", click to know more.";
             title = "title ";
-            vegFruitPrice = new ChatmessageDataClasses.VegFruitPrice(title, desc, "");
+            vegFruitPrice = new ChatmessageDataClasses.VegFruitPrice(title, desc, "",timestamp);
             String message = title + "," + desc + "," + "";
             ChatMessagesHelperFunctions functions = new ChatMessagesHelperFunctions(context);
             functions.insertPriceData(message);
@@ -293,7 +294,7 @@ public class ProcessBotResponse {
             }
             title = "Price(\u20b9)  of " + name + " today in Chennai  is ";
             desc = buffer.toString();
-            vegFruitPrice = new ChatmessageDataClasses.VegFruitPrice(title, desc, price.get(0).imageLink);
+            vegFruitPrice = new ChatmessageDataClasses.VegFruitPrice(title, desc, price.get(0).imageLink,timestamp);
             String message = title + "," + desc + "," + price.get(0).imageLink;
             ChatMessagesHelperFunctions functions = new ChatMessagesHelperFunctions(context);
             functions.insertPriceData(message);
@@ -324,6 +325,7 @@ public class ProcessBotResponse {
     }
 
     private void getPayload() {
+        long timestamp = System.currentTimeMillis();
         List<String> selectableMenu = new ArrayList<>();
         List<ResponseMessage> responseMessages = result.getFulfillment().getMessages();
         for (ResponseMessage message : responseMessages) {
@@ -352,7 +354,7 @@ public class ProcessBotResponse {
                             dataOfImages.add(data);
                             diseaseNames.add(nameOfDisease);
                         }
-                        ChatmessageDataClasses.ResponseImages image = new ChatmessageDataClasses.ResponseImages(images, dataOfImages, diseaseNames);
+                        ChatmessageDataClasses.ResponseImages image = new ChatmessageDataClasses.ResponseImages(images, dataOfImages, diseaseNames,timestamp);
                         messages.add(image);
                     }
                 } catch (Exception e) {
@@ -361,7 +363,7 @@ public class ProcessBotResponse {
             }
         }
         if (selectableMenu.size() > 0) {
-            ChatmessageDataClasses.OptionMenu optionMenu = new ChatmessageDataClasses.OptionMenu(selectableMenu);
+            ChatmessageDataClasses.OptionMenu optionMenu = new ChatmessageDataClasses.OptionMenu(selectableMenu,timestamp);
             messages.add(optionMenu);
         }
     }
@@ -429,7 +431,8 @@ public class ProcessBotResponse {
                 }
                 Log.d(TAG, "performWeatherData: hourly size:" + houlyDataLists.size());
                 Log.d(TAG, "performWeatherData: city:" + city);
-                ChatmessageDataClasses.WeatherData weatherData = new ChatmessageDataClasses.WeatherData(date, city, weatherIconUrl, maxTemperature, prec, hum, wind, houlyDataLists);
+                long timestamp = System.currentTimeMillis();
+                ChatmessageDataClasses.WeatherData weatherData = new ChatmessageDataClasses.WeatherData(date, city, weatherIconUrl, maxTemperature, prec, hum, wind, houlyDataLists,timestamp);
                 messages.add(weatherData);
                 addMessagesToRecyclerview();
             }
@@ -472,7 +475,8 @@ public class ProcessBotResponse {
                             urlMain = url;
                         }
                     }
-                    ChatmessageDataClasses.ResponseVideoMessage message = new ChatmessageDataClasses.ResponseVideoMessage(videoIDs, imageLinks);
+                    long timestamp = System.currentTimeMillis();
+                    ChatmessageDataClasses.ResponseVideoMessage message = new ChatmessageDataClasses.ResponseVideoMessage(videoIDs, imageLinks,timestamp);
                     messages.add(message);
                     ChatMessagesHelperFunctions functions = new ChatMessagesHelperFunctions(context);
                     functions.insertResponseYoutubeVideoIds(videoIDMain + "," + urlMain);
@@ -646,7 +650,8 @@ public class ProcessBotResponse {
                     JSONObject translatedObject = jsonArray.getJSONObject(0);
                     String translatedText = translatedObject.getString("translatedText");
                     logMesage("trnaslated  to given Language :" + translatedText);
-                    ChatmessageDataClasses.ResponseTextMessage message = new ChatmessageDataClasses.ResponseTextMessage(translatedText);
+                    long timestamp = System.currentTimeMillis();
+                    ChatmessageDataClasses.ResponseTextMessage message = new ChatmessageDataClasses.ResponseTextMessage(translatedText,timestamp);
                     messages.add(message);
                     processedResult.result(messages);
                     ChatBotDatabase database = new ChatBotDatabase(context);
@@ -674,8 +679,11 @@ public class ProcessBotResponse {
 
             @Override
             public void onVerificationCompleted(PhoneAuthCredential credential) {
-                Log.d(TAG, "onVerificationCompleted:" + credential);
-                String message = "OTP received successfully";
+                String message = "Neat!\n" + "We have confirmed your number. No more topsy turvy for you anymore.";
+
+                for (int i = 0; i <messages.size() ; i++) {
+                    messages.remove(i);
+                }
                 signInWithPhoneAuthCredential(credential, message);
             }
 
@@ -685,9 +693,17 @@ public class ProcessBotResponse {
 
                 if (e instanceof FirebaseAuthInvalidCredentialsException) {
                     Toast.makeText(context, "invalid mobile number", Toast.LENGTH_SHORT).show();
-                    ChatmessageDataClasses.ResponseTextMessage textMessage = new ChatmessageDataClasses.ResponseTextMessage("Invalid Mobile number, try again by saying country name.");
+                    long timestamp = System.currentTimeMillis();
+                    String message = "Invalid Mobile number, try again by saying country name.";
+                    ChatmessageDataClasses.ResponseTextMessage textMessage = new ChatmessageDataClasses.ResponseTextMessage(message,timestamp);
                     messages.add(textMessage);
                     addMessagesToRecyclerview();
+
+                    ChatMessagesHelperFunctions helperFunctions = new ChatMessagesHelperFunctions(context);
+                    helperFunctions.insertResponseTextMessage(message);
+                    updateMessageForRegistration.makeMessagesNormal(false);
+                    updateMessageForRegistration.updateMessageForRegistrayion("Awww!\n" + "We didn’t get the OTP. You’re gonna have to start all over again ");
+
 
                 } else if (e instanceof FirebaseTooManyRequestsException) {
                     Toast.makeText(context, "quota for this number exhausted try again after some time", Toast.LENGTH_SHORT).show();
@@ -698,17 +714,15 @@ public class ProcessBotResponse {
 
             @Override
             public void onCodeSent(String verificationId, PhoneAuthProvider.ForceResendingToken token) {
-                // The SMS verification code has been sent to the provided phone number, we
-                // now need to ask the user to enter the code and then construct a credential
-                // by combining the code with a verification ID.
                 Log.d(TAG, "onCodeSent:" + verificationId);
                 ChatMessagesHelperFunctions helperFunctions = new ChatMessagesHelperFunctions(context);
-                String message = "Please enter the OTP";
+                String message = "Excellent!\n" + "You will now receive an OTP, please share that too.";
+                updateMessageForRegistration.updateMessageForRegistrayion(message);
                 helperFunctions.insertResponseTextMessage(message);
-                ChatmessageDataClasses.ResponseTextMessage responseTextMessage = new ChatmessageDataClasses.ResponseTextMessage(message);
+                long timestamp = System.currentTimeMillis();
+                ChatmessageDataClasses.ResponseTextMessage responseTextMessage = new ChatmessageDataClasses.ResponseTextMessage(message,timestamp);
                 messages.add(responseTextMessage);
                 addMessagesToRecyclerview();
-                //Toast.makeText(context, "please enter OTP from text message", Toast.LENGTH_SHORT).show();
                 verifixationIdMain = verificationId;
 
             }
@@ -733,28 +747,33 @@ public class ProcessBotResponse {
                 .addOnCompleteListener((Activity) context, new OnCompleteListener<AuthResult>() {
                     @Override
                     public void onComplete(@NonNull Task<AuthResult> task) {
+                        long timestamp = System.currentTimeMillis();
                         if (task.isSuccessful()) {
-                            Log.d(TAG, "signInWithCredential:success");
                             FirebaseUser user = task.getResult().getUser();
                             ChatBotDatabase database = new ChatBotDatabase(context);
-                            Toast.makeText(context, " permission granted", Toast.LENGTH_SHORT).show();
                             database.insertMobileNumber(user.getPhoneNumber());
                             Log.d(TAG, "onComplete: " + user.getPhoneNumber());
-                            ChatmessageDataClasses.ResponseTextMessage textMessage = new ChatmessageDataClasses.ResponseTextMessage(message);
-                            messages.add(textMessage);
                             new MyAsyncTask().execute(user.getPhoneNumber());
+                            ChatMessagesHelperFunctions helperFunctions = new ChatMessagesHelperFunctions(context);
+                            helperFunctions.insertResponseTextMessage(message);
+                            updateMessageForRegistration.updateMessageForRegistrayion(message);
+                            updateMessageForRegistration.makeMessagesNormal(true);
+                            ChatmessageDataClasses.ResponseTextMessage responseTextMessage = new ChatmessageDataClasses.ResponseTextMessage(message,timestamp);
+                            messages.add(responseTextMessage);
+                            addMessagesToRecyclerview();
 
                         } else {
                             Log.w(TAG, "signInWithCredential:failure", task.getException());
                             if (task.getException() instanceof FirebaseAuthInvalidCredentialsException) {
                                 Toast.makeText(context, "invalid verification code", Toast.LENGTH_SHORT).show();
-                                String responseMessage = "Invalid OTP ..please try again, by entering Country";
-                                ChatmessageDataClasses.ResponseTextMessage textMessage = new ChatmessageDataClasses.ResponseTextMessage(responseMessage);
-                                messages.add(textMessage);
+                                String responseMessage = "Awww!\n" + "We didn’t get the OTP. You’re gonna have to start all over again ";
+                                ChatmessageDataClasses.ResponseTextMessage responseTextMessage = new ChatmessageDataClasses.ResponseTextMessage(responseMessage,timestamp);
+                                ChatMessagesHelperFunctions helperFunctions = new ChatMessagesHelperFunctions(context);
+                                helperFunctions.insertResponseTextMessage(responseMessage);
+                                messages.add(responseTextMessage);
+                                addMessagesToRecyclerview();
                             }
                         }
-                        addMessagesToRecyclerview();
-
                     }
                 });
     }
@@ -796,6 +815,9 @@ public class ProcessBotResponse {
             super.onPostExecute(s);
         }
     }
-
+    interface UpdateMessageForRegistration{
+        void updateMessageForRegistrayion(String message);
+        void makeMessagesNormal(boolean showNormal);
+    }
 
 }

@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android" android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    >
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:layout_margin="20dp"
+        android:id="@+id/date"
+        android:textSize="10sp"
+        android:textColor="@color/yellow"
+        android:text="02 oct 2018"
+
+        />
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="2dp"
+        android:layout_toRightOf="@+id/date"
+        android:layout_centerInParent="true"
+        android:background="@color/gray"
+
+        />
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="2dp"
+        android:layout_toLeftOf="@+id/date"
+        android:layout_centerInParent="true"
+        android:background="@color/gray"
+
+        />
+</RelativeLayout>

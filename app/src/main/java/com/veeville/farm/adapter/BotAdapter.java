@@ -34,10 +34,11 @@ import com.veeville.farm.helper.ChatmessageDataClasses;
 import com.veeville.farm.helper.InputImageClass;
 import com.veeville.farm.helper.OptionMenuItems;
 
-import java.util.ArrayList;
-import java.util.Arrays;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.List;
-import java.util.Random;
+import java.util.Locale;
 
 /**
  * Created by user on 10-07-2017.
@@ -48,9 +49,9 @@ public class BotAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
 {
     private List<Object> messagelist;
     private Context context;
-    private boolean jumbleSentence = false;
     private final String TAG = "BotAdapter";
     private QuickReplyAdapter.QuickReplyOption option;
+    private boolean showNormal = false;
 
     public BotAdapter(List<Object> textmessagelist, Context context, QuickReplyAdapter.QuickReplyOption quickReplyOption) {
         this.messagelist = textmessagelist;
@@ -58,9 +59,6 @@ public class BotAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
         this.option = quickReplyOption;
     }
 
-    public void setJumbleSentence(boolean jumbleSentence){
-        this.jumbleSentence = jumbleSentence;
-    }
     @Override
     public int getItemViewType(int position) {
         Log.d(TAG, "getItemViewType: ");
@@ -96,11 +94,19 @@ public class BotAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
             return 16;
         } else if (messagelist.get(position) instanceof ChatmessageDataClasses.VegFruitPrice) {
             return 17;
-        } else {
+        } else if(messagelist.get(position) instanceof ChatmessageDataClasses.DateInMessage) {
+            return 18;
+        }else {
             return -1;
         }
     }
 
+    private String getTime(long timestamp) {
+        Calendar calendar = Calendar.getInstance(Locale.ENGLISH);
+        calendar.setTimeInMillis(timestamp);
+        DateFormat dateFormat = new SimpleDateFormat("hh:mm a",Locale.ENGLISH);
+        return dateFormat.format(calendar.getTime());
+    }
     @NonNull
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
@@ -131,8 +137,6 @@ public class BotAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
                 viewHolder = new InputImageHolder(view);
                 break;
             case 7:
-                view = LayoutInflater.from(parent.getContext()).inflate(R.layout.gifimage_layout, parent, false);
-                viewHolder = new GifHolder(view);
                 break;
             case 8:
                 view = LayoutInflater.from(parent.getContext()).inflate(R.layout.available_option_recyclerivew_main, parent, false);
@@ -173,10 +177,22 @@ public class BotAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
             case 17:
                 view = LayoutInflater.from(parent.getContext()).inflate(R.layout.veg_fruit_price_card_layout, parent, false);
                 viewHolder = new VegFruitPriceCardHolder(view);
+                break;
+            case 18:
+                view = LayoutInflater.from(parent.getContext()).inflate(R.layout.dateview_card, parent, false);
+                viewHolder = new DateInMessageHolder(view);
+                break;
         }
         return viewHolder;
     }
 
+
+    public void changeDatasetMessage(boolean showNormal){
+
+       this.showNormal = showNormal;
+       notifyDataSetChanged();
+
+    }
 
     @Override
     public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int position) {
@@ -229,6 +245,9 @@ public class BotAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
             case 17:
                 handleVegFruitPrice((VegFruitPriceCardHolder) holder, position);
                 break;
+            case 18:
+                handleDate((DateInMessageHolder) holder,position);
+                break;
         }
     }
 
@@ -236,6 +255,7 @@ public class BotAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
     private void handleVegFruitPrice(VegFruitPriceCardHolder holder, int position) {
 
         ChatmessageDataClasses.VegFruitPrice vegFruitPrice = (ChatmessageDataClasses.VegFruitPrice) messagelist.get(position);
+        holder.time.setText(getTime(vegFruitPrice.timestamp));
         holder.description.setText(vegFruitPrice.description);
         Glide.with(context).load(vegFruitPrice.imageLink).into(holder.imageView);
         holder.cardView.setOnClickListener(new View.OnClickListener() {
@@ -247,6 +267,12 @@ public class BotAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
         });
     }
 
+    private void handleDate(DateInMessageHolder holder, int position){
+
+        ChatmessageDataClasses.DateInMessage dateInMessage = (ChatmessageDataClasses.DateInMessage) messagelist.get(position);
+        holder.textView.setText(dateInMessage.date);
+
+    }
     private void handleWeatherCardData(WeatherCardHolder holder, int position) {
         final ChatmessageDataClasses.WeatherData weatherData = (ChatmessageDataClasses.WeatherData) messagelist.get(position);
         String weather = weatherData.temp + "\u00b0";
@@ -407,6 +433,8 @@ public class BotAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
         byte[] decodedString = Base64.decode(inputImageClass.imagebytes, Base64.DEFAULT);
         Bitmap decodedByte = BitmapFactory.decodeByteArray(decodedString, 0, decodedString.length);
         holder.input_imageview.setImageBitmap(decodedByte);
+
+        holder.time.setText(getTime(inputImageClass.timestamp));
         if (inputImageClass.isUploadSuccess) {
             holder.imageUploadProgressbar.setVisibility(View.GONE);
         } else {
@@ -437,6 +465,14 @@ public class BotAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
         }
     }
 
+    class DateInMessageHolder extends RecyclerView.ViewHolder{
+        TextView textView;
+        DateInMessageHolder(View view){
+            super(view);
+            textView = view.findViewById(R.id.date);
+        }
+    }
+
     class WeatherCardHolder extends RecyclerView.ViewHolder {
         TextView date, place, temp, prec, humidity, windSpeed;
         CardView weahter_card;
@@ -459,7 +495,7 @@ public class BotAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
 
     class VegFruitPriceCardHolder extends RecyclerView.ViewHolder {
 
-        TextView description;
+        TextView description,time;
         CardView cardView;
         ImageView imageView;
 
@@ -468,6 +504,7 @@ public class BotAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
             description = view.findViewById(R.id.description);
             cardView = view.findViewById(R.id.cardview);
             imageView = view.findViewById(R.id.imageview);
+            time = view.findViewById(R.id.time);
         }
 
     }
@@ -519,7 +556,7 @@ public class BotAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
         manager.setOrientation(LinearLayoutManager.HORIZONTAL);
         videoHolder.recyclerView.setLayoutManager(manager);
         ChatmessageDataClasses.ResponseVideoMessage responseVideoMessage = (ChatmessageDataClasses.ResponseVideoMessage) messagelist.get(position);
-        VideoListAdapter adapter = new VideoListAdapter(responseVideoMessage.thumbnail, responseVideoMessage.videoIds);
+        VideoListAdapter adapter = new VideoListAdapter(responseVideoMessage.thumbnail, responseVideoMessage.videoIds,responseVideoMessage.timestamp);
         videoHolder.recyclerView.setAdapter(adapter);
     }
 
@@ -536,48 +573,23 @@ public class BotAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
 
         ChatmessageDataClasses.ResponseTextMessage responseData = (ChatmessageDataClasses.ResponseTextMessage) messagelist.get(position);
         myholderOutput.singlemesssage.setText(responseData.responseTextMessage);
-        if(jumbleSentence){
-            myholderOutput.singlemesssage.setRotation(180);
-            StringBuilder buffer = new StringBuilder();
-            String[] strings = responseData.responseTextMessage.split(" ");
-            List<String> list = new ArrayList<>(Arrays.asList(strings));
-            Log.d(TAG, "handleOverviewOutPutData: "+list.size());
-            while (list.size()>0) {
-                Random random = new Random();
-
-                int currentPosition = random.nextInt(list.size());
-                Log.d(TAG, "handleOverviewOutPutData: "+currentPosition);
-                buffer.append(list.get(currentPosition)).append("\t");
-                list.remove(currentPosition);
-            }
-            myholderOutput.singlemesssage.setText(buffer.toString());
-        }else {
+        myholderOutput.time.setText(getTime(responseData.timestamp));
+        if(showNormal) {
             myholderOutput.singlemesssage.setRotation(0);
+        }else {
+            myholderOutput.singlemesssage.setRotation(180);
         }
     }
-
 
     private void handleInputTextMessage(final InputTextMessageHolder myholderInput, int position) {
 
         ChatmessageDataClasses.InputTextMessage inputData = (ChatmessageDataClasses.InputTextMessage) messagelist.get(position);
         myholderInput.singlemesssage.setText(inputData.inputTextMessage);
-        if(jumbleSentence){
-            myholderInput.singlemesssage.setRotation(180);
-            StringBuilder buffer = new StringBuilder();
-            String[] strings = inputData.inputTextMessage.split(" ");
-            List<String> list = new ArrayList<>(Arrays.asList(strings));
-            Log.d(TAG, "handleOverviewOutPutData: "+list.size());
-            while (list.size()>0) {
-                Random random = new Random();
-
-                int currentPosition = random.nextInt(list.size());
-                Log.d(TAG, "handleOverviewOutPutData: "+currentPosition);
-                buffer.append(list.get(currentPosition)).append("\t");
-                list.remove(currentPosition);
-            }
-            myholderInput.singlemesssage.setText(buffer.toString());
-        }else {
+        myholderInput.time.setText(getTime(inputData.timestamp));
+        if(showNormal) {
             myholderInput.singlemesssage.setRotation(0);
+        }else {
+            myholderInput.singlemesssage.setRotation(180);
         }
     }
 
@@ -585,7 +597,7 @@ public class BotAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
     private void handleSingleMovie(SingleMovieHolder holder, int position) {
 
         final ChatmessageDataClasses.InputImageMessage movieClass = (ChatmessageDataClasses.InputImageMessage) messagelist.get(position);
-
+        holder.time.setText(getTime(movieClass.timestamp));
         Picasso.with(context).load(movieClass.imageLink).into(holder.movieposter);
         holder.movieposter.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -620,34 +632,29 @@ public class BotAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
         }
     }
 
-    class GifHolder extends RecyclerView.ViewHolder {
-        ImageView imageView;
 
-        GifHolder(View view) {
-            super(view);
-            imageView = view.findViewById(R.id.gif_imageview);
-            Glide.with(view.getContext()).load(R.drawable.incoming_message_icon).into(imageView);
-        }
-    }
 
     class InputImageHolder extends RecyclerView.ViewHolder {
         ImageView input_imageview;
         ProgressBar imageUploadProgressbar;
+        TextView time;
 
         InputImageHolder(View view) {
             super(view);
             input_imageview = view.findViewById(R.id.imageinput);
             imageUploadProgressbar = view.findViewById(R.id.image_upload_progressbar);
+            time = view.findViewById(R.id.time);
         }
     }
 
     class InputTextMessageHolder extends RecyclerView.ViewHolder {
 
-        private TextView singlemesssage;
+        private TextView singlemesssage,time;
 
         InputTextMessageHolder(View view) {
             super(view);
             singlemesssage = view.findViewById(R.id.singletextmessage);
+            time = view.findViewById(R.id.time);
         }
     }
 
@@ -662,20 +669,22 @@ public class BotAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
 
     class ResponseTextMessageHolder extends RecyclerView.ViewHolder {
 
-        private TextView singlemesssage;
+        private TextView singlemesssage,time;
 
         ResponseTextMessageHolder(View view) {
             super(view);
             singlemesssage = view.findViewById(R.id.singletextmessage);
+            time = view.findViewById(R.id.time);
         }
     }
 
     class SingleMovieHolder extends RecyclerView.ViewHolder {
         ImageView movieposter;
-
+        TextView time;
         SingleMovieHolder(View view) {
             super(view);
             movieposter = view.findViewById(R.id.movieimage);
+            time = view.findViewById(R.id.time);
         }
     }
 
@@ -808,10 +817,11 @@ public class BotAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
 
     class VideoListAdapter extends RecyclerView.Adapter<VideoListAdapter.SingleVideoHolder> {
         List<String> imageLink, videoId;
-
-        VideoListAdapter(List<String> imageLink, List<String> videoId) {
+        long timestamp;
+        VideoListAdapter(List<String> imageLink, List<String> videoId,long timestamp) {
             this.imageLink = imageLink;
             this.videoId = videoId;
+            this.timestamp = timestamp;
         }
 
         @NonNull
@@ -824,6 +834,7 @@ public class BotAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
         @Override
         public void onBindViewHolder(@NonNull SingleVideoHolder holder, int position_temp) {
             final int position = holder.getAdapterPosition();
+            holder.time.setText(getTime(timestamp));
             Picasso.with(context).load(imageLink.get(position)).into(holder.videothumbnail);
             holder.videothumbnail.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -842,9 +853,10 @@ public class BotAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
 
         class SingleVideoHolder extends RecyclerView.ViewHolder {
             ImageView videothumbnail;
-
+            TextView time;
             SingleVideoHolder(View view) {
                 super(view);
+                time = view.findViewById(R.id.time);
                 videothumbnail = view.findViewById(R.id.videolinkthumbnail);
             }
         }
@@ -913,15 +925,18 @@ public class BotAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
             byte[] decodedString = Base64.decode(inputImageMessage.imageLink, Base64.DEFAULT);
             Bitmap decodedByte = BitmapFactory.decodeByteArray(decodedString, 0, decodedString.length);
             holder.imageView.setImageBitmap(decodedByte);
+            holder.time.setText(getTime(inputImageMessage.timestamp));
         }
 
         void handleInputTextMessage(InputTextHolder holder, int position) {
             ChatmessageDataClasses.InputTextMessage inputTextMessage = (ChatmessageDataClasses.InputTextMessage) vqNaList.get(position);
+            holder.time.setText(getTime(inputTextMessage.timestamp));
             holder.textView.setText(inputTextMessage.inputTextMessage);
         }
 
         void handleResponseMessage(ResponseTextMessage holder, int position) {
             ChatmessageDataClasses.ResponseTextMessage message = (ChatmessageDataClasses.ResponseTextMessage) vqNaList.get(position);
+            holder.time.setText(getTime(message.timestamp));
             holder.textView.setText(message.responseTextMessage);
         }
 
@@ -931,29 +946,32 @@ public class BotAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
         }
 
         class InputTextHolder extends RecyclerView.ViewHolder {
-            TextView textView;
+            TextView textView,time;
 
             InputTextHolder(View view) {
                 super(view);
                 textView = view.findViewById(R.id.singletextmessage);
+                time = view.findViewById(R.id.time);
             }
         }
 
         class InputImageHolder extends RecyclerView.ViewHolder {
             ImageView imageView;
-
+            TextView time;
             InputImageHolder(View view) {
                 super(view);
                 imageView = view.findViewById(R.id.imageinput);
+                time = view.findViewById(R.id.time);
             }
         }
 
         class ResponseTextMessage extends RecyclerView.ViewHolder {
-            TextView textView;
+            TextView textView,time;
 
             ResponseTextMessage(View view) {
                 super(view);
                 textView = view.findViewById(R.id.singletextmessage);
+                time = view.findViewById(R.id.time);
             }
         }
     }

@@ -29,6 +29,17 @@
                 android:id="@+id/image_upload_progressbar"
                 android:layout_gravity="bottom"
                 />
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="10sp"
+                android:layout_gravity="right|bottom"
+                android:text="03:30 AM"
+                android:visibility="gone"
+                android:id="@+id/time"
+                android:textColor="@color/white"
+
+                />
         </android.support.v7.widget.CardView>
 </RelativeLayout>
 

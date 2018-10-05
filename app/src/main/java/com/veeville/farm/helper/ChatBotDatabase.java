@@ -5,11 +5,15 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.text.format.DateFormat;
 import android.util.Log;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Calendar;
 import java.util.List;
+import java.util.Locale;
 
 /**
  * Created by user on 17-07-2017.
@@ -24,6 +28,7 @@ public class ChatBotDatabase extends SQLiteOpenHelper {
     private static final String TABLE_CHATBOTDATA = "table_chatbot";
     private static final String DATATYPE = "datatype";
     private static final String CHATDATA = "chatdata";
+    private static final String TIMESTAMP = "timestamp";
 
     private static final String TABLE_VEG_FRUIT_PRICE = "vegetable_fruits_price_table";
     private static final String COLUMN_VEG_FRUIT_NAME = "veg_fruit_name";
@@ -32,7 +37,6 @@ public class ChatBotDatabase extends SQLiteOpenHelper {
     private static final String COLUMN_VEG_FRUIT_KG_PIECE = "veg_fruit_kg_piece";
     private static final String COLUMN_IS_FRUIT = "is_fruit";
     private static final String COLUMN_DATE = "price_updated_date";
-
 
     private static final String TABLE_REGISTERED_MOBILE_NUMBER = "registered_mobile_number";
     private static final String COLUMN_MOBILE_NUMBER = "mobile_number";
@@ -46,7 +50,8 @@ public class ChatBotDatabase extends SQLiteOpenHelper {
 
         String CREATE_TABLE_TABLE_CHATBOTDATA = "CREATE TABLE " + TABLE_CHATBOTDATA +
                 "(" + DATATYPE + " TEXT," +
-                CHATDATA + " TEXT" +
+                CHATDATA + " TEXT," +
+                TIMESTAMP + " INTEGER"+
                 ")";
         db.execSQL(CREATE_TABLE_TABLE_CHATBOTDATA);
         Log.d(TAG, "table chatbotdata created");
@@ -105,32 +110,72 @@ public class ChatBotDatabase extends SQLiteOpenHelper {
     }
 
     public void insertChats(String datatype, String chat_data) {
+        long timestamp = System.currentTimeMillis();
 
+        Log.d(TAG, "insertChats: "+timestamp);
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues values = new ContentValues();
         values.put(DATATYPE, datatype);
         values.put(CHATDATA, chat_data);
+        values.put(TIMESTAMP,timestamp);
         db.insert(TABLE_CHATBOTDATA, null, values);
         db.close();
         AppSingletonClass.logDebugMessage(TAG, "chat data inserted of type:" + datatype + "data string:" + chat_data);
-
     }
 
+
+    private long getDateToTimestamp(long date){
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTimeInMillis(date);
+        calendar.set(Calendar.HOUR,0);
+        calendar.set(Calendar.MINUTE,0);
+        calendar.set(Calendar.SECOND,0);
+        calendar.set(Calendar.MILLISECOND,0);
+        SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MMM-yyyy",Locale.ENGLISH);
+        String s= dateFormat.format(calendar.getTime()).toString();
+        Log.d(TAG, "getDateToTimestamp: date:"+s);
+        return calendar.getTime().getTime();
+    }
+    private String getDate(long time) {
+
+        Calendar cal = Calendar.getInstance(Locale.ENGLISH);
+        cal.setTimeInMillis(time);
+        Calendar calendar = Calendar.getInstance();
+        if(calendar.get(Calendar.DAY_OF_MONTH)==cal.get(Calendar.DAY_OF_MONTH)){
+            return "Today";
+        }else {
+            return DateFormat.format("dd-MMM-yyyy", cal).toString();
+        }
+    }
     public List<Object> fetchAllMessages() {
         List<Object> chatlist = new ArrayList<>();
         String query = "SELECT * FROM " + TABLE_CHATBOTDATA;
         SQLiteDatabase db = this.getReadableDatabase();
         Cursor cursor = db.rawQuery(query, null);
         if (cursor.moveToFirst()) {
+
+            long timestampForDate = cursor.getLong(2);
+            String date = getDate(timestampForDate);
+            ChatmessageDataClasses.DateInMessage dateInMessage1 = new ChatmessageDataClasses.DateInMessage(date);
+            chatlist.add(dateInMessage1);
+            long dateTimestamp = getDateToTimestamp(timestampForDate);
             for (int i = 0; i < cursor.getCount(); i++) {
                 String datatype = cursor.getString(0);
+                long timestamp = cursor.getLong(2);
+                if(timestamp-dateTimestamp>(24*60*60*1000)){
+                    String date1 = getDate(timestamp);
+                    ChatmessageDataClasses.DateInMessage dateInMessage = new ChatmessageDataClasses.DateInMessage(date1);
+                    chatlist.add(dateInMessage);
+                    dateTimestamp = getDateToTimestamp(timestamp);
+                }
+
                 switch (datatype) {
                     case "inputtext":
-                        ChatmessageDataClasses.InputTextMessage inputData = new ChatmessageDataClasses.InputTextMessage(cursor.getString(1));
+                        ChatmessageDataClasses.InputTextMessage inputData = new ChatmessageDataClasses.InputTextMessage(cursor.getString(1),timestamp);
                         chatlist.add(inputData);
                         break;
                     case "responsetext":
-                        ChatmessageDataClasses.ResponseTextMessage responseData = new ChatmessageDataClasses.ResponseTextMessage(cursor.getString(1));
+                        ChatmessageDataClasses.ResponseTextMessage responseData = new ChatmessageDataClasses.ResponseTextMessage(cursor.getString(1),timestamp);
                         chatlist.add(responseData);
                         break;
 
@@ -141,7 +186,7 @@ public class ChatBotDatabase extends SQLiteOpenHelper {
                         List<String> imageLinks = new ArrayList<>();
                         videoIds.add(videodata[0]);
                         imageLinks.add(videodata[1]);
-                        ChatmessageDataClasses.ResponseVideoMessage videoClass = new ChatmessageDataClasses.ResponseVideoMessage(videoIds, imageLinks);
+                        ChatmessageDataClasses.ResponseVideoMessage videoClass = new ChatmessageDataClasses.ResponseVideoMessage(videoIds, imageLinks,timestamp);
                         chatlist.add(videoClass);
                         break;
                     case "quickreply":
@@ -150,20 +195,16 @@ public class ChatBotDatabase extends SQLiteOpenHelper {
                         chatlist.add(quickReplyclass);
                         break;
                     case "inputimage":
-                        InputImageClass inputImageClass = new InputImageClass(cursor.getString(1), true);
+                        InputImageClass inputImageClass = new InputImageClass(cursor.getString(1), true,timestamp);
                         chatlist.add(inputImageClass);
                         break;
                     case "inputimagelink":
-                        ChatmessageDataClasses.InputImageMessage inputImageMessage = new ChatmessageDataClasses.InputImageMessage(cursor.getString(1));
+                        ChatmessageDataClasses.InputImageMessage inputImageMessage = new ChatmessageDataClasses.InputImageMessage(cursor.getString(1),timestamp);
                         chatlist.add(inputImageMessage);
-                        break;
-                    case "weather":
-//                            ChatmessageDataClasses.WeatherData weatherData = new ChatmessageDataClasses.WeatherData(cursor.getString(1));
-//                            chatlist.add(weatherData);
                         break;
                     case "vegfruitpricecard":
                         String[] strings = cursor.getString(1).split(",");
-                        ChatmessageDataClasses.VegFruitPrice vegFruitPrice = new ChatmessageDataClasses.VegFruitPrice(strings[0], strings[1], strings[2]);
+                        ChatmessageDataClasses.VegFruitPrice vegFruitPrice = new ChatmessageDataClasses.VegFruitPrice(strings[0], strings[1], strings[2],timestamp);
                         chatlist.add(vegFruitPrice);
                         break;
                 }

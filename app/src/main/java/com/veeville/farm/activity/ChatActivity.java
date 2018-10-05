@@ -20,6 +20,7 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.CardView;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SwitchCompat;
@@ -37,6 +38,7 @@ import android.widget.Button;
 import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.android.volley.Request;
@@ -73,7 +75,7 @@ import ai.api.model.AIRequest;
 import ai.api.model.AIResponse;
 import ai.api.model.Result;
 
-public class ChatActivity extends AppCompatActivity implements QuickReplyAdapter.QuickReplyOption, ProcessBotResponse.ProcessedResult {
+public class ChatActivity extends AppCompatActivity implements QuickReplyAdapter.QuickReplyOption, ProcessBotResponse.ProcessedResult,ProcessBotResponse.UpdateMessageForRegistration {
 
     private RecyclerView chatrecyclerview;
     private FloatingActionButton actionButton;
@@ -96,12 +98,12 @@ public class ChatActivity extends AppCompatActivity implements QuickReplyAdapter
     private SwitchCompat aSwitch;
     private ArrayList<Object> vQnaList;
     boolean tookPicture = false;
-    Handler handler = new Handler();
     private int SELECT_PICTURE = 101;
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
+        Log.d(TAG, "onOptionsItemSelected: "+REQ_CODE_SPEECH_INPUT+REQUESTCODE_FOR_LOCATION+selectedLanguage+REQUESTCODE_FOR_AUDIORECORD+ACCESS_TOKEN);
         switch (id) {
             case R.id.english_id:
                 selectedlanguage_id_mic = "en-US";
@@ -159,7 +161,7 @@ public class ChatActivity extends AppCompatActivity implements QuickReplyAdapter
 
     void dialogToAskIpOfSensG() {
         AlertDialog.Builder builder = new AlertDialog.Builder(ChatActivity.this);
-        View view = LayoutInflater.from(getApplicationContext()).inflate(R.layout.dialog_layout_for_ip_of_sensg, null);
+        View view = LayoutInflater.from(getApplicationContext()).inflate(R.layout.dialog_layout_for_ip_of_sensg,null);
         builder.setView(view);
         final EditText ipAddress = view.findViewById(R.id.ip_of_sensg);
         ipAddress.requestFocus();
@@ -237,20 +239,20 @@ public class ChatActivity extends AppCompatActivity implements QuickReplyAdapter
         chatrecyclerview.setLayoutManager(linearLayoutManager);
         adapter = new BotAdapter(chatMessages, getApplicationContext(), this);
         chatrecyclerview.setAdapter(adapter);
-        runWhileLoop();
     }
 
 
     private void addIntroductionMessage() {
 
         String message = " Select one of the options below or ask me a question to get started ";
-        ChatmessageDataClasses.ResponseTextMessage textMessage = new ChatmessageDataClasses.ResponseTextMessage(message);
+        long timestamp = System.currentTimeMillis();
+        ChatmessageDataClasses.ResponseTextMessage textMessage = new ChatmessageDataClasses.ResponseTextMessage(message,timestamp);
         List<String> selectableMenu = new ArrayList<>();
         selectableMenu.add("What disease affects fruits?");
         selectableMenu.add("How to plant tree ?");
         selectableMenu.add("What is the weather like tomorrow?");
         selectableMenu.add("How much is the price of Vegetables?");
-        ChatmessageDataClasses.OptionMenu optionMenu = new ChatmessageDataClasses.OptionMenu(selectableMenu);
+        ChatmessageDataClasses.OptionMenu optionMenu = new ChatmessageDataClasses.OptionMenu(selectableMenu,timestamp);
         chatMessages.add(textMessage);
         chatMessages.add(optionMenu);
         adapter.notifyDataSetChanged();
@@ -324,6 +326,20 @@ public class ChatActivity extends AppCompatActivity implements QuickReplyAdapter
 
     }
 
+
+    private void showHintForRegistration(String message){
+
+        ChatBotDatabase database = new ChatBotDatabase(getApplicationContext());
+        CardView hintCard = findViewById(R.id.hint_card);
+        if(database.isUserRegistered()) {
+            hintCard.setVisibility(View.GONE);
+            adapter.changeDatasetMessage(true);
+        }else {
+            hintCard.setVisibility(View.VISIBLE);
+            TextView hintText = findViewById(R.id.hint);
+            hintText.setText(message);
+        }
+    }
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -332,8 +348,8 @@ public class ChatActivity extends AppCompatActivity implements QuickReplyAdapter
         setUpToolbar();
         setUpRecyclerview();
         loadAllMessages();
+        showHintForRegistration("We're trying to get your attention!\nPlease tell which country you are in & we will set this straight. \uD83D\uDE01");
         handleSendindTextMesage();
-
         captureImage = findViewById(R.id.camera_fab);
         captureImage.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -461,7 +477,7 @@ public class ChatActivity extends AppCompatActivity implements QuickReplyAdapter
         hashMap.put("Green Tip Stage", "Spray Dodine 65% WP @ 0.075% or Captan 50% WP @ 2.5 kg per hectare in 750 - 1000 Liters of water\n" +
                 "\n" +
                 "Note:  OnlyIf scab was present in previous 3 years");
-        insertTextMessage(hashMap.get(disease), true);
+        insertTextMessage(hashMap.get(disease), false);
     }
 
     @Override
@@ -469,8 +485,8 @@ public class ChatActivity extends AppCompatActivity implements QuickReplyAdapter
 
         chatMessages.remove(chatMessages.size() - 1);
         adapter.notifyItemRemoved(chatMessages.size() - 1);
-
-        ChatmessageDataClasses.InputImageMessage inputImageMessage = new ChatmessageDataClasses.InputImageMessage(imageLink);
+        long timestamp = System.currentTimeMillis();
+        ChatmessageDataClasses.InputImageMessage inputImageMessage = new ChatmessageDataClasses.InputImageMessage(imageLink,timestamp);
         chatMessages.add(inputImageMessage);
         adapter.notifyItemInserted(chatMessages.size() - 1);
         ChatBotDatabase database = new ChatBotDatabase(getApplicationContext());
@@ -531,6 +547,19 @@ public class ChatActivity extends AppCompatActivity implements QuickReplyAdapter
         chatMessages.addAll(list);
         adapter.notifyItemRangeChanged(previousPosition, chatMessages.size() - 1);
         chatrecyclerview.scrollToPosition(chatMessages.size() - 1);
+
+    }
+
+    @Override
+    public void updateMessageForRegistrayion(String message) {
+        Log.d(TAG, "updateMessageForRegistrayion: called with message:"+message);
+            showHintForRegistration(message);
+    }
+
+    @Override
+    public void makeMessagesNormal(boolean shownormal) {
+        Log.d(TAG, "makeMessagesNormal: called:"+shownormal);
+        adapter.changeDatasetMessage(shownormal);
     }
 
 
@@ -560,7 +589,7 @@ public class ChatActivity extends AppCompatActivity implements QuickReplyAdapter
 
     private void processResult(Result result) {
 
-        ProcessBotResponse processBotResponse = new ProcessBotResponse(result, ChatActivity.this, this, inputLanguageId);
+        ProcessBotResponse processBotResponse = new ProcessBotResponse(result, ChatActivity.this, this, inputLanguageId,this);
         processBotResponse.getResultBack();
 
     }
@@ -573,7 +602,6 @@ public class ChatActivity extends AppCompatActivity implements QuickReplyAdapter
         AIRequest aiRequest = new AIRequest();
         aiRequest.setQuery(query);
         new MyAsyncTask().execute(aiRequest);
-        handler.postDelayed(runnable,3000);
 
     }
 
@@ -625,15 +653,17 @@ public class ChatActivity extends AppCompatActivity implements QuickReplyAdapter
             public void onClick(View view) {
                 String userQuery = query.getText().toString();
                 if (!userQuery.equals("")) {
+                    long timestamp = System.currentTimeMillis();
                     isvQnaEnabled = true;
                     aSwitch.setChecked(true);
                     dialog.cancel();
                     vQnaList = new ArrayList<>();
-                    ChatmessageDataClasses.InputImageMessage message = new ChatmessageDataClasses.InputImageMessage(imageData);
+                    ChatmessageDataClasses.InputImageMessage message = new ChatmessageDataClasses.InputImageMessage(imageData,timestamp);
                     vQnaList.add(message);
-                    ChatmessageDataClasses.InputTextMessage inputTextMessage = new ChatmessageDataClasses.InputTextMessage(userQuery);
+                    ChatmessageDataClasses.InputTextMessage inputTextMessage = new ChatmessageDataClasses.InputTextMessage(userQuery,timestamp);
                     vQnaList.add(inputTextMessage);
-                    ChatmessageDataClasses.VisualQnA visualQnA = new ChatmessageDataClasses.VisualQnA(vQnaList);
+
+                    ChatmessageDataClasses.VisualQnA visualQnA = new ChatmessageDataClasses.VisualQnA(vQnaList,timestamp);
                     chatMessages.add(visualQnA);
                     adapter.notifyItemInserted(chatMessages.size() - 1);
                     chatrecyclerview.scrollToPosition(chatMessages.size() - 1);
@@ -670,7 +700,8 @@ public class ChatActivity extends AppCompatActivity implements QuickReplyAdapter
         } else if (requestCode == REQUEST_IMAGE_CAPTURE && resultCode == RESULT_OK) {
 
             String imageString = getBase64String();
-            InputImageClass inputImageClass = new InputImageClass(imageString, false);
+            long timestamp = System.currentTimeMillis();
+            InputImageClass inputImageClass = new InputImageClass(imageString, false,timestamp);
             chatMessages.add(inputImageClass);
             adapter.notifyItemInserted(chatMessages.size() - 1);
             chatrecyclerview.smoothScrollToPosition(chatMessages.size() - 1);
@@ -908,26 +939,26 @@ public class ChatActivity extends AppCompatActivity implements QuickReplyAdapter
     }
 
     private void insertTextMessage(String textMessage, boolean isInputTextMessage) {
-
+        long timestamp = System.currentTimeMillis();
         if (!isvQnaEnabled) {
             if (isInputTextMessage) {
-                ChatmessageDataClasses.InputTextMessage inputTextMessage = new ChatmessageDataClasses.InputTextMessage(textMessage);
+                ChatmessageDataClasses.InputTextMessage inputTextMessage = new ChatmessageDataClasses.InputTextMessage(textMessage,timestamp);
                 chatMessages.add(inputTextMessage);
             } else {
-                ChatmessageDataClasses.ResponseTextMessage message = new ChatmessageDataClasses.ResponseTextMessage(textMessage);
+                ChatmessageDataClasses.ResponseTextMessage message = new ChatmessageDataClasses.ResponseTextMessage(textMessage,timestamp);
                 chatMessages.add(message);
             }
 
             adapter.notifyItemInserted(chatMessages.size() - 1);
         } else {
             if (isInputTextMessage) {
-                ChatmessageDataClasses.InputTextMessage inputTextMessage = new ChatmessageDataClasses.InputTextMessage(textMessage);
+                ChatmessageDataClasses.InputTextMessage inputTextMessage = new ChatmessageDataClasses.InputTextMessage(textMessage,timestamp);
                 vQnaList.add(inputTextMessage);
             } else {
-                ChatmessageDataClasses.ResponseTextMessage message = new ChatmessageDataClasses.ResponseTextMessage(textMessage);
+                ChatmessageDataClasses.ResponseTextMessage message = new ChatmessageDataClasses.ResponseTextMessage(textMessage,timestamp);
                 vQnaList.add(message);
             }
-            ChatmessageDataClasses.VisualQnA visualQnA = new ChatmessageDataClasses.VisualQnA(vQnaList);
+            ChatmessageDataClasses.VisualQnA visualQnA = new ChatmessageDataClasses.VisualQnA(vQnaList,timestamp);
             chatMessages.remove(chatMessages.size() - 1);
             adapter.notifyItemRemoved(chatMessages.size() - 1);
             chatMessages.add(visualQnA);
@@ -942,34 +973,6 @@ public class ChatActivity extends AppCompatActivity implements QuickReplyAdapter
         } else {
             helperFunctions.insertResponseTextMessage(textMessage);
         }
-    }
-
-    Runnable runnable = new Runnable() {
-        @Override
-        public void run() {
-            ChatBotDatabase database = new ChatBotDatabase(getApplicationContext());
-            boolean isRegistered = database.isUserRegistered();
-            if(!isRegistered) {
-                adapter.setJumbleSentence(true);
-                adapter.notifyDataSetChanged();
-                handler.postDelayed(runnableTemp,1000);
-
-
-            }else {
-                adapter.setJumbleSentence(false);
-            }
-        }
-    };
-
-    Runnable runnableTemp = new Runnable() {
-        @Override
-        public void run() {
-            adapter.setJumbleSentence(false);
-        }
-    };
-
-    void runWhileLoop(){
-        handler.postDelayed(runnable,3000);
     }
 
 }
