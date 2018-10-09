@@ -86,7 +86,6 @@ public class ProcessBotResponse {
     //got the result from after translating to given language
     private void translate(String speech) {
 
-        getPayload();
         if (!result.isActionIncomplete())
             performAction(speech);
 
@@ -104,16 +103,22 @@ public class ProcessBotResponse {
         switch (action) {
             case "how.to.grow.vegetable":
                 addSpeechToMessage(speech);
+                getPayload();
                 handleVideoIntents();
                 break;
             case "how.to.grow.fruit":
                 addSpeechToMessage(speech);
+                getPayload();
                 handleVideoIntents();
                 break;
             case "price.fruit":
+                addSpeechToMessage(speech);
+                getPayload();
                 getPriceOfFruitANdVegetable();
                 break;
             case "price.vegetable":
+                addSpeechToMessage(speech);
+                getPayload();
                 getPriceOfFruitANdVegetable();
                 break;
             case "weather":
@@ -121,6 +126,7 @@ public class ProcessBotResponse {
                 break;
             case "action.humidity":
                 addSpeechToMessage(speech);
+                getPayload();
                 addSensorData(action);
                 break;
             case "action.SoilPH":
@@ -133,21 +139,25 @@ public class ProcessBotResponse {
                 break;
             case "action.light":
                 addSpeechToMessage(speech);
+                getPayload();
                 addSensorData(action);
                 break;
             case "action.soil.moisture":
                 addSpeechToMessage(speech);
+                getPayload();
                 addSensorData(action);
                 break;
             case "microsoft.qnamaker":
                 addSpeechToMessage(speech);
+                getPayload();
                 formQuestionForQnaMaker();
                 break;
             case "country":
                 addSpeechToMessage(speech);
+                getPayload();
                 AppSingletonClass.isOTPsent = false;
                 addMessagesToRecyclerview();
-                updateMessageForRegistration.updateMessageForRegistrayion("Thanks for that!\n" + "Can you also give us your phone number?");
+                updateMessageForRegistration.updateMessageForRegistrayion("Thanks for that!\n" + "Can you also give us your phone number?",false);
                 updateMessageForRegistration.makeMessagesNormal(true);
                 break;
             case "country-name.mobile-number":
@@ -156,9 +166,11 @@ public class ProcessBotResponse {
             case "input.welcome":
                 addSpeechToMessage(speech);
                 addMessagesToRecyclerview();
-            default:
-                addMessagesToRecyclerview();
                 break;
+                default:
+                    addSpeechToMessage(speech);
+                    getPayload();
+                    addMessagesToRecyclerview();
         }
     }
 
@@ -167,7 +179,7 @@ public class ProcessBotResponse {
 
         if (!AppSingletonClass.isOTPsent) {
             addSpeechToMessage(speech);
-            updateMessageForRegistration.updateMessageForRegistrayion("Excellent!\n" + "You will now receive an OTP, please share that too.");
+            updateMessageForRegistration.updateMessageForRegistrayion("Excellent!\n" + "You will now receive an OTP, please share that too.",false);
             HashMap<String, JsonElement> map = result.getParameters();
             if (map.containsKey("country") && map.containsKey("number")) {
                 String country = map.get("country").getAsString();
@@ -404,6 +416,7 @@ public class ProcessBotResponse {
                 calendar.set(Calendar.MONTH, month - 1);
                 calendar.set(Calendar.YEAR, year);
                 String format = "dd MMM yyyy";
+
                 SimpleDateFormat dateFormat = new SimpleDateFormat(format, Locale.getDefault());
                 date = dateFormat.format(calendar.getTime());
                 String maxTemperature = oneDayDetails.getString("maxtempC");
@@ -702,7 +715,7 @@ public class ProcessBotResponse {
                     ChatMessagesHelperFunctions helperFunctions = new ChatMessagesHelperFunctions(context);
                     helperFunctions.insertResponseTextMessage(message);
                     updateMessageForRegistration.makeMessagesNormal(false);
-                    updateMessageForRegistration.updateMessageForRegistrayion("Awww!\n" + "We didn’t get the OTP. You’re gonna have to start all over again ");
+                    updateMessageForRegistration.updateMessageForRegistrayion("Awww!\n" + "We didn’t get the OTP. You’re gonna have to start all over again ",true);
 
 
                 } else if (e instanceof FirebaseTooManyRequestsException) {
@@ -717,7 +730,7 @@ public class ProcessBotResponse {
                 Log.d(TAG, "onCodeSent:" + verificationId);
                 ChatMessagesHelperFunctions helperFunctions = new ChatMessagesHelperFunctions(context);
                 String message = "Excellent!\n" + "You will now receive an OTP, please share that too.";
-                updateMessageForRegistration.updateMessageForRegistrayion(message);
+                updateMessageForRegistration.updateMessageForRegistrayion(message,false);
                 helperFunctions.insertResponseTextMessage(message);
                 long timestamp = System.currentTimeMillis();
                 ChatmessageDataClasses.ResponseTextMessage responseTextMessage = new ChatmessageDataClasses.ResponseTextMessage(message,timestamp);
@@ -756,7 +769,7 @@ public class ProcessBotResponse {
                             new MyAsyncTask().execute(user.getPhoneNumber());
                             ChatMessagesHelperFunctions helperFunctions = new ChatMessagesHelperFunctions(context);
                             helperFunctions.insertResponseTextMessage(message);
-                            updateMessageForRegistration.updateMessageForRegistrayion(message);
+                            updateMessageForRegistration.updateMessageForRegistrayion(message,false);
                             updateMessageForRegistration.makeMessagesNormal(true);
                             ChatmessageDataClasses.ResponseTextMessage responseTextMessage = new ChatmessageDataClasses.ResponseTextMessage(message,timestamp);
                             messages.add(responseTextMessage);
@@ -784,7 +797,6 @@ public class ProcessBotResponse {
 
         processedResult.result(messages);
     }
-
 
     //insert user Mobile number to AWS database
     class MyAsyncTask extends AsyncTask<String, Void, Integer> {
@@ -816,7 +828,7 @@ public class ProcessBotResponse {
         }
     }
     interface UpdateMessageForRegistration{
-        void updateMessageForRegistrayion(String message);
+        void updateMessageForRegistrayion(String message,boolean showCard);
         void makeMessagesNormal(boolean showNormal);
     }
 

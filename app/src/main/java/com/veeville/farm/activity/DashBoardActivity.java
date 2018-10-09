@@ -1,10 +1,12 @@
 package com.veeville.farm.activity;
 
 import android.content.Intent;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -12,6 +14,18 @@ import android.view.View;
 import com.veeville.farm.R;
 import com.veeville.farm.helper.AppSingletonClass;
 import com.veeville.farm.helper.ChatBotDatabase;
+import com.veeville.farm.helper.Fruit;
+import com.veeville.farm.helper.FruitNames;
+import com.veeville.farm.helper.VegetableNames;
+
+import org.jsoup.Jsoup;
+import org.jsoup.nodes.Document;
+import org.jsoup.nodes.Element;
+import org.jsoup.select.Elements;
+
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 public class DashBoardActivity extends AppCompatActivity {
     private String TAG = "DashBoardActivity";
@@ -108,6 +122,8 @@ public class DashBoardActivity extends AppCompatActivity {
                 startActivity(intent);
             }
         });
+
+        checkDatabaseForPrice();
     }
 
     @Override
@@ -124,6 +140,121 @@ public class DashBoardActivity extends AppCompatActivity {
         AppSingletonClass.logDebugMessage(TAG, "user logged out");
         finish();
         return true;
+    }
+
+    void insertVegAndFruitToDatabase() {
+        //insert fruit names
+        List<Fruit> names = FruitNames.getFruitNames();
+        ChatBotDatabase database = new ChatBotDatabase(getApplicationContext());
+        database.insertVegetableAndFruitPrices(names);
+        //insert vegetabl names
+        List<Fruit> vegNames = VegetableNames.getAllVegetableNames();
+        database.insertVegetableAndFruitPrices(vegNames);
+        new AsyncTaskFruitPrice().execute();
+    }
+    private void checkDatabaseForPrice(){
+        ChatBotDatabase database = new ChatBotDatabase(getApplicationContext());
+        List<Fruit> fruitList = database.getAllPrices();
+        if (fruitList.size() == 0) {
+            insertVegAndFruitToDatabase();
+        }
+
+    }
+
+
+    class AsyncTaskVegPrice extends AsyncTask<Void, Void, List<Fruit>> {
+
+
+        @Override
+        protected List<Fruit> doInBackground(Void... voids) {
+            Document doc;
+            List<Fruit> names = new ArrayList<>();
+            try {
+                doc = Jsoup.connect("https://www.livechennai.com/Vegetable_price_chennai.asp").get();
+                Log.d(TAG, "scrapeWebsite: " + doc.title());
+                Element table = doc.select("table").get(1);
+                Elements rows = table.select("tr");
+                Log.d(TAG, "doInBackground: rows:" + rows.size());
+                long timestamp = System.currentTimeMillis() / 1000;
+                for (int i = 1; i < rows.size(); i++) {
+                    try {
+                        Elements columns = rows.get(i).select("td");
+                        Log.d(TAG, "doInBackground: column size:" + columns.size());
+                        String nameWithValue = columns.get(1).text();
+                        String[] array = nameWithValue.split("\\(");
+                        String name = array[0].trim();
+                        String pieceorKg = "(" + array[1];
+                        String price = columns.get(2).text();
+                        Fruit fruit = new Fruit(name, price, pieceorKg, "", false, timestamp);
+                        Log.d(TAG, "doInBackground: " + fruit.toString());
+                        names.add(fruit);
+
+                    } catch (Exception e) {
+                        Log.d(TAG, "doInBackground: " + e.toString());
+                    }
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            return names;
+        }
+
+        @Override
+        protected void onPostExecute(List<Fruit> fruitList) {
+            super.onPostExecute(fruitList);
+            updateDataBase(fruitList);
+        }
+    }
+    private class AsyncTaskFruitPrice extends AsyncTask<Void, Void, List<Fruit>> {
+
+        @Override
+        protected List<Fruit> doInBackground(Void... voids) {
+            Document doc;
+            List<Fruit> names = new ArrayList<>();
+            try {
+                doc = Jsoup.connect("https://www.livechennai.com/Fruits_price_chennai.asp").get();
+                Log.d(TAG, "scrapeWebsite: " + doc.title());
+                Element table = doc.select("table").get(1);
+                Elements rows = table.select("tr");
+                Log.d(TAG, "doInBackground: rows:" + rows.size());
+                long timestamp = System.currentTimeMillis() / 1000;
+                for (int i = 1; i < rows.size(); i++) {
+
+                    try {
+                        Elements columns = rows.get(i).select("td");
+                        Log.d(TAG, "doInBackground: column size:" + columns.size());
+                        String nameWithValue = columns.get(1).text();
+                        String[] array = nameWithValue.split("\\(");
+                        String name = array[0].trim();
+                        String pieceorKg = "(" + array[1];
+                        String price = columns.get(2).text();
+                        Fruit fruit = new Fruit(name, price, pieceorKg, "", true, timestamp);
+                        Log.d(TAG, "doInBackground: " + fruit.toString());
+                        names.add(fruit);
+
+                    } catch (Exception e) {
+                        Log.d(TAG, "doInBackground: " + e.toString());
+                    }
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+
+
+            return names;
+        }
+
+        @Override
+        protected void onPostExecute(List<Fruit> fruits) {
+            super.onPostExecute(fruits);
+            updateDataBase(fruits);
+            new AsyncTaskVegPrice().execute();
+
+        }
+    }
+    void updateDataBase(List<Fruit> fruits) {
+        ChatBotDatabase database = new ChatBotDatabase(DashBoardActivity.this);
+        database.updatePriceOfFruitAndVeg(fruits);
     }
 
 }

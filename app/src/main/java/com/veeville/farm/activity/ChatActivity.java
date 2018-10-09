@@ -327,7 +327,7 @@ public class ChatActivity extends AppCompatActivity implements QuickReplyAdapter
     }
 
 
-    private void showHintForRegistration(String message){
+    private void showHintForRegistration(String message,boolean showCard){
 
         ChatBotDatabase database = new ChatBotDatabase(getApplicationContext());
         CardView hintCard = findViewById(R.id.hint_card);
@@ -336,6 +336,11 @@ public class ChatActivity extends AppCompatActivity implements QuickReplyAdapter
             adapter.changeDatasetMessage(true);
         }else {
             hintCard.setVisibility(View.VISIBLE);
+            if(showCard){
+                hintCard.setVisibility(View.VISIBLE);
+            }else {
+                hintCard.setVisibility(View.GONE);
+            }
             TextView hintText = findViewById(R.id.hint);
             hintText.setText(message);
         }
@@ -348,7 +353,7 @@ public class ChatActivity extends AppCompatActivity implements QuickReplyAdapter
         setUpToolbar();
         setUpRecyclerview();
         loadAllMessages();
-        showHintForRegistration("We're trying to get your attention!\nPlease tell which country you are in & we will set this straight. \uD83D\uDE01");
+        showHintForRegistration("We're trying to get your attention!\nPlease tell which country you are in & we will set this straight. \uD83D\uDE01",true);
         handleSendindTextMesage();
         captureImage = findViewById(R.id.camera_fab);
         captureImage.setOnClickListener(new View.OnClickListener() {
@@ -551,9 +556,9 @@ public class ChatActivity extends AppCompatActivity implements QuickReplyAdapter
     }
 
     @Override
-    public void updateMessageForRegistrayion(String message) {
+    public void updateMessageForRegistrayion(String message,boolean showCard) {
         Log.d(TAG, "updateMessageForRegistrayion: called with message:"+message);
-            showHintForRegistration(message);
+            showHintForRegistration(message,showCard);
     }
 
     @Override

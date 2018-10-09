@@ -11,7 +11,6 @@ import com.veeville.farm.R;
 import com.veeville.farm.adapter.TemperatureActivityAdapter;
 import com.veeville.farm.helper.DashBoardDataClasses;
 
-
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -29,7 +28,6 @@ public class TemperatureActivity extends AppCompatActivity {
         setUpToolbar();
         setUpHumidityRecyclerview();
     }
-
 
     private void setUpToolbar() {
 

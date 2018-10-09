@@ -586,11 +586,6 @@ public class BotAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
         ChatmessageDataClasses.InputTextMessage inputData = (ChatmessageDataClasses.InputTextMessage) messagelist.get(position);
         myholderInput.singlemesssage.setText(inputData.inputTextMessage);
         myholderInput.time.setText(getTime(inputData.timestamp));
-        if(showNormal) {
-            myholderInput.singlemesssage.setRotation(0);
-        }else {
-            myholderInput.singlemesssage.setRotation(180);
-        }
     }
 
 
