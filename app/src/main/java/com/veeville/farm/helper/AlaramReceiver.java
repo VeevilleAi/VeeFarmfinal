@@ -9,7 +9,6 @@ import android.content.Intent;
 import android.util.Log;
 import android.widget.Toast;
 
-
 import com.veeville.farm.R;
 
 import static android.content.Context.NOTIFICATION_SERVICE;
@@ -19,8 +18,8 @@ import static android.content.Context.NOTIFICATION_SERVICE;
  */
 
 public class AlaramReceiver extends BroadcastReceiver {
-    String TAG = "hello";
-    Context context;
+    private String TAG = "hello";
+    private Context context;
 
     @Override
     public void onReceive(Context context, Intent intent) {
@@ -32,7 +31,7 @@ public class AlaramReceiver extends BroadcastReceiver {
         showNotification(title, body);
     }
 
-    void showNotification(String title, String body) {
+    private void showNotification(String title, String body) {
 
         Intent intent = new Intent("veeville.veevillefarm");
         PendingIntent pIntent = PendingIntent.getActivity(context, (int) System.currentTimeMillis(), intent, 0);
@@ -46,6 +45,6 @@ public class AlaramReceiver extends BroadcastReceiver {
         noti.flags |= Notification.FLAG_AUTO_CANCEL;
         assert notificationManager != null;
         notificationManager.notify(0, noti);
-
+        Log.d(TAG, "showNotification: ");
     }
 }

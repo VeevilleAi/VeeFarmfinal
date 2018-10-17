@@ -12,6 +12,7 @@ import android.view.MenuItem;
 import android.view.View;
 
 import com.veeville.farm.R;
+import com.veeville.farm.farmer.FarmsActivity;
 import com.veeville.farm.helper.AppSingletonClass;
 import com.veeville.farm.helper.ChatBotDatabase;
 import com.veeville.farm.helper.Fruit;
@@ -46,6 +47,8 @@ public class DashBoardActivity extends AppCompatActivity {
         CardView temperatureCard = findViewById(R.id.temperature_card);
         CardView lightCard = findViewById(R.id.light_card);
         CardView priceCard = findViewById(R.id.price_card);
+        CardView farms = findViewById(R.id.farms);
+
         AppSingletonClass.logDebugMessage(TAG, "DashBoardActivity started");
         humidityCard.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -119,6 +122,13 @@ public class DashBoardActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 Intent intent = new Intent(getApplicationContext(), PriceActivity.class);
+                startActivity(intent);
+            }
+        });
+        farms.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(getApplicationContext(), FarmsActivity.class);
                 startActivity(intent);
             }
         });

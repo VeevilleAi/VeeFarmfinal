@@ -692,11 +692,11 @@
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:layout_weight="1"
+                    android:id="@+id/farms"
                     android:layout_marginEnd="10dp"
                     android:layout_marginBottom="10dp"
                     android:layout_marginStart="5dp"
                     app:cardCornerRadius="12dp"
-                    android:visibility="invisible"
                     >
 
                     <LinearLayout
@@ -733,20 +733,12 @@
                             <TextView
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:text="@string/soil_moisture"
+                                android:text="Farms"
                                 android:textColor="@color/black"
                                 android:gravity="center"
                                 android:fontFamily="@font/bitstream_utura_md_md_medium"
                                 android:textSize="18sp"
                                 android:padding="5dp"
-                                />
-                            <TextView
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:text="@string/base_soil_45_ndeep_soil_65"
-                                android:gravity="center"
-                                android:fontFamily="@font/bitstream_utura_md_md_medium"
-                                android:textSize="12sp"
                                 />
                         </LinearLayout>
 

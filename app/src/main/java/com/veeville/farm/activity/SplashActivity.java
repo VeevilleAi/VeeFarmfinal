@@ -5,10 +5,15 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.widget.ImageView;
 
 import com.bumptech.glide.Glide;
 import com.crashlytics.android.Crashlytics;
+import com.google.android.gms.auth.api.signin.GoogleSignIn;
+import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
+import com.google.android.gms.auth.api.signin.GoogleSignInClient;
+import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.veeville.farm.R;
 import com.veeville.farm.helper.AppSingletonClass;
 
@@ -18,6 +23,35 @@ public class SplashActivity extends AppCompatActivity {
 
     private String TAG = "SplashActivity";
     private Handler handler;
+    private Runnable runnable = new Runnable() {
+        @Override
+        public void run() {
+            GoogleSignInAccount account = GoogleSignIn.getLastSignedInAccount(SplashActivity.this);
+            if (account != null) {
+                Intent intent = new Intent(getApplicationContext(), DashBoardActivity.class);
+                startActivity(intent);
+                finish();
+                Log.d(TAG, "onStart: user not yet registered");
+            } else {
+                Intent intent = new Intent(getApplicationContext(), SignActivity.class);
+                startActivity(intent);
+                finish();
+                Log.d(TAG, "onStart: user already registered");
+            }
+            AppSingletonClass.logDebugMessage(TAG, "SplashActivity finished");
+        }
+    };
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -31,28 +65,16 @@ public class SplashActivity extends AppCompatActivity {
         Glide.with(getApplicationContext()).load(R.drawable.splash_icon_new_gif2).into(title);
         waitForSplashScreen();
         AppSingletonClass.logDebugMessage(TAG, "SplashActivity started");
-    }
 
-    @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-    }
 
-    @Override
-    protected void onStop() {
-        super.onStop();
+        GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+                .requestIdToken(getString(R.string.server_client_id))
+                .requestEmail()
+                .requestProfile()
+                .build();
+        GoogleSignInClient mGoogleSignInClient = GoogleSignIn.getClient(this, gso);
 
     }
-
-    private Runnable runnable = new Runnable() {
-        @Override
-        public void run() {
-            AppSingletonClass.logDebugMessage(TAG, "SplashActivity finished");
-            Intent intent = new Intent(getApplicationContext(), DashBoardActivity.class);
-            startActivity(intent);
-            finish();
-        }
-    };
 
     void waitForSplashScreen() {
         handler = new Handler();
@@ -64,6 +86,4 @@ public class SplashActivity extends AppCompatActivity {
         super.onDestroy();
         handler.removeCallbacks(runnable);
     }
-
-
 }

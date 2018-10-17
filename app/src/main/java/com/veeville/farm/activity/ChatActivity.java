@@ -1,6 +1,6 @@
 package com.veeville.farm.activity;
 
-import  android.Manifest;
+import android.Manifest;
 import android.app.Activity;
 import android.content.ActivityNotFoundException;
 import android.content.Context;
@@ -46,15 +46,15 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.google.firebase.auth.FirebaseAuth;
-import com.veeville.farm.helper.AppSingletonClass;
-import com.veeville.farm.helper.ChatMessagesHelperFunctions;
-import com.veeville.farm.tensorflow.ClassifierActivity;
 import com.veeville.farm.R;
 import com.veeville.farm.adapter.BotAdapter;
 import com.veeville.farm.adapter.QuickReplyAdapter;
+import com.veeville.farm.helper.AppSingletonClass;
 import com.veeville.farm.helper.ChatBotDatabase;
+import com.veeville.farm.helper.ChatMessagesHelperFunctions;
 import com.veeville.farm.helper.ChatmessageDataClasses;
 import com.veeville.farm.helper.InputImageClass;
+import com.veeville.farm.tensorflow.ClassifierActivity;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -82,7 +82,7 @@ public class ChatActivity extends AppCompatActivity implements QuickReplyAdapter
     private EditText inputtextmessage;
     private BotAdapter adapter;
     private SensGConnection connection;
-    private int REQ_CODE_SPEECH_INPUT = 10;
+    private final int REQ_CODE_SPEECH_INPUT = 10;
     private List<Object> chatMessages = new ArrayList<>();
     private String TAG = "ChatActivity";
     private Toolbar toolbar;
@@ -99,11 +99,11 @@ public class ChatActivity extends AppCompatActivity implements QuickReplyAdapter
     private ArrayList<Object> vQnaList;
     boolean tookPicture = false;
     private int SELECT_PICTURE = 101;
+    private int countMessageForRegistarationPurpose = 0;
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
-        Log.d(TAG, "onOptionsItemSelected: "+REQ_CODE_SPEECH_INPUT+REQUESTCODE_FOR_LOCATION+selectedLanguage+REQUESTCODE_FOR_AUDIORECORD+ACCESS_TOKEN);
         switch (id) {
             case R.id.english_id:
                 selectedlanguage_id_mic = "en-US";
@@ -256,7 +256,6 @@ public class ChatActivity extends AppCompatActivity implements QuickReplyAdapter
         chatMessages.add(textMessage);
         chatMessages.add(optionMenu);
         adapter.notifyDataSetChanged();
-
     }
 
 
@@ -405,7 +404,7 @@ public class ChatActivity extends AppCompatActivity implements QuickReplyAdapter
         if (ActivityCompat.shouldShowRequestPermissionRationale(ChatActivity.this, Manifest.permission.RECORD_AUDIO) && ActivityCompat.shouldShowRequestPermissionRationale(ChatActivity.this, Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
             Toast.makeText(getApplicationContext(), "Enable Access to Media Storage and Recording in App Settings", Toast.LENGTH_LONG).show();
         } else {
-            ActivityCompat.requestPermissions(ChatActivity.this, permissionarray, 123);
+            ActivityCompat.requestPermissions(ChatActivity.this, permissionarray, REQUESTCODE_FOR_AUDIORECORD);
         }
     }
 
@@ -552,9 +551,26 @@ public class ChatActivity extends AppCompatActivity implements QuickReplyAdapter
         chatMessages.addAll(list);
         adapter.notifyItemRangeChanged(previousPosition, chatMessages.size() - 1);
         chatrecyclerview.scrollToPosition(chatMessages.size() - 1);
+        countMessageForRegistarationPurpose++;
+        if (countMessageForRegistarationPurpose > 4) {
+            addRegisterationMesageToRecyclerview("We're trying to get your attention!\nnPlease tell which country you are in & we will set this straight. \uD83D\uDE01");
+            countMessageForRegistarationPurpose = 0;
+        }
 
     }
 
+
+    private void addRegisterationMesageToRecyclerview(String message) {
+
+        ChatBotDatabase database = new ChatBotDatabase(getApplicationContext());
+        boolean isUserRegistered = database.isUserRegistered();
+        if (!isUserRegistered) {
+            ChatmessageDataClasses.ResponseTextMessage responseTextMessage = new ChatmessageDataClasses.ResponseTextMessage(message, System.currentTimeMillis());
+            chatMessages.add(responseTextMessage);
+            adapter.notifyItemInserted(chatMessages.size());
+        }
+
+    }
     @Override
     public void updateMessageForRegistrayion(String message,boolean showCard) {
         Log.d(TAG, "updateMessageForRegistrayion: called with message:"+message);
@@ -566,7 +582,6 @@ public class ChatActivity extends AppCompatActivity implements QuickReplyAdapter
         Log.d(TAG, "makeMessagesNormal: called:"+shownormal);
         adapter.changeDatasetMessage(shownormal);
     }
-
 
     private class MyAsyncTask extends AsyncTask<AIRequest, Void, AIResponse> {
         @Override
@@ -688,9 +703,11 @@ public class ChatActivity extends AppCompatActivity implements QuickReplyAdapter
         });
     }
 
+
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
+
 
         if (requestCode == CAMERA_REQUEST && resultCode == Activity.RESULT_OK) {
 
@@ -750,7 +767,7 @@ public class ChatActivity extends AppCompatActivity implements QuickReplyAdapter
         if (ActivityCompat.shouldShowRequestPermissionRationale(ChatActivity.this, Manifest.permission.CAMERA)) {
             Toast.makeText(ChatActivity.this, "Enable Camera in App Settings", Toast.LENGTH_SHORT).show();
         } else {
-            ActivityCompat.requestPermissions(ChatActivity.this, permissionarray, 124);
+            ActivityCompat.requestPermissions(ChatActivity.this, permissionarray, CAMERA_REQUEST);
         }
     }
 
@@ -838,7 +855,15 @@ public class ChatActivity extends AppCompatActivity implements QuickReplyAdapter
             case REQUESTCODE_FOR_LOCATION:
                 break;
             case REQUESTCODE_FOR_AUDIORECORD:
+                if (grantResults[0] == PackageManager.PERMISSION_GRANTED && grantResults[1] == PackageManager.PERMISSION_GRANTED) {
+                    promptSpeechInput();
+                }
                 break;
+            case CAMERA_REQUEST:
+                if (grantResults[0] == PackageManager.PERMISSION_GRANTED && grantResults[1] == PackageManager.PERMISSION_GRANTED) {
+                    alertDialogForChoosingCameraOrGalleryForImage();
+                }
+
             default:
         }
     }

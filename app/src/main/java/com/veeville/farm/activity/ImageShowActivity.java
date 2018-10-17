@@ -42,6 +42,4 @@ public class ImageShowActivity extends AppCompatActivity {
         onBackPressed();
         return super.onOptionsItemSelected(item);
     }
-
-
 }
