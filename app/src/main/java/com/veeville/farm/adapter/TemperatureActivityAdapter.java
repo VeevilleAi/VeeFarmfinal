@@ -40,10 +40,15 @@ public class TemperatureActivityAdapter extends RecyclerView.Adapter<RecyclerVie
     @Override
     public int getItemViewType(int position) {
 
-        if (position == 0) {
+        if (temperatureDataList.get(position) instanceof DashBoardDataClasses.TemperatureData) {
             return 0;
-        } else
+        } else if (temperatureDataList.get(position) instanceof DashBoardDataClasses.TemperatureData.SoilTempMonthGraphData) {
             return 1;
+        } else if (temperatureDataList.get(position) instanceof DashBoardDataClasses.TemperatureData.SoilTempyearGraphData) {
+            return 2;
+        } else {
+            return -1;
+        }
     }
 
     @NonNull

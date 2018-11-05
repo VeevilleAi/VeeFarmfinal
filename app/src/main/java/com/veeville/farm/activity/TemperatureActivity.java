@@ -5,6 +5,8 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
+import android.view.Menu;
 import android.view.MenuItem;
 
 import com.veeville.farm.R;
@@ -20,7 +22,7 @@ import java.util.Objects;
 import java.util.Random;
 
 public class TemperatureActivity extends AppCompatActivity {
-
+    String TAG = "TemperatureActivity";
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -46,7 +48,22 @@ public class TemperatureActivity extends AppCompatActivity {
     }
 
     @Override
+    public boolean onPrepareOptionsMenu(Menu menu) {
+        if (menu.size() == 0) {
+            List<String> farms = new ArrayList<>();
+            menu.add("Farm1");
+            menu.add("Farm2");
+            menu.add("Farm3");
+            menu.add("Farm4");
+            menu.add("Farm5");
+        }
+        return true;
+    }
+
+    @Override
     public boolean onOptionsItemSelected(MenuItem item) {
+        String title = item.getTitle().toString();
+        Log.d(TAG, "onOptionsItemSelected: " + title);
         onBackPressed();
         return super.onOptionsItemSelected(item);
     }

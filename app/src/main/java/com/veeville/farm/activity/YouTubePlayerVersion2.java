@@ -4,10 +4,12 @@ import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
+
 import com.google.android.youtube.player.YouTubeInitializationResult;
 import com.google.android.youtube.player.YouTubePlayer;
 import com.google.android.youtube.player.YouTubePlayerSupportFragment;
 import com.veeville.farm.R;
+
 import java.util.Objects;
 
 public class YouTubePlayerVersion2 extends AppCompatActivity {
@@ -30,6 +32,7 @@ public class YouTubePlayerVersion2 extends AppCompatActivity {
             }
             @Override
             public void onInitializationFailure(YouTubePlayer.Provider provider, YouTubeInitializationResult youTubeInitializationResult) {
+
             }
         });
     }
