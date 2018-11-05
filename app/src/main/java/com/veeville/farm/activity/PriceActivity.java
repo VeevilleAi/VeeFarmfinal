@@ -52,7 +52,8 @@ public class PriceActivity extends AppCompatActivity {
 
     void setUpToolbar() {
         Toolbar toolbar = findViewById(R.id.my_toolbar);
-        toolbar.setTitle("Vegetable price-Today");
+        String city = getIntent().getStringExtra("city");
+        toolbar.setTitle(city);
         setSupportActionBar(toolbar);
         Objects.requireNonNull(getSupportActionBar()).setDisplayHomeAsUpEnabled(true);
     }

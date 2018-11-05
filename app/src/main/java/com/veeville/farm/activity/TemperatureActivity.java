@@ -32,10 +32,9 @@ public class TemperatureActivity extends AppCompatActivity {
     private void setUpToolbar() {
 
         Toolbar toolbar = findViewById(R.id.my_toolbar);
-        toolbar.setTitle("Temperature");
+        toolbar.setTitle("Temperature-Farm1");
         setSupportActionBar(toolbar);
         Objects.requireNonNull(getSupportActionBar()).setDisplayHomeAsUpEnabled(true);
-
     }
 
     void setUpHumidityRecyclerview() {
@@ -52,10 +51,10 @@ public class TemperatureActivity extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
-    List<DashBoardDataClasses.TemperatureData> formData() {
+    List<Object> formData() {
 
         List<DashBoardDataClasses.TemperatureData.TempValue> soilMoistureValues1 = new ArrayList<>();
-        List<DashBoardDataClasses.TemperatureData> soilMoistureDatas = new ArrayList<>();
+        List<Object> soilMoistureDatas = new ArrayList<>();
         List<String> months = new ArrayList<>();
         months.add("Today");
         months.add("Yesterday");
@@ -76,7 +75,7 @@ public class TemperatureActivity extends AppCompatActivity {
         }
         DashBoardDataClasses.TemperatureData soilMoistureData = new DashBoardDataClasses.TemperatureData(months.get(0), "Bengaluru", soilMoistureValues1);
         soilMoistureDatas.add(soilMoistureData);
-        for (int i = 1; i < 4; i++) {
+        for (int i = 1; i < 1; i++) {
             List<DashBoardDataClasses.TemperatureData.TempValue> soilMoistureValues2 = new ArrayList<>();
             for (int j = 5; j < 20; j++) {
                 Random r = new Random();
@@ -93,6 +92,8 @@ public class TemperatureActivity extends AppCompatActivity {
             DashBoardDataClasses.TemperatureData soilMoistureData1 = new DashBoardDataClasses.TemperatureData(months.get(i), "Bengaluru", soilMoistureValues2);
             soilMoistureDatas.add(soilMoistureData1);
         }
+        soilMoistureDatas.add(new DashBoardDataClasses.TemperatureData.SoilTempMonthGraphData());
+        soilMoistureDatas.add(new DashBoardDataClasses.TemperatureData.SoilTempyearGraphData());
         return soilMoistureDatas;
     }
 
@@ -103,4 +104,5 @@ public class TemperatureActivity extends AppCompatActivity {
         calendar.add(Calendar.DAY_OF_MONTH, days);
         return dateFormat.format(calendar.getTime());
     }
+
 }

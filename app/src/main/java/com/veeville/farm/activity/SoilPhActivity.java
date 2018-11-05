@@ -33,7 +33,7 @@ public class SoilPhActivity extends AppCompatActivity {
     private void setUpToolbar() {
 
         Toolbar toolbar = findViewById(R.id.my_toolbar);
-        toolbar.setTitle("Soil pH");
+        toolbar.setTitle("Soil pH - Farm1");
         setSupportActionBar(toolbar);
         Objects.requireNonNull(getSupportActionBar()).setDisplayHomeAsUpEnabled(true);
     }
@@ -57,19 +57,21 @@ public class SoilPhActivity extends AppCompatActivity {
 
     }
 
-    List<DashBoardDataClasses.SoilPH> formData() {
+    List<Object> formData() {
 
-        List<DashBoardDataClasses.SoilPH> soilPHList = new ArrayList<>();
+        List<Object> soilPHList = new ArrayList<>();
         List<String> months = new ArrayList<>();
 
         months.add(getDate(0));
         months.add(getDate(-7));
         months.add(getDate(-14));
         months.add(getDate(-21));
-        for (int i = 0; i < 4; i++) {
+        for (int i = 0; i < 1; i++) {
             DashBoardDataClasses.SoilPH ph = new DashBoardDataClasses.SoilPH(months.get(i), "Bengaluru", "6.1");
             soilPHList.add(ph);
         }
+        soilPHList.add(new DashBoardDataClasses.SoilPH.SoilPhMonthData());
+        soilPHList.add(new DashBoardDataClasses.SoilPH.SoilPhyearData());
         return soilPHList;
 
     }
@@ -83,4 +85,5 @@ public class SoilPhActivity extends AppCompatActivity {
         return dateFormat.format(calendar.getTime());
 
     }
+
 }

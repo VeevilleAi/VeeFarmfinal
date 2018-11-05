@@ -6,8 +6,8 @@ android {
         applicationId "com.veeville.farm"
         minSdkVersion 21
         targetSdkVersion 27
-        versionCode 11
-        versionName "1.0.0"
+        versionCode 12
+        versionName "1.0.1"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
     }
 
@@ -40,13 +40,14 @@ dependencies {
     implementation 'ai.api:libai:1.6.12'
     testImplementation 'junit:junit:4.12'
     implementation 'org.jsoup:jsoup:1.11.3'
-    implementation 'com.google.firebase:firebase-auth:16.0.4'
+    implementation 'com.google.firebase:firebase-auth:16.0.5'
     implementation 'com.google.firebase:firebase-core:16.0.4'
     implementation 'com.crashlytics.sdk.android:crashlytics:2.9.5'
     implementation 'com.google.android.gms:play-services-maps:16.0.0'
     implementation 'com.google.maps.android:android-maps-utils:0.5+'
     implementation 'com.google.android.gms:play-services-location:16.0.0'
     implementation 'com.google.android.gms:play-services-auth:16.0.1'
+    implementation 'com.github.PhilJay:MPAndroidChart:v2.2.4'
 
 
 }

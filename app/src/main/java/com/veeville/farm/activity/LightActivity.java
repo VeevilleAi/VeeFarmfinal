@@ -33,7 +33,7 @@ public class LightActivity extends AppCompatActivity {
     private void setUpToolbar(){
 
         Toolbar toolbar = findViewById(R.id.my_toolbar);
-        toolbar.setTitle("Light");
+        toolbar.setTitle("Light-Farm1");
         setSupportActionBar(toolbar);
         Objects.requireNonNull(getSupportActionBar()).setDisplayHomeAsUpEnabled(true);
 
@@ -55,10 +55,10 @@ public class LightActivity extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
-    List<DashBoardDataClasses.LightData> formData() {
+    List<Object> formData() {
 
         List<DashBoardDataClasses.LightData.LightValues> soilMoistureValues1 = new ArrayList<>();
-        List<DashBoardDataClasses.LightData> soilMoistureDatas = new ArrayList<>();
+        List<Object> soilMoistureDatas = new ArrayList<>();
         List<String> months = new ArrayList<>();
         months.add("Today");
         months.add("Yesterday");
@@ -79,7 +79,7 @@ public class LightActivity extends AppCompatActivity {
         }
         DashBoardDataClasses.LightData soilMoistureData = new DashBoardDataClasses.LightData(months.get(0), "Bengaluru", soilMoistureValues1);
         soilMoistureDatas.add(soilMoistureData);
-        for (int i = 1; i < 4; i++) {
+        for (int i = 1; i < 1; i++) {
             List<DashBoardDataClasses.LightData.LightValues> soilMoistureValues2 = new ArrayList<>();
             for (int j = 5; j < 20; j++) {
                 Random r = new Random();
@@ -96,6 +96,8 @@ public class LightActivity extends AppCompatActivity {
             DashBoardDataClasses.LightData soilMoistureData1 = new DashBoardDataClasses.LightData(months.get(i), "Bengaluru", soilMoistureValues2);
             soilMoistureDatas.add(soilMoistureData1);
         }
+        soilMoistureDatas.add(new DashBoardDataClasses.LightData.LightFirstMonthGraphData());
+        soilMoistureDatas.add(new DashBoardDataClasses.LightData.LightGraphYearData());
         return soilMoistureDatas;
     }
 

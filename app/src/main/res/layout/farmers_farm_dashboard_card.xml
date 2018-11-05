@@ -1,67 +1,71 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="150dp"
-    android:weightSum="2">
+    android:layout_height="wrap_content"
+    android:weightSum="2"
+
+    >
 
 
     <android.support.v7.widget.CardView
-        android:id="@+id/farm_id1"
+        android:id="@+id/farm_id"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_margin="5dp"
-        android:layout_weight="1"
-        app:cardCornerRadius="5dp">
+        android:layout_weight="1">
 
-        <ImageView
-            android:id="@+id/farm_image1"
+        <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:adjustViewBounds="true"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:orientation="vertical"
+            android:padding="20dp">
 
-            />
+            <ImageView
+                android:id="@+id/farm_image"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:layout_gravity="center" />
 
-        <TextView
-            android:id="@+id/farm_one"
-            android:layout_width="match_parent"
-            android:layout_height="30dp"
-            android:layout_gravity="bottom"
-            android:alpha="0.5"
-            android:background="@color/colorPrimary"
-            android:text="Monappana hola"
-            android:textColor="@color/white" />
+            <TextView
+                android:id="@+id/crop_name"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:ellipsize="end"
+                android:fontFamily="@font/raleway_medium"
+                android:maxLines="1"
+
+                android:text="Banana"
+                android:textSize="15sp" />
+
+            <TextView
+                android:id="@+id/farm_name"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:ellipsize="end"
+                android:fontFamily="@font/raleway_bold"
+                android:maxLines="1"
+                android:text="PC farms and sons"
+                android:textSize="12sp" />
+
+            <TextView
+                android:id="@+id/farm_status"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:ellipsize="end"
+                android:fontFamily="@font/raleway_medium"
+
+                android:maxLines="1"
+                android:text="Current status"
+                android:textSize="12sp" />
+
+        </LinearLayout>
 
     </android.support.v7.widget.CardView>
 
-    <android.support.v7.widget.CardView
-        android:id="@+id/farm_id2"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_margin="5dp"
-        android:layout_weight="1"
-        app:cardCornerRadius="5dp"
 
-        >
-
-        <ImageView
-            android:id="@+id/farm_image2"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:adjustViewBounds="true"
-
-            />
-
-        <TextView
-            android:id="@+id/farm_two"
-            android:layout_width="match_parent"
-            android:layout_height="30dp"
-            android:layout_gravity="bottom"
-            android:alpha="0.5"
-            android:background="@color/colorPrimary"
-            android:text="Monappana hola"
-            android:textColor="@color/white" />
-
-    </android.support.v7.widget.CardView>
 </LinearLayout>
 
 

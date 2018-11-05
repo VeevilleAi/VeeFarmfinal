@@ -51,7 +51,7 @@ public class WeatherActivity extends AppCompatActivity {
     private void setUpToolbar() {
 
         Toolbar toolbar = findViewById(R.id.my_toolbar);
-        toolbar.setTitle("Weather");
+        toolbar.setTitle("Weather-Farm1");
         setSupportActionBar(toolbar);
         Objects.requireNonNull(getSupportActionBar()).setDisplayHomeAsUpEnabled(true);
 
@@ -133,6 +133,11 @@ public class WeatherActivity extends AppCompatActivity {
                 String format = "dd MMM yyyy";
                 SimpleDateFormat dateFormat = new SimpleDateFormat(format, Locale.getDefault());
                 date = dateFormat.format(calendar.getTime());
+                if (i == 0) {
+                    date = "Today";
+                } else if (i == 1) {
+                    date = "Tomorrow";
+                }
                 String maxTemperature = oneDayDetails.getString("maxtempC");
                 List<List<String>> houlyDataLists = new ArrayList<>();
                 String prec = null, hum = null, wind = null;

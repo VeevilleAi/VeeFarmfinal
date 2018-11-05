@@ -12,15 +12,19 @@ import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.android.gms.maps.model.Polygon;
 import com.google.android.gms.maps.model.PolygonOptions;
 import com.veeville.farm.R;
 
+import java.util.List;
 import java.util.Objects;
 
 public class ShowFarmInMapActivity extends AppCompatActivity implements OnMapReadyCallback {
 
     GoogleMap mMap;
-
+    Polygon polygon;
+    private String farmName;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -46,7 +50,8 @@ public class ShowFarmInMapActivity extends AppCompatActivity implements OnMapRea
 
     void setUpToolbar() {
         Toolbar toolbar = findViewById(R.id.my_toolbar);
-        toolbar.setTitle("Farms");
+        farmName = getIntent().getStringExtra("FarmName");
+        toolbar.setTitle(farmName);
         toolbar.setTitleTextColor(Color.WHITE);
         toolbar.setSubtitleTextColor(Color.WHITE);
         setSupportActionBar(toolbar);
@@ -68,8 +73,9 @@ public class ShowFarmInMapActivity extends AppCompatActivity implements OnMapRea
         polygonOptions.strokeColor(Color.YELLOW);
         polygonOptions.fillColor(Color.GREEN);
         polygonOptions.strokeWidth(1);
-        mMap.addPolygon(polygonOptions);
-
+        polygon = mMap.addPolygon(polygonOptions);
+        LatLng latLng = getCentroid(polygon.getPoints());
+        mMap.addMarker(new MarkerOptions().position(latLng).title(farmName + "-Banana"));
         PolygonOptions polygonOptions1 = new PolygonOptions();
         polygonOptions1.add(new LatLng(17.137240, 75.727592));
         polygonOptions1.add(new LatLng(17.137459, 75.727539));
@@ -83,8 +89,10 @@ public class ShowFarmInMapActivity extends AppCompatActivity implements OnMapRea
         polygonOptions1.fillColor(Color.GREEN);
         polygonOptions1.strokeColor(Color.YELLOW);
         polygonOptions1.strokeWidth(1);
-        mMap.addPolygon(polygonOptions1);
+        Polygon polygon1 = mMap.addPolygon(polygonOptions1);
 
+        LatLng temp = getCentroid(polygon1.getPoints());
+        mMap.addMarker(new MarkerOptions().position(temp).title("Farm2-Mango"));
 
         PolygonOptions polygonOptions2 = new PolygonOptions();
         polygonOptions2.add(new LatLng(17.137697, 75.727328));
@@ -101,6 +109,10 @@ public class ShowFarmInMapActivity extends AppCompatActivity implements OnMapRea
         polygonOptions2.strokeColor(Color.YELLOW);
         polygonOptions2.strokeWidth(1);
         mMap.addPolygon(polygonOptions2);
+        Polygon polygon2 = mMap.addPolygon(polygonOptions2);
+
+        LatLng temp2 = getCentroid(polygon2.getPoints());
+        mMap.addMarker(new MarkerOptions().position(temp2).title("Farm3-Potato"));
 
     }
 
@@ -115,5 +127,18 @@ public class ShowFarmInMapActivity extends AppCompatActivity implements OnMapRea
             menu.add("Farm6");
         }
         return super.onPrepareOptionsMenu(menu);
+    }
+
+
+    public LatLng getCentroid(List<LatLng> points) {
+        double[] centroid = {0.0, 0.0};
+        for (int i = 0; i < points.size(); i++) {
+            centroid[0] += points.get(i).latitude;
+            centroid[1] += points.get(i).longitude;
+        }
+        int totalPoints = points.size();
+        centroid[0] = centroid[0] / totalPoints;
+        centroid[1] = centroid[1] / totalPoints;
+        return new LatLng(centroid[0], centroid[1]);
     }
 }

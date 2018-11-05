@@ -17,6 +17,19 @@ public class DashBoardDataClasses {
             this.humidityDataValues = humidityDataValues;
         }
 
+        public static class HumidityDataGraphCardMonth {
+
+        }
+
+        public static class HumidityDataGraphCardYear {
+
+        }
+
+        public static class HumidityToday {
+
+        }
+
+
         public static class HumidityDataValues {
             public String hour, hAbsulute, hRelative;
 
@@ -36,6 +49,14 @@ public class DashBoardDataClasses {
             this.month = month;
             this.place = place;
             this.soilMoistureValues = soilMoistureValues;
+        }
+
+        public static class SoilMoistureGraphMonthData {
+
+        }
+
+        public static class SoilMoistureGraphyearData {
+
         }
 
 
@@ -58,6 +79,18 @@ public class DashBoardDataClasses {
             this.place = place;
             this.value = value;
         }
+
+        public static class SoilPhMonthData {
+            public SoilPhMonthData() {
+
+            }
+        }
+
+        public static class SoilPhyearData {
+            public SoilPhyearData() {
+
+            }
+        }
     }
 
     public static class LightData {
@@ -68,6 +101,18 @@ public class DashBoardDataClasses {
             this.month = month;
             this.place = place;
             this.soilMoistureValues = soilMoistureValues;
+        }
+
+        public static class LightFirstMonthGraphData {
+            public LightFirstMonthGraphData() {
+
+            }
+        }
+
+        public static class LightGraphYearData {
+            public LightGraphYearData() {
+
+            }
         }
 
 
@@ -91,7 +136,18 @@ public class DashBoardDataClasses {
             this.soilMoistureValues = soilMoistureValues;
         }
 
+        public static class SoilTempMonthGraphData {
+            public SoilTempMonthGraphData() {
 
+            }
+        }
+
+        public static class SoilTempyearGraphData {
+            public SoilTempyearGraphData() {
+
+            }
+
+        }
         public static class TempValue {
             public String date, value1;
 

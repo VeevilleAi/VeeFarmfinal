@@ -5,15 +5,17 @@ import android.graphics.Color;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.ImageView;
 
 import com.veeville.farm.R;
 import com.veeville.farm.adapter.FarmAdapter;
-import com.veeville.farm.helper.Farm;
+import com.veeville.farm.farmer.FarmerHelperClasses.Farm;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -40,12 +42,11 @@ public class FarmsActivity extends AppCompatActivity {
             }
         });
 
-
     }
 
     void setUpToolbar() {
         Toolbar toolbar = findViewById(R.id.my_toolbar);
-        toolbar.setTitle("Farms");
+        toolbar.setTitle("Farms-Crop");
         toolbar.setTitleTextColor(Color.WHITE);
         toolbar.setSubtitleTextColor(Color.WHITE);
         setSupportActionBar(toolbar);
@@ -60,25 +61,27 @@ public class FarmsActivity extends AppCompatActivity {
 
     private void setUpRecyclerview() {
 
-        LinearLayoutManager manager = new LinearLayoutManager(getApplicationContext());
+        LinearLayoutManager manager = new GridLayoutManager(getApplicationContext(), 2);
         manager.setOrientation(LinearLayoutManager.VERTICAL);
         RecyclerView recyclerView = findViewById(R.id.recyclerview);
         recyclerView.setLayoutManager(manager);
         FarmAdapter adapter = new FarmAdapter(getFarms(), getApplicationContext());
         recyclerView.setAdapter(adapter);
-
     }
 
-
-    private List<List<Farm>> getFarms() {
-
-        List<List<Farm>> lists = new ArrayList<>();
-        for (int i = 1; i <= 1; i++) {
-            List<Farm> farms = new ArrayList<>();
-            farms.add(new Farm("Farm" + i));
-            farms.add(new Farm("Farm" + (i + 1)));
-            lists.add(farms);
-        }
-        return lists;
+    private List<Farm> getFarms() {
+        List<Farm> farms = new ArrayList<>();
+        Farm farm1 = new Farm("Farm1", "Banana", "https://image.shutterstock.com/image-photo/bunch-bananas-isolated-on-white-260nw-96162077.jpg", "growing");
+        Farm farm2 = new Farm("Farm1", "Apple", "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQL2JZYGnK-uWQBxo0yZi9GFXGBogxwySGSzLwP-C2mTcIdfVdt", "growing");
+        Farm farm3 = new Farm("Farm1", "Onion", "https://5.imimg.com/data5/TF/US/MY-28264228/red-onion-500x500.jpg", "growing");
+        Farm farm4 = new Farm("Farm2", "Onion", "https://5.imimg.com/data5/TF/US/MY-28264228/red-onion-500x500.jpg", "growing");
+        Farm farm5 = new Farm("Farm3", "Onion", "https://5.imimg.com/data5/TF/US/MY-28264228/red-onion-500x500.jpg", "growing");
+        ImageView imageView = null;
+        farms.add(farm1);
+        farms.add(farm2);
+        farms.add(farm3);
+        farms.add(farm4);
+        farms.add(farm5);
+        return farms;
     }
 }

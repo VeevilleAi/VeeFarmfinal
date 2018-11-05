@@ -87,7 +87,7 @@
                 android:id="@+id/disease"
                 android:adjustViewBounds="true"
                 android:layout_margin="20dp"
-                android:src="@drawable/disease"
+                android:src="@drawable/disease_icon"
                 android:contentDescription="@string/todo" />
             <TextView
                 android:layout_width="wrap_content"

@@ -150,9 +150,6 @@ public class ChatActivity extends AppCompatActivity implements QuickReplyAdapter
                 inputLanguageId = "mr";
                 toolbar.setSubtitle("मराठी");
                 break;
-            case R.id.sens_g_connection:
-                dialogToAskIpOfSensG();
-                break;
             default:
                 onBackPressed();
         }
@@ -261,7 +258,7 @@ public class ChatActivity extends AppCompatActivity implements QuickReplyAdapter
 
     void setUpToolbar() {
         toolbar = findViewById(R.id.my_toolbar);
-        toolbar.setTitle("Veeville");
+        toolbar.setTitle("Cerebro");
         toolbar.setTitleTextColor(Color.WHITE);
         toolbar.setSubtitleTextColor(Color.WHITE);
         toolbar.setSubtitle(selectedLanguage);
@@ -283,11 +280,11 @@ public class ChatActivity extends AppCompatActivity implements QuickReplyAdapter
             @Override
             public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
                 if (charSequence.length() > 0) {
-                    actionButton.setImageResource(R.drawable.ic_send_black_24dp);
+                    actionButton.setImageResource(R.drawable.ic_send_white);
                     captureImage.setVisibility(View.GONE);
                 } else {
                     captureImage.setVisibility(View.VISIBLE);
-                    actionButton.setImageResource(R.drawable.ic_mic_none_black_24dp);
+                    actionButton.setImageResource(R.drawable.ic_mic_white);
                 }
             }
 
@@ -379,6 +376,7 @@ public class ChatActivity extends AppCompatActivity implements QuickReplyAdapter
 
             }
         });
+        addMessageFirstTime();
     }
 
 
@@ -570,6 +568,10 @@ public class ChatActivity extends AppCompatActivity implements QuickReplyAdapter
             adapter.notifyItemInserted(chatMessages.size());
         }
 
+    }
+
+    private void addMessageFirstTime() {
+        addRegisterationMesageToRecyclerview("We're trying to get your attention!\nnPlease tell which country you are in & we will set this straight. \uD83D\uDE01");
     }
     @Override
     public void updateMessageForRegistrayion(String message,boolean showCard) {

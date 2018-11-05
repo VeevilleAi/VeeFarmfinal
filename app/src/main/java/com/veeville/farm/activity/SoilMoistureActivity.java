@@ -34,7 +34,7 @@ public class SoilMoistureActivity extends AppCompatActivity {
     private void setUpUpToolbar() {
         Toolbar toolbar;
         toolbar = findViewById(R.id.my_toolbar);
-        toolbar.setTitle("Soil Moisture");
+        toolbar.setTitle("Soil Moisture-Farm1");
         setSupportActionBar(toolbar);
         Objects.requireNonNull(getSupportActionBar()).setDisplayHomeAsUpEnabled(true);
 
@@ -55,10 +55,10 @@ public class SoilMoistureActivity extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
-    private List<DashBoardDataClasses.SoilMoistureData> formData() {
+    private List<Object> formData() {
 
         List<DashBoardDataClasses.SoilMoistureData.SoilMoistureValues> soilMoistureValues1 = new ArrayList<>();
-        List<DashBoardDataClasses.SoilMoistureData> soilMoistureDatas = new ArrayList<>();
+        List<Object> soilMoistureDatas = new ArrayList<>();
         List<String> months = new ArrayList<>();
         months.add(getMonth(getDate(0)));
         months.add(getMonth(getDate(-1)));
@@ -76,7 +76,7 @@ public class SoilMoistureActivity extends AppCompatActivity {
         }
         DashBoardDataClasses.SoilMoistureData soilMoistureData = new DashBoardDataClasses.SoilMoistureData(months.get(0), "Bengaluru", soilMoistureValues1);
         soilMoistureDatas.add(soilMoistureData);
-        for (int i = 1; i < 4; i++) {
+        for (int i = 1; i < 1; i++) {
             List<DashBoardDataClasses.SoilMoistureData.SoilMoistureValues> soilMoistureValues2 = new ArrayList<>();
             for (int j = 1; j < 31; j++) {
                 String value;
@@ -94,6 +94,8 @@ public class SoilMoistureActivity extends AppCompatActivity {
             DashBoardDataClasses.SoilMoistureData soilMoistureData1 = new DashBoardDataClasses.SoilMoistureData(months.get(i), "Bengaluru", soilMoistureValues2);
             soilMoistureDatas.add(soilMoistureData1);
         }
+        soilMoistureDatas.add(new DashBoardDataClasses.SoilMoistureData.SoilMoistureGraphMonthData());
+        soilMoistureDatas.add(new DashBoardDataClasses.SoilMoistureData.SoilMoistureGraphyearData());
         return soilMoistureDatas;
     }
 

@@ -4,11 +4,15 @@ import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
+import android.support.design.widget.TextInputLayout;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.CardView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.Toast;
@@ -30,11 +34,19 @@ public class FarmRegistrationActivity extends AppCompatActivity {
         setUpToolbar();
         setUpListener();
         FloatingActionButton actionButton = findViewById(R.id.submit);
+        Button button = findViewById(R.id.add_previous_yield);
+        button.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(getApplicationContext(), AddPreviousYieldFarmActivity.class);
+                startActivity(intent);
+
+            }
+        });
         actionButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(getApplicationContext(), FarmsActivity.class);
-                startActivity(intent);
+                onBackPressed();
             }
         });
     }
@@ -75,9 +87,9 @@ public class FarmRegistrationActivity extends AppCompatActivity {
             double[] latitudes = data.getDoubleArrayExtra("Latitudes");
             int acre = data.getIntExtra("acre", 1);
             int gunta = data.getIntExtra("gunta", 1);
-            Log.d(TAG, "onActivityResult: ");
             Toast.makeText(this, acre + " acre " + gunta + " gunta", Toast.LENGTH_SHORT).show();
             showFarmInStaticMap(latitudes[0], longitudes[0]);
+            updateArea(acre + "acre " + gunta + " gunta");
         } else {
             Log.d(TAG, "onActivityResult: ");
         }
@@ -88,7 +100,17 @@ public class FarmRegistrationActivity extends AppCompatActivity {
         String url = "https://maps.googleapis.com/maps/api/staticmap?maptype=hybrid&size=600x300&zoom=16&center=" + latitude + "," + longitude + "&key=AIzaSyBeilqJcTJPyZ--59DXSsK1mWrWL3guh8k";
         Log.d(TAG, "showFarmInStaticMap: " + url);
         ImageView imageView = findViewById(R.id.image);
+        CardView cardView = findViewById(R.id.card);
+        cardView.setVisibility(View.VISIBLE);
         Glide.with(getApplicationContext()).load(url).into(imageView);
+
+    }
+
+    private void updateArea(String area) {
+        TextInputLayout textInputLayout = findViewById(R.id.area_id);
+        textInputLayout.setVisibility(View.VISIBLE);
+        EditText areaTemp = findViewById(R.id.area);
+        areaTemp.setText(area);
 
     }
 }

@@ -76,6 +76,11 @@
         <activity android:name=".farmer.ShowFarmInMapActivity" />
         <activity android:name=".farmer.BookLabourAcitivity" />
         <activity android:name=".activity.SignActivity" />
+        <activity android:name=".farmer.FarmerProfileActivity" />
+        <activity android:name=".farmer.AddPreviousYieldFarmActivity" />
+        <activity android:name=".farmer.MarketPlaceActivity" />
+        <activity android:name=".farmer.CropMarketDescActivity" />
+        <activity android:name=".farmer.Profile" />
     </application>
 
 </manifest>

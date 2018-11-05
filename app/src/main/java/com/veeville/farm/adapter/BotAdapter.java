@@ -280,9 +280,9 @@ public class BotAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
         holder.date.setText(weatherData.date);
         holder.place.setText(weatherData.place);
         Log.d(TAG, "handleWeatherCardData: place:" + weatherData.place);
-        String humidity = "Humidty(%):" + weatherData.humidity;
-        String windSpeed = "WindSpeed(kmph):" + weatherData.wind;
-        String precipitation = "Precipitation:" + weatherData.precipitation;
+        String humidity = "Humidty(%): " + weatherData.humidity;
+        String windSpeed = "WindSpeed(kmph): " + weatherData.wind;
+        String precipitation = "Precipitation: " + weatherData.precipitation;
         holder.humidity.setText(humidity);
         holder.windSpeed.setText(windSpeed);
         holder.prec.setText(precipitation);
@@ -537,7 +537,7 @@ public class BotAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
         }
     }
 
-    class SoilTemperatureHolder extends RecyclerView.ViewHolder {
+    private class SoilTemperatureHolder extends RecyclerView.ViewHolder {
         RecyclerView valuesRecyclerview;
         TextView date, place;
         CardView soilTempCard;

@@ -58,7 +58,7 @@
                 <ImageView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:src="@drawable/soil_ph_icon"
+                    android:src="@drawable/ph_icon"
                     android:adjustViewBounds="true"
                     android:layout_alignParentEnd="true"
                     android:contentDescription="@string/todo" />

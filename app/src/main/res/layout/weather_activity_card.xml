@@ -7,7 +7,6 @@
     android:layout_marginLeft="15dp"
     android:layout_marginRight="15dp"
     android:layout_marginTop="15dp"
-    app:cardCornerRadius="15dp"
     android:id="@+id/weather_card"
     app:cardBackgroundColor="@color/white"
     android:layout_marginBottom="10dp"
@@ -35,7 +34,7 @@
                     android:text="@string/today"
                     android:id="@+id/date"
                     android:textSize="20sp"
-                    android:fontFamily="@font/bitstream_utura_md_md_medium"
+                    android:fontFamily="@font/raleway_bold"
                     android:textColor="@color/black"
                     android:textStyle="bold"
 
@@ -47,7 +46,7 @@
                     android:textColor="@color/black"
                     android:textSize="12sp"
                     android:id="@+id/place"
-                    android:fontFamily="@font/bitstream_utura_md_md_medium"
+                    android:fontFamily="@font/raleway_medium"
 
                     />
 
@@ -60,7 +59,7 @@
                 <ImageView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:src="@drawable/weather_icon"
+                    android:src="@drawable/cloudy_sunny_weather_icon"
                     android:adjustViewBounds="true"
                     android:id="@+id/weather_icon"
                     android:layout_alignParentEnd="true"
@@ -96,7 +95,7 @@
                     android:layout_height="wrap_content"
                     android:id="@+id/temperature"
                     android:text="@string/_27_x2103"
-
+                    android:textStyle="bold"
                     android:textSize="35sp"
                     android:textColor="@color/black"
                     />

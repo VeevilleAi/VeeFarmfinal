@@ -11,7 +11,7 @@ import java.util.Random;
  */
 public class GetSensorDummyData {
 
-    protected ChatmessageDataClasses.Light insertLight() {
+    public ChatmessageDataClasses.Light insertLight() {
         List<ChatmessageDataClasses.Light.LightValues> lightValues = new ArrayList<>();
         for (int j = 5; j < 20; j++) {
             Random r = new Random();
@@ -29,7 +29,7 @@ public class GetSensorDummyData {
         return new ChatmessageDataClasses.Light("Today", "beengaluru", lightValues,timestamp);
     }
 
-    protected ChatmessageDataClasses.Humidity insertHumidity() {
+    public ChatmessageDataClasses.Humidity insertHumidity() {
 
         List<ChatmessageDataClasses.Humidity.HumidityDataValues> values = new ArrayList<>();
         for (int i = 0; i < 24; i++) {
@@ -49,11 +49,11 @@ public class GetSensorDummyData {
 
     }
 
-    protected ChatmessageDataClasses.SoilPH insertSoilPh() {
+    public ChatmessageDataClasses.SoilPH insertSoilPh() {
         return new ChatmessageDataClasses.SoilPH("Today", "Bengaluru", "6.5");
     }
 
-    protected ChatmessageDataClasses.SoilTemperature insertSoilTemperature() {
+    public ChatmessageDataClasses.SoilTemperature insertSoilTemperature() {
 
         List<ChatmessageDataClasses.SoilTemperature.TempValue> soilMoistureValues2 = new ArrayList<>();
         for (int j = 5; j < 20; j++) {
@@ -72,7 +72,7 @@ public class GetSensorDummyData {
         return new ChatmessageDataClasses.SoilTemperature("Today", "Bengaluru", soilMoistureValues2,timestamp);
     }
 
-    protected ChatmessageDataClasses.SoilMoisture insertSoilMoisture() {
+    public ChatmessageDataClasses.SoilMoisture insertSoilMoisture() {
 
         List<ChatmessageDataClasses.SoilMoisture.SoilMoistureValues> soilMoistureValues2 = new ArrayList<>();
         for (int j = 1; j < 31; j++) {

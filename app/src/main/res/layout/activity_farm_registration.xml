@@ -3,17 +3,16 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <include layout="@layout/toolbar" />
+    <include
+        android:id="@+id/my_toolbar"
+        layout="@layout/toolbar" />
 
     <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@+id/my_toolbar"
-        android:layout_gravity="center_horizontal"
         android:layout_marginLeft="5dp"
         android:focusable="true"
-        android:focusableInTouchMode="true"
-        android:gravity="center"
         android:orientation="vertical">
 
         <android.support.design.widget.TextInputLayout
@@ -37,7 +36,7 @@
             android:layout_height="wrap_content"
             android:hint="Growing crop name">
 
-            <AutoCompleteTextView
+            <EditText
                 android:id="@+id/classes"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -52,6 +51,7 @@
             android:id="@+id/add_farm_in_google_map"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:padding="10dp"
             android:orientation="horizontal">
 
             <TextView
@@ -65,15 +65,16 @@
             <ImageView
                 android:id="@+id/add_farm"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:src="@drawable/ic_add" />
+                android:layout_height="wrap_content" />
 
         </LinearLayout>
 
         <android.support.v7.widget.CardView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_margin="5dp">
+            android:id="@+id/card"
+            android:layout_margin="5dp"
+            android:visibility="gone">
 
             <ImageView
                 android:id="@+id/image"
@@ -83,6 +84,31 @@
                 android:adjustViewBounds="true" />
 
         </android.support.v7.widget.CardView>
+
+        <android.support.design.widget.TextInputLayout
+            android:id="@+id/area_id"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Farm Area"
+            android:visibility="gone">
+
+            <EditText
+                android:id="@+id/area"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="5dp"
+
+                android:completionThreshold="1"
+                android:dropDownWidth="100dp"
+                android:inputType="textAutoComplete" />
+        </android.support.design.widget.TextInputLayout>
+
+        <Button
+            android:id="@+id/add_previous_yield"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Add Previous Year Yield"
+            android:textAllCaps="false" />
 
     </LinearLayout>
 

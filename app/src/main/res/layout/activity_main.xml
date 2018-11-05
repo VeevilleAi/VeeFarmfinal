@@ -86,7 +86,7 @@ xmlns:app="http://schemas.android.com/apk/res-auto">
             android:layout_marginTop="4dp"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            app:cardCornerRadius="20dp"
+            app:cardCornerRadius="10dp"
             android:layout_marginStart="10dp"
             android:layout_marginEnd="5dp"
             android:layout_toStartOf="@+id/camera_fab"
@@ -100,7 +100,8 @@ xmlns:app="http://schemas.android.com/apk/res-auto">
                 android:minHeight="40dp"
                 android:maxHeight="150dp"
                 android:textSize="15sp"
-                android:padding="5dp"
+                android:fontFamily="@font/raleway_medium"
+                android:paddingLeft="15dp"
                 android:textCursorDrawable="@drawable/custom_edit_text_cursor"
                 android:background="@drawable/roundeditext"
                 android:inputType="text" />
@@ -112,7 +113,7 @@ xmlns:app="http://schemas.android.com/apk/res-auto">
             android:layout_alignParentEnd="true"
             android:id="@+id/action_button"
             android:layout_margin="5dp"
-            android:src="@drawable/ic_mic_black_36dp"
+            android:src="@drawable/ic_mic_white"
             android:background="@drawable/roundeditext"
             />
         <android.support.design.widget.FloatingActionButton
@@ -123,7 +124,7 @@ xmlns:app="http://schemas.android.com/apk/res-auto">
             android:background="@drawable/roundeditext"
             android:layout_margin="5dp"
             android:layout_toStartOf="@+id/action_button"
-            android:src="@drawable/ic_photo_camera_black_24dp"
+            android:src="@drawable/ic_camera_white"
             />
     </RelativeLayout>
 </RelativeLayout>

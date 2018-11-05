@@ -22,12 +22,13 @@ public class SignActivity extends AppCompatActivity implements View.OnClickListe
 
     private final int RC_SIGN_IN = 108;
     private final String TAG = "SignActivity";
-    GoogleSignInClient mGoogleSignInClient;
+    private GoogleSignInClient mGoogleSignInClient;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         requestWindowFeature(Window.FEATURE_NO_TITLE);
+
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
         setContentView(R.layout.activity_sign);
         GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
@@ -39,7 +40,7 @@ public class SignActivity extends AppCompatActivity implements View.OnClickListe
         SignInButton signInButton = findViewById(R.id.sign_in_button);
         signInButton.setSize(SignInButton.SIZE_STANDARD);
         findViewById(R.id.sign_in_button).setOnClickListener(this);
-
+        Log.d(TAG, "onCreate: ");
     }
 
 
@@ -74,9 +75,15 @@ public class SignActivity extends AppCompatActivity implements View.OnClickListe
     private void handleSignInResult(Task<GoogleSignInAccount> completedTask) {
         try {
             GoogleSignInAccount account = completedTask.getResult(ApiException.class);
+            assert account != null;
+            Log.d(TAG, "handleSignInResult: " + account.getDisplayName());
+            String email = account.getEmail();
+//            Log.d(TAG, "handleSignInResult: email:"+email);
+//            String photoUrl = Objects.requireNonNull(account.getPhotoUrl()).toString();
 
             Intent intent = new Intent(getApplicationContext(), DashBoardActivity.class);
             startActivity(intent);
+            finish();
         } catch (ApiException e) {
             Log.w(TAG, "signInResult:failed code=" + e.getStatusCode());
             Toast.makeText(this, "retry again", Toast.LENGTH_SHORT).show();

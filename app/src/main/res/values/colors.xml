@@ -8,7 +8,9 @@
     <color name="yellow">#ffcf40</color>
     <color name="black">#000000</color>
     <color name="green">#81C784</color>
-    <color name="gray">#D3D3D3</color>
+    <color name="gray">#878787</color>
+    <color name="gray1">#666666</color>
+    <color name="light_gray">#D3D3D3</color>
     <color name="red">#FF0000</color>
     <color name="background">#cfdcdc</color>
     <color name="green_switch">#78AB46</color>

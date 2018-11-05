@@ -9,11 +9,12 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.veeville.farm.R;
 import com.veeville.farm.farmer.FarmDescriptionActivity;
-import com.veeville.farm.helper.Farm;
+import com.veeville.farm.farmer.FarmerHelperClasses.Farm;
 
 import java.util.List;
 
@@ -22,11 +23,11 @@ import java.util.List;
  */
 public class FarmAdapter extends RecyclerView.Adapter<FarmAdapter.SingleFarmHolder> {
 
-    private List<List<Farm>> names;
+    private List<Farm> farms;
     private Context context;
 
-    public FarmAdapter(List<List<Farm>> names, Context context) {
-        this.names = names;
+    public FarmAdapter(List<Farm> farms, Context context) {
+        this.farms = farms;
         this.context = context;
     }
 
@@ -39,41 +40,39 @@ public class FarmAdapter extends RecyclerView.Adapter<FarmAdapter.SingleFarmHold
 
     @Override
     public void onBindViewHolder(@NonNull SingleFarmHolder holder, int position) {
-
-        holder.farmCard2.setOnClickListener(new View.OnClickListener() {
+        final Farm farm = farms.get(position);
+        holder.cropName.setText(farm.cropName);
+        holder.farmName.setText(farm.farmName);
+        holder.farmStatus.setText(farm.farmStatus);
+        Glide.with(context).load(farm.cropImageLink).into(holder.farmImage);
+        holder.farmCard.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 Intent intent = new Intent(context, FarmDescriptionActivity.class);
+                intent.putExtra("farmName", farm.farmName);
+                intent.putExtra("cropName", farm.cropName);
                 context.startActivity(intent);
             }
         });
-        holder.farmCard1.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent intent = new Intent(context, FarmDescriptionActivity.class);
-                context.startActivity(intent);
-            }
-        });
-        Glide.with(context).load("http://www.smarknews.it/press/wp-content/uploads/2014/05/Banana-1-.jpg").into(holder.farmImage);
-        Glide.with(context).load("https://images.pexels.com/photos/102104/pexels-photo-102104.jpeg?auto=compress&cs=tinysrgb&h=350").into(holder.farmImage2);
 
     }
 
     @Override
     public int getItemCount() {
-        return names.size();
+        return farms.size();
     }
 
     class SingleFarmHolder extends RecyclerView.ViewHolder {
-        CardView farmCard1, farmCard2;
-        ImageView farmImage, farmImage2;
-
+        CardView farmCard;
+        ImageView farmImage;
+        TextView farmName, farmStatus, cropName;
         SingleFarmHolder(View view) {
             super(view);
-            farmCard1 = view.findViewById(R.id.farm_id1);
-            farmCard2 = view.findViewById(R.id.farm_id2);
-            farmImage = view.findViewById(R.id.farm_image1);
-            farmImage2 = view.findViewById(R.id.farm_image2);
+            farmCard = view.findViewById(R.id.farm_id);
+            farmImage = view.findViewById(R.id.farm_image);
+            farmName = view.findViewById(R.id.farm_name);
+            farmStatus = view.findViewById(R.id.farm_status);
+            cropName = view.findViewById(R.id.crop_name);
         }
     }
 }

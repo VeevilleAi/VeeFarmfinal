@@ -37,8 +37,8 @@ public class AlaramReceiver extends BroadcastReceiver {
         PendingIntent pIntent = PendingIntent.getActivity(context, (int) System.currentTimeMillis(), intent, 0);
         Notification noti = new Notification.Builder(context)
                 .setContentTitle(title)
-                .setSmallIcon(R.drawable.humidity)
-                .setContentText(body).setSmallIcon(R.drawable.humidity)
+                .setSmallIcon(R.drawable.humidity_icon)
+                .setContentText(body).setSmallIcon(R.drawable.humidity_icon)
                 .setContentIntent(pIntent)
                 .build();
         NotificationManager notificationManager = (NotificationManager) context.getSystemService(NOTIFICATION_SERVICE);

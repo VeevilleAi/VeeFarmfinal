@@ -8,7 +8,7 @@ import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 
 import com.veeville.farm.R;
-import com.veeville.farm.adapter.HumidityActivityAdapter;
+import com.veeville.farm.adapter.HumidityActivityAdapterTemp;
 import com.veeville.farm.helper.AppSingletonClass;
 import com.veeville.farm.helper.DashBoardDataClasses;
 
@@ -36,7 +36,7 @@ public class HumidityActivity extends AppCompatActivity {
     private void setUpToolbar() {
         Toolbar toolbar;
         toolbar = findViewById(R.id.my_toolbar);
-        toolbar.setTitle("Humidity");
+        toolbar.setTitle("Humidity-Farm1");
         setSupportActionBar(toolbar);
         Objects.requireNonNull(getSupportActionBar()).setDisplayHomeAsUpEnabled(true);
         AppSingletonClass.logDebugMessage(TAG, "toolbar setup done");
@@ -48,8 +48,17 @@ public class HumidityActivity extends AppCompatActivity {
         LinearLayoutManager manager = new LinearLayoutManager(getApplicationContext());
         humidityRecyclerview.setLayoutManager(manager);
         List<DashBoardDataClasses.HumidityData> humidityDataList = formData();
-        HumidityActivityAdapter adapter = new HumidityActivityAdapter(getApplicationContext(), humidityDataList);
-        humidityRecyclerview.setAdapter(adapter);
+//        HumidityActivityAdapter adapter = new HumidityActivityAdapter(getApplicationContext(), humidityDataList);
+        List<Object> lists = new ArrayList();
+        lists.add(new DashBoardDataClasses.HumidityData.HumidityToday());
+
+        lists.add(new DashBoardDataClasses.HumidityData.HumidityDataGraphCardMonth());
+        lists.add(new DashBoardDataClasses.HumidityData.HumidityDataGraphCardYear());
+
+        HumidityActivityAdapterTemp temp = new HumidityActivityAdapterTemp(getApplicationContext(), lists);
+//        humidityRecyclerview.setAdapter(adapter);
+        humidityRecyclerview.setAdapter(temp);
+
         AppSingletonClass.logDebugMessage(TAG, "recyclerview setup done");
     }
 

@@ -1,20 +1,18 @@
 package com.veeville.farm.farmer;
 
-import android.app.ProgressDialog;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
-import android.widget.Toast;
 
 import com.android.volley.Request;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.veeville.farm.R;
+import com.veeville.farm.farmer.FarmerHelperClasses.Farmer;
 import com.veeville.farm.helper.AppSingletonClass;
-import com.veeville.farm.helper.Farmer;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -24,7 +22,6 @@ import java.util.Objects;
 public class FarmerRegistration extends AppCompatActivity {
 
     private final String TAG = "FarmerRegistration";
-    private ProgressDialog dialog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -34,23 +31,11 @@ public class FarmerRegistration extends AppCompatActivity {
     }
 
     private void getDataFromForm() {
-        showToastMessage("hi");
         String name, address, phoneNumber, emailId, profilepic;
-        name = address = phoneNumber = emailId = profilepic = null;
+        name = address = phoneNumber = emailId = profilepic = "";
         Farmer farmer = new Farmer(name, address, phoneNumber, emailId, profilepic);
-        //showProgressDialog();
         setUpToolbar();
         uploadFarmerDetails(farmer);
-    }
-
-    private void showProgressDialog() {
-
-
-        dialog = new ProgressDialog(getApplicationContext());
-        dialog.setTitle("Uploading");
-        dialog.setMessage("please wait a few seconds");
-        dialog.show();
-
     }
 
     @Override
@@ -76,13 +61,11 @@ public class FarmerRegistration extends AppCompatActivity {
             @Override
             public void onResponse(JSONObject response) {
                 logMessage("Response from server:" + response.toString());
-                dismessDialog();
             }
         }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
                 logErrorMessage("Error Message from Server:" + error.toString());
-                dismessDialog();
             }
         });
         AppSingletonClass.getInstance().addToRequestQueue(request);
@@ -92,18 +75,9 @@ public class FarmerRegistration extends AppCompatActivity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        dismessDialog();
     }
 
-    private void dismessDialog() {
-        if (dialog != null)
-            dialog.dismiss();
 
-    }
-
-    private void showToastMessage(String message) {
-        Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
-    }
 
     private void logMessage(String message) {
         AppSingletonClass.logDebugMessage(TAG, message);
