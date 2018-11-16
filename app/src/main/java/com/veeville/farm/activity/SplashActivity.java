@@ -75,6 +75,7 @@ public class SplashActivity extends AppCompatActivity {
                 .requestProfile()
                 .build();
         GoogleSignInClient mGoogleSignInClient = GoogleSignIn.getClient(this, gso);
+        Log.d(TAG, "onCreate: " + mGoogleSignInClient);
     }
 
     void waitForSplashScreen() {

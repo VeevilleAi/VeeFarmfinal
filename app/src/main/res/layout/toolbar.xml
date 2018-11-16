@@ -6,7 +6,6 @@
     android:elevation="4dp"
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:theme="@style/toolbar_theme"
-
     app:titleTextAppearance="@style/Toolbar.TitleText"
     app:subtitleTextAppearance="@style/Toolbar.SubTitleText"
     xmlns:app="http://schemas.android.com/apk/res-auto" />

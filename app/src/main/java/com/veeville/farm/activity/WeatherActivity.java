@@ -82,7 +82,7 @@ public class WeatherActivity extends AppCompatActivity {
     }
 
     private void weatherApidata(final String city) {
-        String url = "http://api.worldweatheronline.com/premium/v1/weather.ashx?key=461942f4e95c4a1d8fd114744181009&q=" + city + "&format=json&num_of_days=10";
+        String url = "http://api.worldweatheronline.com/premium/v1/weather.ashx?key=4098d598f45746aca4c94017181311&q=" + city + "&format=json&num_of_days=10";
         AppSingletonClass.logDebugMessage(TAG, "weather request uri:" + url);
         JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET, url, null, new Response.Listener<JSONObject>() {
             @Override
@@ -113,7 +113,6 @@ public class WeatherActivity extends AppCompatActivity {
     }
 
     private void performWeatherData(JSONObject jsonObject, String city) {
-
 
         try {
             JSONObject data = jsonObject.getJSONObject("data");

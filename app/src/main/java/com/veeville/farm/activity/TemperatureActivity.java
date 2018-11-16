@@ -40,17 +40,18 @@ public class TemperatureActivity extends AppCompatActivity {
     }
 
     void setUpHumidityRecyclerview() {
+
         RecyclerView temperatureRecyclerview = findViewById(R.id.temperature_recyclerview);
         LinearLayoutManager manager = new LinearLayoutManager(getApplicationContext());
         temperatureRecyclerview.setLayoutManager(manager);
         TemperatureActivityAdapter adapter = new TemperatureActivityAdapter(getApplicationContext(), formData());
         temperatureRecyclerview.setAdapter(adapter);
+
     }
 
     @Override
     public boolean onPrepareOptionsMenu(Menu menu) {
         if (menu.size() == 0) {
-            List<String> farms = new ArrayList<>();
             menu.add("Farm1");
             menu.add("Farm2");
             menu.add("Farm3");
@@ -91,8 +92,8 @@ public class TemperatureActivity extends AppCompatActivity {
             soilMoistureValues1.add(values);
         }
         DashBoardDataClasses.TemperatureData soilMoistureData = new DashBoardDataClasses.TemperatureData(months.get(0), "Bengaluru", soilMoistureValues1);
-        soilMoistureDatas.add(soilMoistureData);
-        for (int i = 1; i < 1; i++) {
+        //soilMoistureDatas.add(soilMoistureData);
+        for (int i = 0; i < 1; i++) {
             List<DashBoardDataClasses.TemperatureData.TempValue> soilMoistureValues2 = new ArrayList<>();
             for (int j = 5; j < 20; j++) {
                 Random r = new Random();
@@ -109,8 +110,7 @@ public class TemperatureActivity extends AppCompatActivity {
             DashBoardDataClasses.TemperatureData soilMoistureData1 = new DashBoardDataClasses.TemperatureData(months.get(i), "Bengaluru", soilMoistureValues2);
             soilMoistureDatas.add(soilMoistureData1);
         }
-        soilMoistureDatas.add(new DashBoardDataClasses.TemperatureData.SoilTempMonthGraphData());
-        soilMoistureDatas.add(new DashBoardDataClasses.TemperatureData.SoilTempyearGraphData());
+        soilMoistureDatas.add(new DashBoardDataClasses.SensorGraph("1D", 0));
         return soilMoistureDatas;
     }
 

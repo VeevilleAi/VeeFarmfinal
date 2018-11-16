@@ -30,7 +30,7 @@
         android:layout_centerHorizontal="true"
         android:layout_margin="20dp"
         android:text="@string/veeville_u00a9_2018"
-        android:textColor="#000000"
+        android:textColor="@color/white"
         android:textSize="12sp" />
 
 </RelativeLayout>

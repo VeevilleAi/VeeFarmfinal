@@ -142,6 +142,7 @@ public class FarmDescAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
 
     private void handleSoilTestResultsGraph(final SoilTestGraphHolder holder, int position) {
 
+        Log.d(TAG, "handleSoilTestResultsGraph: " + position);
         ArrayList<Entry> yvalues = new ArrayList<>();
         yvalues.add(new Entry(20f, 0));
         yvalues.add(new Entry(20f, 1));
@@ -179,7 +180,8 @@ public class FarmDescAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         holder.pieChart.setOnChartValueSelectedListener(new OnChartValueSelectedListener() {
             @Override
             public void onValueSelected(Entry e, int dataSetIndex, Highlight h) {
-                holder.description.setText("Nitrogen\t25 ppm\t" + "Range 65-80 ppm\n" + "Thinks to take care");
+                String value = "Nitrogen\t25 ppm\t" + "Range 65-80 ppm\n" + "Thinks to take care";
+                holder.description.setText(value);
             }
 
             @Override
@@ -201,7 +203,7 @@ public class FarmDescAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
     }
 
     private void handleLightCard(LightHolder holder, int position) {
-
+        Log.d(TAG, "handleLightCard: " + position);
         holder.light_card.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -234,6 +236,7 @@ public class FarmDescAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
 
     private void handleSoilPh(SoilPhHolder holder, int position) {
         ChatmessageDataClasses.SoilPH soilPH = (ChatmessageDataClasses.SoilPH) objects.get(position);
+        Log.d(TAG, "handleSoilPh: " + soilPH);
         holder.soilPhCard.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -245,6 +248,7 @@ public class FarmDescAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
 
     private void handleSoilTmeprature(SoilTemperatureHolder holder, int position) {
         ChatmessageDataClasses.SoilTemperature soilTemperature = (ChatmessageDataClasses.SoilTemperature) objects.get(position);
+        Log.d(TAG, "handleSoilTmeprature: " + soilTemperature);
         holder.soilTempCard.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -323,79 +327,9 @@ public class FarmDescAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         }
     }
 
-    class SoilTempValuesAdapter extends RecyclerView.Adapter<SoilTempValuesAdapter.SingleValueHolder> {
-        List<ChatmessageDataClasses.SoilTemperature.TempValue> tempValues;
 
-        SoilTempValuesAdapter(List<ChatmessageDataClasses.SoilTemperature.TempValue> list) {
-            this.tempValues = list;
-        }
 
-        @NonNull
-        @Override
-        public SingleValueHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-            View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.soil_moisture_time_value, parent, false);
-            return new SingleValueHolder(view);
-        }
 
-        @Override
-        public void onBindViewHolder(@NonNull SingleValueHolder holder, int position) {
-
-            holder.value.setText(tempValues.get(position).value1);
-            holder.time.setText(tempValues.get(position).date);
-        }
-
-        @Override
-        public int getItemCount() {
-            return tempValues.size();
-        }
-
-        class SingleValueHolder extends RecyclerView.ViewHolder {
-            TextView time, value;
-
-            SingleValueHolder(View view) {
-                super(view);
-                time = view.findViewById(R.id.time);
-                value = view.findViewById(R.id.value);
-            }
-        }
-    }
-
-    class LightValuesAdapter extends RecyclerView.Adapter<LightValuesAdapter.SingleValueHolder> {
-        List<ChatmessageDataClasses.Light.LightValues> lightValues;
-
-        LightValuesAdapter(List<ChatmessageDataClasses.Light.LightValues> lightValues) {
-            this.lightValues = lightValues;
-        }
-
-        @NonNull
-        @Override
-        public SingleValueHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-            View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.soil_moisture_time_value, parent, false);
-            return new SingleValueHolder(view);
-        }
-
-        @Override
-        public void onBindViewHolder(@NonNull SingleValueHolder holder, int position) {
-            holder.value.setText(lightValues.get(position).value1);
-            holder.time.setText(lightValues.get(position).date);
-
-        }
-
-        @Override
-        public int getItemCount() {
-            return lightValues.size();
-        }
-
-        class SingleValueHolder extends RecyclerView.ViewHolder {
-            TextView time, value;
-
-            SingleValueHolder(View view) {
-                super(view);
-                time = view.findViewById(R.id.time);
-                value = view.findViewById(R.id.value);
-            }
-        }
-    }
 
     private class SoilTestResultsAdapter extends RecyclerView.Adapter<SoilTestResultsAdapter.SingleSoilTestSingleELementResultHolder> {
 
@@ -417,7 +351,8 @@ public class FarmDescAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
             SoilTestResult.SingleSoilTestResult.SingleSoilTestResultSingleElement element = list.get(position);
             holder.element.setText(element.element);
             holder.explanation.setText(element.description);
-            holder.quantity.setText(element.result + "");
+            String result = element.result + "";
+            holder.quantity.setText(result);
             if (element.result > element.rangeMin && element.result < element.rangeMax) {
                 holder.indicator.setImageResource(R.drawable.ic_arrow_normal_green);
             } else if (element.result < element.rangeMin) {
@@ -430,9 +365,11 @@ public class FarmDescAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
                 public void onClick(View view) {
                     if (holder.moreInfo.getText().toString().equals("MoreInfo -")) {
                         holder.explanation.setVisibility(View.GONE);
-                        holder.moreInfo.setText("MoreInfo +");
+                        String value = "MoreInfo +";
+                        holder.moreInfo.setText(value);
                     } else {
-                        holder.moreInfo.setText("MoreInfo -");
+                        String value = "MoreInfo -";
+                        holder.moreInfo.setText(value);
                         holder.explanation.setVisibility(View.VISIBLE);
                     }
                 }

@@ -382,7 +382,7 @@ public class ProcessBotResponse {
 
     private void weatherApidata(String date, final String city) {
 
-        String url = "http://api.worldweatheronline.com/premium/v1/weather.ashx?key=461942f4e95c4a1d8fd114744181009&q=" + city + "&format=json&num_of_days=10&date=" + date;
+        String url = "http://api.worldweatheronline.com/premium/v1/weather.ashx?key=4098d598f45746aca4c94017181311&q=" + city + "&format=json&num_of_days=10&date=" + date;
         JSONObject object = new JSONObject();
         JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET, url, object, new Response.Listener<JSONObject>() {
             @Override

@@ -37,7 +37,6 @@ public class AddFarmYieldAdapter extends RecyclerView.Adapter<AddFarmYieldAdapte
         holder.year.setText(yield.year);
         holder.quantity.setText(yield.quantity);
         holder.name.setText(yield.name);
-
     }
 
     @Override

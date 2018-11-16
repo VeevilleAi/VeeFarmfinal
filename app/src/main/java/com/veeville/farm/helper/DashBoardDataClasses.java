@@ -17,13 +17,6 @@ public class DashBoardDataClasses {
             this.humidityDataValues = humidityDataValues;
         }
 
-        public static class HumidityDataGraphCardMonth {
-
-        }
-
-        public static class HumidityDataGraphCardYear {
-
-        }
 
         public static class HumidityToday {
 
@@ -78,18 +71,6 @@ public class DashBoardDataClasses {
             this.month = month;
             this.place = place;
             this.value = value;
-        }
-
-        public static class SoilPhMonthData {
-            public SoilPhMonthData() {
-
-            }
-        }
-
-        public static class SoilPhyearData {
-            public SoilPhyearData() {
-
-            }
         }
     }
 
@@ -168,6 +149,16 @@ public class DashBoardDataClasses {
             this.date = date;
             this.subTitle = subTitle;
             this.description = description;
+        }
+    }
+
+    public static class SensorGraph {
+        public String selectedValue;
+        public int selectedPosition;
+
+        public SensorGraph(String selectedValue, int selectedPosition) {
+            this.selectedValue = selectedValue;
+            this.selectedPosition = selectedPosition;
         }
     }
 }

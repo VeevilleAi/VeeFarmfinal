@@ -78,6 +78,7 @@ public class SignActivity extends AppCompatActivity implements View.OnClickListe
             assert account != null;
             Log.d(TAG, "handleSignInResult: " + account.getDisplayName());
             String email = account.getEmail();
+            Log.d(TAG, "handleSignInResult: " + email);
 //            Log.d(TAG, "handleSignInResult: email:"+email);
 //            String photoUrl = Objects.requireNonNull(account.getPhotoUrl()).toString();
 

@@ -20,5 +20,4 @@ public class Fruit {
     public String toString() {
         return this.name + ":" + this.price + ":" + this.pieceOrKg;
     }
-
 }

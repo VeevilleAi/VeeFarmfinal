@@ -44,7 +44,7 @@ public class SoilPhActivity extends AppCompatActivity {
         RecyclerView soilPHRecyclerview = findViewById(R.id.soil_ph_recyclerview);
         LinearLayoutManager manager = new LinearLayoutManager(getApplicationContext());
         soilPHRecyclerview.setLayoutManager(manager);
-        SoilPHActivityAdapter adapter = new SoilPHActivityAdapter(formData());
+        SoilPHActivityAdapter adapter = new SoilPHActivityAdapter(formData(), getApplicationContext());
         soilPHRecyclerview.setAdapter(adapter);
 
     }
@@ -52,7 +52,6 @@ public class SoilPhActivity extends AppCompatActivity {
     @Override
     public boolean onPrepareOptionsMenu(Menu menu) {
         if (menu.size() == 0) {
-            List<String> farms = new ArrayList<>();
             menu.add("Farm1");
             menu.add("Farm2");
             menu.add("Farm3");
@@ -83,20 +82,17 @@ public class SoilPhActivity extends AppCompatActivity {
             DashBoardDataClasses.SoilPH ph = new DashBoardDataClasses.SoilPH(months.get(i), "Bengaluru", "6.1");
             soilPHList.add(ph);
         }
-        soilPHList.add(new DashBoardDataClasses.SoilPH.SoilPhMonthData());
-        soilPHList.add(new DashBoardDataClasses.SoilPH.SoilPhyearData());
+        soilPHList.add(new DashBoardDataClasses.SensorGraph("1D", 0));
         return soilPHList;
 
     }
 
     String getDate(int days) {
-
         String format = "dd MMM yyyy";
         SimpleDateFormat dateFormat = new SimpleDateFormat(format, Locale.getDefault());
         Calendar calendar = Calendar.getInstance();
         calendar.add(Calendar.DAY_OF_MONTH, days);
         return dateFormat.format(calendar.getTime());
-
     }
 
 }

@@ -11,8 +11,6 @@
         android:layout_height="match_parent"
         android:layout_below="@+id/my_toolbar"
         android:id="@+id/humidity_recyclerview"
-        android:layout_marginBottom="5dp"
-        android:layout_marginTop="10dp"
         >
     </android.support.v7.widget.RecyclerView>
 </RelativeLayout>

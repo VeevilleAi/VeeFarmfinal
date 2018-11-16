@@ -59,7 +59,6 @@ public class SoilMoistureActivity extends AppCompatActivity {
     @Override
     public boolean onPrepareOptionsMenu(Menu menu) {
         if (menu.size() == 0) {
-            List<String> farms = new ArrayList<>();
             menu.add("Farm1");
             menu.add("Farm2");
             menu.add("Farm3");
@@ -88,8 +87,8 @@ public class SoilMoistureActivity extends AppCompatActivity {
             soilMoistureValues1.add(values);
         }
         DashBoardDataClasses.SoilMoistureData soilMoistureData = new DashBoardDataClasses.SoilMoistureData(months.get(0), "Bengaluru", soilMoistureValues1);
-        soilMoistureDatas.add(soilMoistureData);
-        for (int i = 1; i < 1; i++) {
+        //soilMoistureDatas.add(soilMoistureData);
+        for (int i = 0; i < 1; i++) {
             List<DashBoardDataClasses.SoilMoistureData.SoilMoistureValues> soilMoistureValues2 = new ArrayList<>();
             for (int j = 1; j < 31; j++) {
                 String value;
@@ -107,8 +106,7 @@ public class SoilMoistureActivity extends AppCompatActivity {
             DashBoardDataClasses.SoilMoistureData soilMoistureData1 = new DashBoardDataClasses.SoilMoistureData(months.get(i), "Bengaluru", soilMoistureValues2);
             soilMoistureDatas.add(soilMoistureData1);
         }
-        soilMoistureDatas.add(new DashBoardDataClasses.SoilMoistureData.SoilMoistureGraphMonthData());
-        soilMoistureDatas.add(new DashBoardDataClasses.SoilMoistureData.SoilMoistureGraphyearData());
+        soilMoistureDatas.add(new DashBoardDataClasses.SensorGraph("1D", 0));
         return soilMoistureDatas;
     }
 

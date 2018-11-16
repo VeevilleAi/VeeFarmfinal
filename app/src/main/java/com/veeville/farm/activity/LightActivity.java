@@ -52,7 +52,6 @@ public class LightActivity extends AppCompatActivity {
     @Override
     public boolean onPrepareOptionsMenu(Menu menu) {
         if (menu.size() == 0) {
-            List<String> farms = new ArrayList<>();
             menu.add("Farm1");
             menu.add("Farm2");
             menu.add("Farm3");
@@ -71,7 +70,6 @@ public class LightActivity extends AppCompatActivity {
 
     List<Object> formData() {
 
-        List<DashBoardDataClasses.LightData.LightValues> soilMoistureValues1 = new ArrayList<>();
         List<Object> soilMoistureDatas = new ArrayList<>();
         List<String> months = new ArrayList<>();
         months.add("Today");
@@ -89,11 +87,8 @@ public class LightActivity extends AppCompatActivity {
             Random r = new Random();
             int i1 = r.nextInt(1075 - 1000) + 1000;
             DashBoardDataClasses.LightData.LightValues values = new DashBoardDataClasses.LightData.LightValues(value, "" + i1);
-            soilMoistureValues1.add(values);
         }
-        DashBoardDataClasses.LightData soilMoistureData = new DashBoardDataClasses.LightData(months.get(0), "Bengaluru", soilMoistureValues1);
-        soilMoistureDatas.add(soilMoistureData);
-        for (int i = 1; i < 1; i++) {
+        for (int i = 0; i < 1; i++) {
             List<DashBoardDataClasses.LightData.LightValues> soilMoistureValues2 = new ArrayList<>();
             for (int j = 5; j < 20; j++) {
                 Random r = new Random();
@@ -110,8 +105,7 @@ public class LightActivity extends AppCompatActivity {
             DashBoardDataClasses.LightData soilMoistureData1 = new DashBoardDataClasses.LightData(months.get(i), "Bengaluru", soilMoistureValues2);
             soilMoistureDatas.add(soilMoistureData1);
         }
-        soilMoistureDatas.add(new DashBoardDataClasses.LightData.LightFirstMonthGraphData());
-        soilMoistureDatas.add(new DashBoardDataClasses.LightData.LightGraphYearData());
+        soilMoistureDatas.add(new DashBoardDataClasses.SensorGraph("1D", 0));
         return soilMoistureDatas;
     }
 
