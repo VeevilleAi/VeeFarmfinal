@@ -78,7 +78,6 @@ public class FarmerRegistration extends AppCompatActivity {
     }
 
 
-
     private void logMessage(String message) {
         AppSingletonClass.logDebugMessage(TAG, message);
     }

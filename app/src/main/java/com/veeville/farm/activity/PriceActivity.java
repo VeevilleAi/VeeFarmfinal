@@ -50,7 +50,7 @@ public class PriceActivity extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
-    void setUpToolbar() {
+    private void setUpToolbar() {
         Toolbar toolbar = findViewById(R.id.my_toolbar);
         String city = getIntent().getStringExtra("city");
         toolbar.setTitle(city);
@@ -58,7 +58,7 @@ public class PriceActivity extends AppCompatActivity {
         Objects.requireNonNull(getSupportActionBar()).setDisplayHomeAsUpEnabled(true);
     }
 
-    void setUpRecycerview() {
+    private void setUpRecycerview() {
         LinearLayoutManager manager = new LinearLayoutManager(getApplicationContext());
         manager.setOrientation(LinearLayoutManager.VERTICAL);
         ChatBotDatabase database = new ChatBotDatabase(getApplicationContext());
@@ -103,7 +103,7 @@ public class PriceActivity extends AppCompatActivity {
         return super.onCreateOptionsMenu(menu);
     }
 
-    void updateFilturedVeg(String query) {
+    private void updateFilturedVeg(String query) {
         List<Fruit> fruitList = new ArrayList<>();
         for (Fruit fruit : fruits) {
             if (fruit.name.toLowerCase().contains(query.toLowerCase())) {
@@ -164,7 +164,7 @@ public class PriceActivity extends AppCompatActivity {
         }
     }
 
-    void updateDataBase(List<Fruit> fruits) {
+    private void updateDataBase(List<Fruit> fruits) {
         ChatBotDatabase database = new ChatBotDatabase(PriceActivity.this);
         database.updatePriceOfFruitAndVeg(fruits);
         for (Fruit fruit : fruits) {
@@ -219,7 +219,7 @@ public class PriceActivity extends AppCompatActivity {
         }
     }
 
-    void updateRecyclerview() {
+    private void updateRecyclerview() {
         for (int i = 0; i < fruits.size(); i++) {
             fruits.remove(0);
         }
@@ -234,7 +234,7 @@ public class PriceActivity extends AppCompatActivity {
         adapter.notifyDataSetChanged();
     }
 
-    void insertVegAndFruitToDatabase() {
+    private void insertVegAndFruitToDatabase() {
         //insert fruit names
         List<Fruit> names = FruitNames.getFruitNames();
         ChatBotDatabase database = new ChatBotDatabase(getApplicationContext());

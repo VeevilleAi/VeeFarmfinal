@@ -75,7 +75,7 @@ import ai.api.model.AIRequest;
 import ai.api.model.AIResponse;
 import ai.api.model.Result;
 
-public class ChatActivity extends AppCompatActivity implements QuickReplyAdapter.QuickReplyOption, ProcessBotResponse.ProcessedResult,ProcessBotResponse.UpdateMessageForRegistration {
+public class ChatActivity extends AppCompatActivity implements QuickReplyAdapter.QuickReplyOption, ProcessBotResponse.ProcessedResult, ProcessBotResponse.UpdateMessageForRegistration {
 
     private RecyclerView chatrecyclerview;
     private FloatingActionButton actionButton;
@@ -156,53 +156,53 @@ public class ChatActivity extends AppCompatActivity implements QuickReplyAdapter
         return true;
     }
 
-    void dialogToAskIpOfSensG() {
-        AlertDialog.Builder builder = new AlertDialog.Builder(ChatActivity.this);
-        View view = LayoutInflater.from(getApplicationContext()).inflate(R.layout.dialog_layout_for_ip_of_sensg,null);
-        builder.setView(view);
-        final EditText ipAddress = view.findViewById(R.id.ip_of_sensg);
-        ipAddress.requestFocus();
-        Handler handler = new Handler();
-        handler.postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        InputMethodManager inputMethodManager = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
-                        assert inputMethodManager != null;
-                        boolean result = inputMethodManager.showSoftInput(ipAddress, InputMethodManager.SHOW_IMPLICIT);
-                        Log.d(TAG, "onResume: result:" + result);
-                    }
-                });
-            }
-        }, 200);
-
-        Button submit = view.findViewById(R.id.submit);
-        Button cancel = view.findViewById(R.id.cancel);
-        final AlertDialog dialog = builder.create();
-        dialog.setCanceledOnTouchOutside(false);
-        submit.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                String IP = ipAddress.getText().toString();
-                if (!IP.equals("")) {
-                    dialog.dismiss();
-                    connection = new SensGConnection(IP, getApplicationContext());
-                    connection.sendRequest();
-                } else {
-                    Toast.makeText(getApplicationContext(), "please enter ip address", Toast.LENGTH_SHORT).show();
-                }
-            }
-        });
-        cancel.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                dialog.dismiss();
-            }
-        });
-        dialog.show();
-    }
+//    void dialogToAskIpOfSensG() {
+//        AlertDialog.Builder builder = new AlertDialog.Builder(ChatActivity.this);
+//        View view = LayoutInflater.from(getApplicationContext()).inflate(R.layout.dialog_layout_for_ip_of_sensg,null);
+//        builder.setView(view);
+//        final EditText ipAddress = view.findViewById(R.id.ip_of_sensg);
+//        ipAddress.requestFocus();
+//        Handler handler = new Handler();
+//        handler.postDelayed(new Runnable() {
+//            @Override
+//            public void run() {
+//                runOnUiThread(new Runnable() {
+//                    @Override
+//                    public void run() {
+//                        InputMethodManager inputMethodManager = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+//                        assert inputMethodManager != null;
+//                        boolean result = inputMethodManager.showSoftInput(ipAddress, InputMethodManager.SHOW_IMPLICIT);
+//                        Log.d(TAG, "onResume: result:" + result);
+//                    }
+//                });
+//            }
+//        }, 200);
+//
+//        Button submit = view.findViewById(R.id.submit);
+//        Button cancel = view.findViewById(R.id.cancel);
+//        final AlertDialog dialog = builder.create();
+//        dialog.setCanceledOnTouchOutside(false);
+//        submit.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View view) {
+//                String IP = ipAddress.getText().toString();
+//                if (!IP.equals("")) {
+//                    dialog.dismiss();
+//                    connection = new SensGConnection(IP, getApplicationContext());
+//                    connection.sendRequest();
+//                } else {
+//                    Toast.makeText(getApplicationContext(), "please enter ip address", Toast.LENGTH_SHORT).show();
+//                }
+//            }
+//        });
+//        cancel.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View view) {
+//                dialog.dismiss();
+//            }
+//        });
+//        dialog.show();
+//    }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -243,13 +243,13 @@ public class ChatActivity extends AppCompatActivity implements QuickReplyAdapter
 
         String message = " Select one of the options below or ask me a question to get started ";
         long timestamp = System.currentTimeMillis();
-        ChatmessageDataClasses.ResponseTextMessage textMessage = new ChatmessageDataClasses.ResponseTextMessage(message,timestamp);
+        ChatmessageDataClasses.ResponseTextMessage textMessage = new ChatmessageDataClasses.ResponseTextMessage(message, timestamp);
         List<String> selectableMenu = new ArrayList<>();
         selectableMenu.add("What disease affects fruits?");
         selectableMenu.add("How to plant tree ?");
         selectableMenu.add("What is the weather like tomorrow?");
         selectableMenu.add("How much is the price of Vegetables?");
-        ChatmessageDataClasses.OptionMenu optionMenu = new ChatmessageDataClasses.OptionMenu(selectableMenu,timestamp);
+        ChatmessageDataClasses.OptionMenu optionMenu = new ChatmessageDataClasses.OptionMenu(selectableMenu, timestamp);
         chatMessages.add(textMessage);
         chatMessages.add(optionMenu);
         adapter.notifyDataSetChanged();
@@ -323,24 +323,25 @@ public class ChatActivity extends AppCompatActivity implements QuickReplyAdapter
     }
 
 
-    private void showHintForRegistration(String message,boolean showCard){
+    private void showHintForRegistration(String message, boolean showCard) {
 
         ChatBotDatabase database = new ChatBotDatabase(getApplicationContext());
         CardView hintCard = findViewById(R.id.hint_card);
-        if(database.isUserRegistered()) {
+        if (database.isUserRegistered()) {
             hintCard.setVisibility(View.GONE);
             adapter.changeDatasetMessage(true);
-        }else {
+        } else {
             hintCard.setVisibility(View.VISIBLE);
-            if(showCard){
+            if (showCard) {
                 hintCard.setVisibility(View.VISIBLE);
-            }else {
+            } else {
                 hintCard.setVisibility(View.GONE);
             }
             TextView hintText = findViewById(R.id.hint);
             hintText.setText(message);
         }
     }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -349,7 +350,7 @@ public class ChatActivity extends AppCompatActivity implements QuickReplyAdapter
         setUpToolbar();
         setUpRecyclerview();
         loadAllMessages();
-        showHintForRegistration("We're trying to get your attention!\nPlease tell which country you are in & we will set this straight. \uD83D\uDE01",true);
+        showHintForRegistration("We're trying to get your attention!\nPlease tell which country you are in & we will set this straight. \uD83D\uDE01", true);
         handleSendindTextMesage();
         captureImage = findViewById(R.id.camera_fab);
         captureImage.setOnClickListener(new View.OnClickListener() {
@@ -488,7 +489,7 @@ public class ChatActivity extends AppCompatActivity implements QuickReplyAdapter
         chatMessages.remove(chatMessages.size() - 1);
         adapter.notifyItemRemoved(chatMessages.size() - 1);
         long timestamp = System.currentTimeMillis();
-        ChatmessageDataClasses.InputImageMessage inputImageMessage = new ChatmessageDataClasses.InputImageMessage(imageLink,timestamp);
+        ChatmessageDataClasses.InputImageMessage inputImageMessage = new ChatmessageDataClasses.InputImageMessage(imageLink, timestamp);
         chatMessages.add(inputImageMessage);
         adapter.notifyItemInserted(chatMessages.size() - 1);
         ChatBotDatabase database = new ChatBotDatabase(getApplicationContext());
@@ -573,15 +574,16 @@ public class ChatActivity extends AppCompatActivity implements QuickReplyAdapter
     private void addMessageFirstTime() {
         addRegisterationMesageToRecyclerview("We're trying to get your attention!\nnPlease tell which country you are in & we will set this straight. \uD83D\uDE01");
     }
+
     @Override
-    public void updateMessageForRegistrayion(String message,boolean showCard) {
-        Log.d(TAG, "updateMessageForRegistrayion: called with message:"+message);
-            showHintForRegistration(message,showCard);
+    public void updateMessageForRegistrayion(String message, boolean showCard) {
+        Log.d(TAG, "updateMessageForRegistrayion: called with message:" + message);
+        showHintForRegistration(message, showCard);
     }
 
     @Override
     public void makeMessagesNormal(boolean shownormal) {
-        Log.d(TAG, "makeMessagesNormal: called:"+shownormal);
+        Log.d(TAG, "makeMessagesNormal: called:" + shownormal);
         adapter.changeDatasetMessage(shownormal);
     }
 
@@ -611,7 +613,7 @@ public class ChatActivity extends AppCompatActivity implements QuickReplyAdapter
 
     private void processResult(Result result) {
 
-        ProcessBotResponse processBotResponse = new ProcessBotResponse(result, ChatActivity.this, this, inputLanguageId,this);
+        ProcessBotResponse processBotResponse = new ProcessBotResponse(result, ChatActivity.this, this, inputLanguageId, this);
         processBotResponse.getResultBack();
 
     }
@@ -680,12 +682,12 @@ public class ChatActivity extends AppCompatActivity implements QuickReplyAdapter
                     aSwitch.setChecked(true);
                     dialog.cancel();
                     vQnaList = new ArrayList<>();
-                    ChatmessageDataClasses.InputImageMessage message = new ChatmessageDataClasses.InputImageMessage(imageData,timestamp);
+                    ChatmessageDataClasses.InputImageMessage message = new ChatmessageDataClasses.InputImageMessage(imageData, timestamp);
                     vQnaList.add(message);
-                    ChatmessageDataClasses.InputTextMessage inputTextMessage = new ChatmessageDataClasses.InputTextMessage(userQuery,timestamp);
+                    ChatmessageDataClasses.InputTextMessage inputTextMessage = new ChatmessageDataClasses.InputTextMessage(userQuery, timestamp);
                     vQnaList.add(inputTextMessage);
 
-                    ChatmessageDataClasses.VisualQnA visualQnA = new ChatmessageDataClasses.VisualQnA(vQnaList,timestamp);
+                    ChatmessageDataClasses.VisualQnA visualQnA = new ChatmessageDataClasses.VisualQnA(vQnaList, timestamp);
                     chatMessages.add(visualQnA);
                     adapter.notifyItemInserted(chatMessages.size() - 1);
                     chatrecyclerview.scrollToPosition(chatMessages.size() - 1);
@@ -725,7 +727,7 @@ public class ChatActivity extends AppCompatActivity implements QuickReplyAdapter
 
             String imageString = getBase64String();
             long timestamp = System.currentTimeMillis();
-            InputImageClass inputImageClass = new InputImageClass(imageString, false,timestamp);
+            InputImageClass inputImageClass = new InputImageClass(imageString, false, timestamp);
             chatMessages.add(inputImageClass);
             adapter.notifyItemInserted(chatMessages.size() - 1);
             chatrecyclerview.smoothScrollToPosition(chatMessages.size() - 1);
@@ -974,23 +976,23 @@ public class ChatActivity extends AppCompatActivity implements QuickReplyAdapter
         long timestamp = System.currentTimeMillis();
         if (!isvQnaEnabled) {
             if (isInputTextMessage) {
-                ChatmessageDataClasses.InputTextMessage inputTextMessage = new ChatmessageDataClasses.InputTextMessage(textMessage,timestamp);
+                ChatmessageDataClasses.InputTextMessage inputTextMessage = new ChatmessageDataClasses.InputTextMessage(textMessage, timestamp);
                 chatMessages.add(inputTextMessage);
             } else {
-                ChatmessageDataClasses.ResponseTextMessage message = new ChatmessageDataClasses.ResponseTextMessage(textMessage,timestamp);
+                ChatmessageDataClasses.ResponseTextMessage message = new ChatmessageDataClasses.ResponseTextMessage(textMessage, timestamp);
                 chatMessages.add(message);
             }
 
             adapter.notifyItemInserted(chatMessages.size() - 1);
         } else {
             if (isInputTextMessage) {
-                ChatmessageDataClasses.InputTextMessage inputTextMessage = new ChatmessageDataClasses.InputTextMessage(textMessage,timestamp);
+                ChatmessageDataClasses.InputTextMessage inputTextMessage = new ChatmessageDataClasses.InputTextMessage(textMessage, timestamp);
                 vQnaList.add(inputTextMessage);
             } else {
-                ChatmessageDataClasses.ResponseTextMessage message = new ChatmessageDataClasses.ResponseTextMessage(textMessage,timestamp);
+                ChatmessageDataClasses.ResponseTextMessage message = new ChatmessageDataClasses.ResponseTextMessage(textMessage, timestamp);
                 vQnaList.add(message);
             }
-            ChatmessageDataClasses.VisualQnA visualQnA = new ChatmessageDataClasses.VisualQnA(vQnaList,timestamp);
+            ChatmessageDataClasses.VisualQnA visualQnA = new ChatmessageDataClasses.VisualQnA(vQnaList, timestamp);
             chatMessages.remove(chatMessages.size() - 1);
             adapter.notifyItemRemoved(chatMessages.size() - 1);
             chatMessages.add(visualQnA);

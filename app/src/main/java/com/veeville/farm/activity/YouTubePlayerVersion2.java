@@ -14,6 +14,7 @@ import java.util.Objects;
 
 public class YouTubePlayerVersion2 extends AppCompatActivity {
     private static final String YOUTUBE_API_KEY = "AIzaSyDZj76GPBWBAP3m78M-kbYH6wMsuDB5rsw";
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -30,12 +31,14 @@ public class YouTubePlayerVersion2 extends AppCompatActivity {
                 youTubePlayer.loadVideo(videoKey);
                 youTubePlayer.play();
             }
+
             @Override
             public void onInitializationFailure(YouTubePlayer.Provider provider, YouTubeInitializationResult youTubeInitializationResult) {
 
             }
         });
     }
+
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         onBackPressed();

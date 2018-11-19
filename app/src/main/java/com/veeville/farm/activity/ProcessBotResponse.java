@@ -65,7 +65,7 @@ public class ProcessBotResponse {
     private ProcessedResult processedResult;
     private UpdateMessageForRegistration updateMessageForRegistration;
 
-    ProcessBotResponse(Result result, Context context, ProcessedResult processedResult, String selectedLanguage,UpdateMessageForRegistration updateMessageForRegistration) {
+    ProcessBotResponse(Result result, Context context, ProcessedResult processedResult, String selectedLanguage, UpdateMessageForRegistration updateMessageForRegistration) {
         this.result = result;
         this.context = context;
         this.processedResult = processedResult;
@@ -77,7 +77,7 @@ public class ProcessBotResponse {
     //adding reply message from Dialogflow to recyclerview
     private void addSpeechToMessage(String speech) {
         long timestamp = System.currentTimeMillis();
-        ChatmessageDataClasses.ResponseTextMessage message = new ChatmessageDataClasses.ResponseTextMessage(speech,timestamp);
+        ChatmessageDataClasses.ResponseTextMessage message = new ChatmessageDataClasses.ResponseTextMessage(speech, timestamp);
         ChatMessagesHelperFunctions chatMessagesHelperFunctions = new ChatMessagesHelperFunctions(context);
         chatMessagesHelperFunctions.insertResponseTextMessage(speech);
         messages.add(message);
@@ -157,7 +157,7 @@ public class ProcessBotResponse {
                 getPayload();
                 AppSingletonClass.isOTPsent = false;
                 addMessagesToRecyclerview();
-                updateMessageForRegistration.updateMessageForRegistrayion("Thanks for that!\n" + "Can you also give us your phone number?",false);
+                updateMessageForRegistration.updateMessageForRegistrayion("Thanks for that!\n" + "Can you also give us your phone number?", false);
                 updateMessageForRegistration.makeMessagesNormal(true);
                 break;
             case "country-name.mobile-number":
@@ -167,10 +167,10 @@ public class ProcessBotResponse {
                 addSpeechToMessage(speech);
                 addMessagesToRecyclerview();
                 break;
-                default:
-                    addSpeechToMessage(speech);
-                    getPayload();
-                    addMessagesToRecyclerview();
+            default:
+                addSpeechToMessage(speech);
+                getPayload();
+                addMessagesToRecyclerview();
         }
     }
 
@@ -179,7 +179,7 @@ public class ProcessBotResponse {
 
         if (!AppSingletonClass.isOTPsent) {
             addSpeechToMessage(speech);
-            updateMessageForRegistration.updateMessageForRegistrayion("Excellent!\n" + "You will now receive an OTP, please share that too.",false);
+            updateMessageForRegistration.updateMessageForRegistrayion("Excellent!\n" + "You will now receive an OTP, please share that too.", false);
             HashMap<String, JsonElement> map = result.getParameters();
             if (map.containsKey("country") && map.containsKey("number")) {
                 String country = map.get("country").getAsString();
@@ -277,7 +277,7 @@ public class ProcessBotResponse {
     private void mobileRegistration() {
         long timestamp = System.currentTimeMillis();
         String message = "Please tell me in which country you live ? so I can give you relevent information.";
-        ChatmessageDataClasses.ResponseTextMessage textMessage = new ChatmessageDataClasses.ResponseTextMessage(message,timestamp);
+        ChatmessageDataClasses.ResponseTextMessage textMessage = new ChatmessageDataClasses.ResponseTextMessage(message, timestamp);
         messages.add(textMessage);
         ChatMessagesHelperFunctions functions = new ChatMessagesHelperFunctions(context);
         functions.insertResponseTextMessage(message);
@@ -295,7 +295,7 @@ public class ProcessBotResponse {
         if (price.size() == 0) {
             desc = "as of now i dont know the price of " + name + ", click to know more.";
             title = "title ";
-            vegFruitPrice = new ChatmessageDataClasses.VegFruitPrice(title, desc, "",timestamp);
+            vegFruitPrice = new ChatmessageDataClasses.VegFruitPrice(title, desc, "", timestamp);
             String message = title + "," + desc + "," + "";
             ChatMessagesHelperFunctions functions = new ChatMessagesHelperFunctions(context);
             functions.insertPriceData(message);
@@ -306,7 +306,7 @@ public class ProcessBotResponse {
             }
             title = "Price(\u20b9)  of " + name + " today in Chennai  is ";
             desc = buffer.toString();
-            vegFruitPrice = new ChatmessageDataClasses.VegFruitPrice(title, desc, price.get(0).imageLink,timestamp);
+            vegFruitPrice = new ChatmessageDataClasses.VegFruitPrice(title, desc, price.get(0).imageLink, timestamp);
             String message = title + "," + desc + "," + price.get(0).imageLink;
             ChatMessagesHelperFunctions functions = new ChatMessagesHelperFunctions(context);
             functions.insertPriceData(message);
@@ -366,7 +366,7 @@ public class ProcessBotResponse {
                             dataOfImages.add(data);
                             diseaseNames.add(nameOfDisease);
                         }
-                        ChatmessageDataClasses.ResponseImages image = new ChatmessageDataClasses.ResponseImages(images, dataOfImages, diseaseNames,timestamp);
+                        ChatmessageDataClasses.ResponseImages image = new ChatmessageDataClasses.ResponseImages(images, dataOfImages, diseaseNames, timestamp);
                         messages.add(image);
                     }
                 } catch (Exception e) {
@@ -375,7 +375,7 @@ public class ProcessBotResponse {
             }
         }
         if (selectableMenu.size() > 0) {
-            ChatmessageDataClasses.OptionMenu optionMenu = new ChatmessageDataClasses.OptionMenu(selectableMenu,timestamp);
+            ChatmessageDataClasses.OptionMenu optionMenu = new ChatmessageDataClasses.OptionMenu(selectableMenu, timestamp);
             messages.add(optionMenu);
         }
     }
@@ -445,7 +445,7 @@ public class ProcessBotResponse {
                 Log.d(TAG, "performWeatherData: hourly size:" + houlyDataLists.size());
                 Log.d(TAG, "performWeatherData: city:" + city);
                 long timestamp = System.currentTimeMillis();
-                ChatmessageDataClasses.WeatherData weatherData = new ChatmessageDataClasses.WeatherData(date, city, weatherIconUrl, maxTemperature, prec, hum, wind, houlyDataLists,timestamp);
+                ChatmessageDataClasses.WeatherData weatherData = new ChatmessageDataClasses.WeatherData(date, city, weatherIconUrl, maxTemperature, prec, hum, wind, houlyDataLists, timestamp);
                 messages.add(weatherData);
                 addMessagesToRecyclerview();
             }
@@ -489,7 +489,7 @@ public class ProcessBotResponse {
                         }
                     }
                     long timestamp = System.currentTimeMillis();
-                    ChatmessageDataClasses.ResponseVideoMessage message = new ChatmessageDataClasses.ResponseVideoMessage(videoIDs, imageLinks,timestamp);
+                    ChatmessageDataClasses.ResponseVideoMessage message = new ChatmessageDataClasses.ResponseVideoMessage(videoIDs, imageLinks, timestamp);
                     messages.add(message);
                     ChatMessagesHelperFunctions functions = new ChatMessagesHelperFunctions(context);
                     functions.insertResponseYoutubeVideoIds(videoIDMain + "," + urlMain);
@@ -664,7 +664,7 @@ public class ProcessBotResponse {
                     String translatedText = translatedObject.getString("translatedText");
                     logMesage("trnaslated  to given Language :" + translatedText);
                     long timestamp = System.currentTimeMillis();
-                    ChatmessageDataClasses.ResponseTextMessage message = new ChatmessageDataClasses.ResponseTextMessage(translatedText,timestamp);
+                    ChatmessageDataClasses.ResponseTextMessage message = new ChatmessageDataClasses.ResponseTextMessage(translatedText, timestamp);
                     messages.add(message);
                     processedResult.result(messages);
                     ChatBotDatabase database = new ChatBotDatabase(context);
@@ -694,7 +694,7 @@ public class ProcessBotResponse {
             public void onVerificationCompleted(PhoneAuthCredential credential) {
                 String message = "Neat!\n" + "We have confirmed your number. No more topsy turvy for you anymore.";
 
-                for (int i = 0; i <messages.size() ; i++) {
+                for (int i = 0; i < messages.size(); i++) {
                     messages.remove(i);
                 }
                 signInWithPhoneAuthCredential(credential, message);
@@ -708,14 +708,14 @@ public class ProcessBotResponse {
                     Toast.makeText(context, "invalid mobile number", Toast.LENGTH_SHORT).show();
                     long timestamp = System.currentTimeMillis();
                     String message = "Invalid Mobile number, try again by saying country name.";
-                    ChatmessageDataClasses.ResponseTextMessage textMessage = new ChatmessageDataClasses.ResponseTextMessage(message,timestamp);
+                    ChatmessageDataClasses.ResponseTextMessage textMessage = new ChatmessageDataClasses.ResponseTextMessage(message, timestamp);
                     messages.add(textMessage);
                     addMessagesToRecyclerview();
 
                     ChatMessagesHelperFunctions helperFunctions = new ChatMessagesHelperFunctions(context);
                     helperFunctions.insertResponseTextMessage(message);
                     updateMessageForRegistration.makeMessagesNormal(false);
-                    updateMessageForRegistration.updateMessageForRegistrayion("Awww!\n" + "We didn’t get the OTP. You’re gonna have to start all over again ",true);
+                    updateMessageForRegistration.updateMessageForRegistrayion("Awww!\n" + "We didn’t get the OTP. You’re gonna have to start all over again ", true);
 
 
                 } else if (e instanceof FirebaseTooManyRequestsException) {
@@ -730,10 +730,10 @@ public class ProcessBotResponse {
                 Log.d(TAG, "onCodeSent:" + verificationId);
                 ChatMessagesHelperFunctions helperFunctions = new ChatMessagesHelperFunctions(context);
                 String message = "Excellent!\n" + "You will now receive an OTP, please share that too.";
-                updateMessageForRegistration.updateMessageForRegistrayion(message,false);
+                updateMessageForRegistration.updateMessageForRegistrayion(message, false);
                 helperFunctions.insertResponseTextMessage(message);
                 long timestamp = System.currentTimeMillis();
-                ChatmessageDataClasses.ResponseTextMessage responseTextMessage = new ChatmessageDataClasses.ResponseTextMessage(message,timestamp);
+                ChatmessageDataClasses.ResponseTextMessage responseTextMessage = new ChatmessageDataClasses.ResponseTextMessage(message, timestamp);
                 messages.add(responseTextMessage);
                 addMessagesToRecyclerview();
                 verifixationIdMain = verificationId;
@@ -769,9 +769,9 @@ public class ProcessBotResponse {
                             new MyAsyncTask().execute(user.getPhoneNumber());
                             ChatMessagesHelperFunctions helperFunctions = new ChatMessagesHelperFunctions(context);
                             helperFunctions.insertResponseTextMessage(message);
-                            updateMessageForRegistration.updateMessageForRegistrayion(message,false);
+                            updateMessageForRegistration.updateMessageForRegistrayion(message, false);
                             updateMessageForRegistration.makeMessagesNormal(true);
-                            ChatmessageDataClasses.ResponseTextMessage responseTextMessage = new ChatmessageDataClasses.ResponseTextMessage(message,timestamp);
+                            ChatmessageDataClasses.ResponseTextMessage responseTextMessage = new ChatmessageDataClasses.ResponseTextMessage(message, timestamp);
                             messages.add(responseTextMessage);
                             addMessagesToRecyclerview();
 
@@ -780,7 +780,7 @@ public class ProcessBotResponse {
                             if (task.getException() instanceof FirebaseAuthInvalidCredentialsException) {
                                 Toast.makeText(context, "invalid verification code", Toast.LENGTH_SHORT).show();
                                 String responseMessage = "Awww!\n" + "We didn’t get the OTP. You’re gonna have to start all over again ";
-                                ChatmessageDataClasses.ResponseTextMessage responseTextMessage = new ChatmessageDataClasses.ResponseTextMessage(responseMessage,timestamp);
+                                ChatmessageDataClasses.ResponseTextMessage responseTextMessage = new ChatmessageDataClasses.ResponseTextMessage(responseMessage, timestamp);
                                 ChatMessagesHelperFunctions helperFunctions = new ChatMessagesHelperFunctions(context);
                                 helperFunctions.insertResponseTextMessage(responseMessage);
                                 messages.add(responseTextMessage);
@@ -827,8 +827,10 @@ public class ProcessBotResponse {
             super.onPostExecute(s);
         }
     }
-    interface UpdateMessageForRegistration{
-        void updateMessageForRegistrayion(String message,boolean showCard);
+
+    interface UpdateMessageForRegistration {
+        void updateMessageForRegistrayion(String message, boolean showCard);
+
         void makeMessagesNormal(boolean showNormal);
     }
 

@@ -11,8 +11,6 @@ import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.ImageView;
-
 import com.veeville.farm.R;
 import com.veeville.farm.adapter.FarmAdapter;
 import com.veeville.farm.farmer.FarmerHelperClasses.Farm;
@@ -44,7 +42,7 @@ public class FarmsActivity extends AppCompatActivity {
 
     }
 
-    void setUpToolbar() {
+    private void setUpToolbar() {
         Toolbar toolbar = findViewById(R.id.my_toolbar);
         toolbar.setTitle("Farms-Crop");
         toolbar.setTitleTextColor(Color.WHITE);
@@ -76,7 +74,6 @@ public class FarmsActivity extends AppCompatActivity {
         Farm farm3 = new Farm("Farm1", "Onion", "https://5.imimg.com/data5/TF/US/MY-28264228/red-onion-500x500.jpg", "growing");
         Farm farm4 = new Farm("Farm2", "Onion", "https://5.imimg.com/data5/TF/US/MY-28264228/red-onion-500x500.jpg", "growing");
         Farm farm5 = new Farm("Farm3", "Onion", "https://5.imimg.com/data5/TF/US/MY-28264228/red-onion-500x500.jpg", "growing");
-        ImageView imageView = null;
         farms.add(farm1);
         farms.add(farm2);
         farms.add(farm3);

@@ -30,7 +30,7 @@ public class FarmDescriptionActivity extends AppCompatActivity {
     }
 
 
-    void setUpToolbar() {
+    private void setUpToolbar() {
         String farmName = getIntent().getStringExtra("farmName");
         String cropName = getIntent().getStringExtra("cropName");
         Toolbar toolbar = findViewById(R.id.my_toolbar);
@@ -68,29 +68,5 @@ public class FarmDescriptionActivity extends AppCompatActivity {
         //objects.add(getSoilTestResults());
         objects.add(new SoilTestResult.SoilTestGraph());
         return objects;
-    }
-
-    private SoilTestResult getSoilTestResults() {
-        SoilTestResult.SingleSoilTestResult.SingleSoilTestResultSingleElement nitrogen = new SoilTestResult.SingleSoilTestResult.SingleSoilTestResultSingleElement("Nitrogen", "Description", 100, 50, 120);
-        SoilTestResult.SingleSoilTestResult.SingleSoilTestResultSingleElement phosphrous = new SoilTestResult.SingleSoilTestResult.SingleSoilTestResultSingleElement("Phosphrous", "Description", 20, 5, 10);
-        SoilTestResult.SingleSoilTestResult.SingleSoilTestResultSingleElement potassium = new SoilTestResult.SingleSoilTestResult.SingleSoilTestResultSingleElement("Ptassium", "Description", 50, 60, 120);
-        SoilTestResult.SingleSoilTestResult.SingleSoilTestResultSingleElement calcium = new SoilTestResult.SingleSoilTestResult.SingleSoilTestResultSingleElement("Calcium", "Description", 40, 50, 120);
-        SoilTestResult.SingleSoilTestResult.SingleSoilTestResultSingleElement boriam = new SoilTestResult.SingleSoilTestResult.SingleSoilTestResultSingleElement("Boriam", "Description", 200, 50, 120);
-
-        List<SoilTestResult.SingleSoilTestResult.SingleSoilTestResultSingleElement> elements = new ArrayList<>();
-        elements.add(nitrogen);
-        elements.add(phosphrous);
-        elements.add(potassium);
-        elements.add(calcium);
-        elements.add(boriam);
-        long timeStamp = System.currentTimeMillis();
-        SoilTestResult.SingleSoilTestResult singleSoilTestResult = new SoilTestResult.SingleSoilTestResult(timeStamp, elements);
-        List<SoilTestResult.SingleSoilTestResult> soilTestResults = new ArrayList<>();
-        soilTestResults.add(singleSoilTestResult);
-        soilTestResults.add(singleSoilTestResult);
-
-        SoilTestResult result = new SoilTestResult(soilTestResults);
-        return result;
-
     }
 }

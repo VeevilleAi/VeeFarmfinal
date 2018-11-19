@@ -98,13 +98,13 @@ public class WeatherActivity extends AppCompatActivity {
                 AppSingletonClass.logDebugMessage(TAG, error.toString());
                 if (error instanceof NoConnectionError) {
                     Toast.makeText(WeatherActivity.this, "Please Check Net Connection", Toast.LENGTH_SHORT).show();
-                }else {
+                } else {
                     Toast.makeText(WeatherActivity.this, "something went wrong,please try again.", Toast.LENGTH_SHORT).show();
-                    try{
+                    try {
                         String s = new String(error.networkResponse.data);
-                        Log.d(TAG, "onErrorResponse: error message:"+s);
-                    }catch (Exception e){
-                        Log.e(TAG, "onErrorResponse: "+e.toString() );
+                        Log.d(TAG, "onErrorResponse: error message:" + s);
+                    } catch (Exception e) {
+                        Log.e(TAG, "onErrorResponse: " + e.toString());
                     }
                 }
             }
@@ -162,7 +162,7 @@ public class WeatherActivity extends AppCompatActivity {
                 }
                 Log.d(TAG, "performWeatherData: hourly size:" + houlyDataLists.size());
                 long timestamp = System.currentTimeMillis();
-                ChatmessageDataClasses.WeatherData weatherData = new ChatmessageDataClasses.WeatherData(date, city, weatherIconUrl, maxTemperature, prec, hum, wind, houlyDataLists,timestamp);
+                ChatmessageDataClasses.WeatherData weatherData = new ChatmessageDataClasses.WeatherData(date, city, weatherIconUrl, maxTemperature, prec, hum, wind, houlyDataLists, timestamp);
                 weatherDataList.add(weatherData);
 
             }

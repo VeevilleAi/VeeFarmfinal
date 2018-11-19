@@ -46,7 +46,7 @@ public class CropMarketDescAdapter extends RecyclerView.Adapter<RecyclerView.Vie
     @NonNull
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        RecyclerView.ViewHolder holder = null;
+        RecyclerView.ViewHolder holder;
         switch (viewType) {
             case 0:
                 View view = LayoutInflater.from(context).inflate(R.layout.crop_market_desc_first_card, parent, false);
@@ -57,6 +57,11 @@ public class CropMarketDescAdapter extends RecyclerView.Adapter<RecyclerView.Vie
                 holder = new CropDescHolder(view);
                 break;
             case 2:
+                view = LayoutInflater.from(context).inflate(R.layout.crop_market_market_price_card, parent, false);
+                holder = new CropMarketPriceHolder(view);
+                break;
+
+            default:
                 view = LayoutInflater.from(context).inflate(R.layout.crop_market_market_price_card, parent, false);
                 holder = new CropMarketPriceHolder(view);
                 break;

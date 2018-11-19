@@ -51,7 +51,7 @@ public class FarmRegistrationActivity extends AppCompatActivity {
         });
     }
 
-    void setUpToolbar() {
+    private void setUpToolbar() {
         Toolbar toolbar = findViewById(R.id.my_toolbar);
         toolbar.setTitle("Farm Registration");
         toolbar.setTitleTextColor(Color.WHITE);

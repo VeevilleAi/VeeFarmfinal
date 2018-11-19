@@ -76,7 +76,7 @@ public class FarmDescAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
     @NonNull
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        RecyclerView.ViewHolder holder = null;
+        RecyclerView.ViewHolder holder;
         switch (viewType) {
             case 0:
                 View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.farm_description_card, parent, false);
@@ -104,6 +104,11 @@ public class FarmDescAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
                 break;
 
             case 6:
+                view = LayoutInflater.from(parent.getContext()).inflate(R.layout.soil_test_result_graph_card, parent, false);
+                holder = new SoilTestGraphHolder(view);
+                break;
+
+            default:
                 view = LayoutInflater.from(parent.getContext()).inflate(R.layout.soil_test_result_graph_card, parent, false);
                 holder = new SoilTestGraphHolder(view);
                 break;
@@ -150,7 +155,7 @@ public class FarmDescAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         yvalues.add(new Entry(20f, 3));
 
         PieDataSet dataSet = new PieDataSet(yvalues, "Election Results");
-        ArrayList<String> xVals = new ArrayList<String>();
+        ArrayList<String> xVals = new ArrayList<>();
 
         xVals.add("P - 34");
         xVals.add("S - 34");
@@ -326,9 +331,6 @@ public class FarmDescAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
             soilTempCard = view.findViewById(R.id.soil_temperature_card);
         }
     }
-
-
-
 
 
     private class SoilTestResultsAdapter extends RecyclerView.Adapter<SoilTestResultsAdapter.SingleSoilTestSingleELementResultHolder> {

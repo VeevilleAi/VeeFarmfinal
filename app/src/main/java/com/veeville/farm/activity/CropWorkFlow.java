@@ -44,7 +44,7 @@ public class CropWorkFlow extends AppCompatActivity {
     }
 
 
-    void setUpRecyclerview() {
+    private void setUpRecyclerview() {
 
         RecyclerView workFlowRecyclerview = findViewById(R.id.workflow_recyclerview);
         LinearLayoutManager manager = new LinearLayoutManager(getApplicationContext());
@@ -63,7 +63,7 @@ public class CropWorkFlow extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
-    List<DashBoardDataClasses.WorkFlowData> formDataWorkFlow() {
+    private List<DashBoardDataClasses.WorkFlowData> formDataWorkFlow() {
 
         List<DashBoardDataClasses.WorkFlowData> workFlowDataList = new ArrayList<>();
         String title, date;
@@ -121,7 +121,7 @@ public class CropWorkFlow extends AppCompatActivity {
 
     }
 
-    String getDate(int days) {
+    private String getDate(int days) {
         String format = "dd MMM yyyy";
         SimpleDateFormat dateFormat = new SimpleDateFormat(format, Locale.getDefault());
         Calendar calendar = Calendar.getInstance();

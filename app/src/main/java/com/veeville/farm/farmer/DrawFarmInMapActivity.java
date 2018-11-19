@@ -8,9 +8,11 @@ import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.location.Location;
 import android.location.LocationManager;
-import android.os.Build;
+import android.os.Build.VERSION;
+import android.os.Build.VERSION_CODES;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.annotation.RequiresApi;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
@@ -52,10 +54,10 @@ public class DrawFarmInMapActivity extends AppCompatActivity implements OnMapRea
 
     private final int PERMISSION_REQUEST_CODE = 101, REQUEST_CHECK_SETTINGS = 102;
     String TAG = "DrawFarmInMapActivity";
-    GoogleMap map;
-    List<LatLng> latLngs = new ArrayList<>();
-    DrawFarmInMapActivity view;
-    Polygon polygon;
+    private GoogleMap map;
+    private List<LatLng> latLngs = new ArrayList<>();
+    private DrawFarmInMapActivity view;
+    private Polygon polygon;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -68,7 +70,7 @@ public class DrawFarmInMapActivity extends AppCompatActivity implements OnMapRea
         setUpLocationManager();
     }
 
-    void setUpToolbar() {
+    private void setUpToolbar() {
         Toolbar toolbar = findViewById(R.id.my_toolbar);
         toolbar.setTitle("draw your farm");
         toolbar.setTitleTextColor(Color.WHITE);
@@ -173,7 +175,7 @@ public class DrawFarmInMapActivity extends AppCompatActivity implements OnMapRea
     }
 
     @Override
-    public void onRequestPermissionsResult(int requestCode, String permissions[], int[] grantResults) {
+    public void onRequestPermissionsResult(int requestCode, @NonNull String permissions[], @NonNull int[] grantResults) {
         switch (requestCode) {
             case PERMISSION_REQUEST_CODE:
                 if (grantResults.length > 0) {
@@ -191,15 +193,15 @@ public class DrawFarmInMapActivity extends AppCompatActivity implements OnMapRea
 
                         // Snackbar.make(view, "Permission Denied, You cannot access location data and camera.", Snackbar.LENGTH_LONG).show();
 
-                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                        if (VERSION.SDK_INT >= VERSION_CODES.M) {
                             if (shouldShowRequestPermissionRationale(ACCESS_FINE_LOCATION)) {
-                                showMessageOKCancel("You need to allow access the permission",
+                                showMessageOKCancel(
                                         new DialogInterface.OnClickListener() {
+                                            @RequiresApi(api = VERSION_CODES.M)
                                             @Override
                                             public void onClick(DialogInterface dialog, int which) {
-                                                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                                                    requestPermissions(new String[]{ACCESS_FINE_LOCATION}, PERMISSION_REQUEST_CODE);
-                                                }
+                                                requestPermissions(new String[]{ACCESS_FINE_LOCATION}, PERMISSION_REQUEST_CODE);
+
                                             }
                                         });
                                 return;
@@ -212,7 +214,8 @@ public class DrawFarmInMapActivity extends AppCompatActivity implements OnMapRea
         }
     }
 
-    private void showMessageOKCancel(String message, DialogInterface.OnClickListener okListener) {
+    private void showMessageOKCancel(DialogInterface.OnClickListener okListener) {
+        String message = "You need to allow access the permission";
         new AlertDialog.Builder(DrawFarmInMapActivity.this)
                 .setMessage(message)
                 .setPositiveButton("OK", okListener)

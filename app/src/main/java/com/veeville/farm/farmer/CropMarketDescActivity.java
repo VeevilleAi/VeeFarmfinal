@@ -26,7 +26,7 @@ public class CropMarketDescActivity extends AppCompatActivity {
         setUpRecyclerview();
     }
 
-    void setUpToolbar() {
+    private void setUpToolbar() {
         Toolbar toolbar = findViewById(R.id.my_toolbar);
         String cropName = getIntent().getStringExtra("cropName");
         toolbar.setTitle("Market Price - " + cropName);

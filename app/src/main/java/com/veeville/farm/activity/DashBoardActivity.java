@@ -54,6 +54,7 @@ public class DashBoardActivity extends AppCompatActivity {
         toolbar.setTitle("DashBoard");
         setSupportActionBar(toolbar);
     }
+
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         String title = item.getTitle().toString();
@@ -73,7 +74,7 @@ public class DashBoardActivity extends AppCompatActivity {
         return true;
     }
 
-    void insertVegAndFruitToDatabase() {
+    private void insertVegAndFruitToDatabase() {
         List<Fruit> names = FruitNames.getFruitNames();
         ChatBotDatabase database = new ChatBotDatabase(getApplicationContext());
         database.insertVegetableAndFruitPrices(names);
@@ -82,7 +83,8 @@ public class DashBoardActivity extends AppCompatActivity {
         database.insertVegetableAndFruitPrices(vegNames);
         new AsyncTaskFruitPrice().execute();
     }
-    private void checkDatabaseForPrice(){
+
+    private void checkDatabaseForPrice() {
         ChatBotDatabase database = new ChatBotDatabase(getApplicationContext());
         List<Fruit> fruitList = database.getAllPrices();
         if (fruitList.size() == 0) {
@@ -135,6 +137,7 @@ public class DashBoardActivity extends AppCompatActivity {
             updateDataBase(fruitList);
         }
     }
+
     private class AsyncTaskFruitPrice extends AsyncTask<Void, Void, List<Fruit>> {
 
         @Override
@@ -182,7 +185,8 @@ public class DashBoardActivity extends AppCompatActivity {
 
         }
     }
-    void updateDataBase(List<Fruit> fruits) {
+
+    private void updateDataBase(List<Fruit> fruits) {
         ChatBotDatabase database = new ChatBotDatabase(DashBoardActivity.this);
         database.updatePriceOfFruitAndVeg(fruits);
     }

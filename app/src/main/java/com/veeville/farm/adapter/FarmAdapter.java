@@ -66,6 +66,7 @@ public class FarmAdapter extends RecyclerView.Adapter<FarmAdapter.SingleFarmHold
         CardView farmCard;
         ImageView farmImage;
         TextView farmName, farmStatus, cropName;
+
         SingleFarmHolder(View view) {
             super(view);
             farmCard = view.findViewById(R.id.farm_id);

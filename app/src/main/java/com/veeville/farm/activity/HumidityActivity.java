@@ -50,7 +50,8 @@ public class HumidityActivity extends AppCompatActivity {
         }
         return true;
     }
-    void setUpHumidityRecyclerview() {
+
+    private void setUpHumidityRecyclerview() {
 
         RecyclerView humidityRecyclerview = findViewById(R.id.humidity_recyclerview);
         LinearLayoutManager manager = new LinearLayoutManager(getApplicationContext());

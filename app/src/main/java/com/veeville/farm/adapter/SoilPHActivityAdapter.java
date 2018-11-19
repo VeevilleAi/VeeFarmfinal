@@ -61,13 +61,17 @@ public class SoilPHActivityAdapter extends RecyclerView.Adapter<RecyclerView.Vie
     @NonNull
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        RecyclerView.ViewHolder holder = null;
+        RecyclerView.ViewHolder holder;
         switch (viewType) {
             case 0:
                 View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.soil_ph_first_card, parent, false);
                 holder = new SoilpHCardHolder(view);
                 break;
             case 1:
+                view = LayoutInflater.from(parent.getContext()).inflate(R.layout.soil_ph_graph_data_card, parent, false);
+                holder = new SoilPhGraphHolder(view);
+                break;
+            default:
                 view = LayoutInflater.from(parent.getContext()).inflate(R.layout.soil_ph_graph_data_card, parent, false);
                 holder = new SoilPhGraphHolder(view);
                 break;
@@ -80,6 +84,7 @@ public class SoilPHActivityAdapter extends RecyclerView.Adapter<RecyclerView.Vie
 
         switch (holder.getItemViewType()) {
             case 0:
+                Log.d(TAG, "onBindViewHolder: ");
                 break;
             case 1:
                 setUpgraphData((SoilPhGraphHolder) holder, position);
@@ -137,7 +142,7 @@ public class SoilPHActivityAdapter extends RecyclerView.Adapter<RecyclerView.Vie
                 int hours = calendar.get(Calendar.HOUR_OF_DAY);
                 for (int i = 0; i <= hours; i++) {
                     if (i < 10)
-                        xVals.add("" + i);
+                        xVals.add("0" + i);
                     else
                         xVals.add("" + i);
                 }
@@ -319,7 +324,8 @@ public class SoilPHActivityAdapter extends RecyclerView.Adapter<RecyclerView.Vie
         }
 
         @Override
-        public void onBindViewHolder(@NonNull final GraphSingleTitleHolder holder, final int position) {
+        public void onBindViewHolder(@NonNull final GraphSingleTitleHolder holder, int positionTemp) {
+            final int position = holder.getAdapterPosition();
             if (selectedPosition == position) {
                 holder.titleCard.setCardBackgroundColor(Color.parseColor("#FFC20E"));
             } else {

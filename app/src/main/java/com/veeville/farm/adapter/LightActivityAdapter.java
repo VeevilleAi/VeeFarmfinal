@@ -62,13 +62,17 @@ public class LightActivityAdapter extends RecyclerView.Adapter<RecyclerView.View
     @NonNull
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        RecyclerView.ViewHolder holder = null;
+        RecyclerView.ViewHolder holder;
         switch (viewType) {
             case 0:
                 View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.light_activity_first_card, parent, false);
                 holder = new LightCardHolder(view);
                 break;
             case 1:
+                view = LayoutInflater.from(parent.getContext()).inflate(R.layout.soil_ph_graph_data_card, parent, false);
+                holder = new LightValueGraphHolder(view);
+                break;
+            default:
                 view = LayoutInflater.from(parent.getContext()).inflate(R.layout.soil_ph_graph_data_card, parent, false);
                 holder = new LightValueGraphHolder(view);
                 break;
@@ -81,6 +85,7 @@ public class LightActivityAdapter extends RecyclerView.Adapter<RecyclerView.View
 
         switch (holder.getItemViewType()) {
             case 0:
+                Log.d(TAG, "onBindViewHolder: ");
                 break;
             case 1:
                 setUpgraphData((LightValueGraphHolder) holder, position);
@@ -137,7 +142,7 @@ public class LightActivityAdapter extends RecyclerView.Adapter<RecyclerView.View
                 int hours = calendar.get(Calendar.HOUR_OF_DAY);
                 for (int i = 0; i <= hours; i++) {
                     if (i < 10)
-                        xVals.add("" + i);
+                        xVals.add("0" + i);
                     else
                         xVals.add("" + i);
                 }
@@ -305,6 +310,7 @@ public class LightActivityAdapter extends RecyclerView.Adapter<RecyclerView.View
             this.titles = titles;
             this.selectedPosition = selectedPosition;
         }
+
         @NonNull
         @Override
         public GraphSingleTitleHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {

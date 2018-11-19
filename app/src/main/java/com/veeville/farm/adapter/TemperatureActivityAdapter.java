@@ -41,6 +41,7 @@ public class TemperatureActivityAdapter extends RecyclerView.Adapter<RecyclerVie
     private Context context;
     private List<Object> temperatureDataList;
     private String TAG = "TemperatureActivityAdapter";
+
     public TemperatureActivityAdapter(Context context, List<Object> temperatureDataList) {
         this.context = context;
         this.temperatureDataList = temperatureDataList;
@@ -61,13 +62,17 @@ public class TemperatureActivityAdapter extends RecyclerView.Adapter<RecyclerVie
     @NonNull
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        RecyclerView.ViewHolder holder = null;
+        RecyclerView.ViewHolder holder;
         switch (viewType) {
             case 0:
                 View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.temperature_activity_first_card, parent, false);
                 holder = new SoilTempHolder(view);
                 break;
             case 1:
+                view = LayoutInflater.from(parent.getContext()).inflate(R.layout.soil_ph_graph_data_card, parent, false);
+                holder = new SoilTempGraphHolder(view);
+                break;
+            default:
                 view = LayoutInflater.from(parent.getContext()).inflate(R.layout.soil_ph_graph_data_card, parent, false);
                 holder = new SoilTempGraphHolder(view);
                 break;
@@ -82,6 +87,7 @@ public class TemperatureActivityAdapter extends RecyclerView.Adapter<RecyclerVie
 
         switch (holder.getItemViewType()) {
             case 0:
+                Log.d(TAG, "onBindViewHolder: ");
                 break;
             case 1:
                 setUpgraphData((SoilTempGraphHolder) holder, position);
@@ -138,7 +144,7 @@ public class TemperatureActivityAdapter extends RecyclerView.Adapter<RecyclerVie
                 int hours = calendar.get(Calendar.HOUR_OF_DAY);
                 for (int i = 0; i <= hours; i++) {
                     if (i < 10)
-                        xVals.add("" + i);
+                        xVals.add("0" + i);
                     else
                         xVals.add("" + i);
                 }
@@ -197,7 +203,6 @@ public class TemperatureActivityAdapter extends RecyclerView.Adapter<RecyclerVie
                 }
 
                 break;
-
 
         }
 
@@ -315,7 +320,8 @@ public class TemperatureActivityAdapter extends RecyclerView.Adapter<RecyclerVie
         }
 
         @Override
-        public void onBindViewHolder(@NonNull final GraphSingleTitleHolder holder, final int position) {
+        public void onBindViewHolder(@NonNull final GraphSingleTitleHolder holder, int positionTemp) {
+            final int position = holder.getAdapterPosition();
             if (selectedPosition == position) {
                 holder.titleCard.setCardBackgroundColor(Color.parseColor("#FFC20E"));
             } else {

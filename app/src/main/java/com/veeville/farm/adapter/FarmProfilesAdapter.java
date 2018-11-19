@@ -2,6 +2,7 @@ package com.veeville.farm.adapter;
 
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -22,6 +23,7 @@ public class FarmProfilesAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
 
 
     private List<Object> objects;
+    private String TAG = "FarmProfilesAdapter";
 
     public FarmProfilesAdapter(List<Object> objects) {
         this.objects = objects;
@@ -42,13 +44,17 @@ public class FarmProfilesAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
     @NonNull
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        RecyclerView.ViewHolder holder = null;
+        RecyclerView.ViewHolder holder;
         switch (viewType) {
             case 0:
                 View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.famer_profile_card, parent, false);
                 holder = new SingleFarmerProfileHolder(view);
                 break;
             case 1:
+                view = LayoutInflater.from(parent.getContext()).inflate(R.layout.farm_profile_card, parent, false);
+                holder = new SingleFarmProfileHolder(view);
+                break;
+            default:
                 view = LayoutInflater.from(parent.getContext()).inflate(R.layout.farm_profile_card, parent, false);
                 holder = new SingleFarmProfileHolder(view);
                 break;
@@ -60,7 +66,7 @@ public class FarmProfilesAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
     public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int position) {
         switch (holder.getItemViewType()) {
             case 0:
-
+                Log.d(TAG, "onBindViewHolder: ");
                 break;
             case 1:
                 handleFarmProfile((SingleFarmProfileHolder) holder, position);
@@ -68,11 +74,9 @@ public class FarmProfilesAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
         }
     }
 
-    private void handleFarmerProfile(SingleFarmerProfileHolder holder, int position) {
-
-    }
 
     private void handleFarmProfile(SingleFarmProfileHolder holder, int position) {
+        Log.d(TAG, "handleFarmProfile: " + holder + position);
 
     }
 

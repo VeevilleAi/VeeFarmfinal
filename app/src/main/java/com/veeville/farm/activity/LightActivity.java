@@ -5,6 +5,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 
@@ -22,6 +23,7 @@ import java.util.Random;
 
 public class LightActivity extends AppCompatActivity {
 
+    private String TAG = "LightActivity";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -29,9 +31,10 @@ public class LightActivity extends AppCompatActivity {
         setContentView(R.layout.activity_light);
         setUpToolbar();
         setUpSoilMoistureRecyclerview();
+        Log.d(TAG, "onCreate: ");
     }
 
-    private void setUpToolbar(){
+    private void setUpToolbar() {
 
         Toolbar toolbar = findViewById(R.id.my_toolbar);
         toolbar.setTitle("Light-Farm1");
@@ -39,7 +42,8 @@ public class LightActivity extends AppCompatActivity {
         Objects.requireNonNull(getSupportActionBar()).setDisplayHomeAsUpEnabled(true);
 
     }
-    void setUpSoilMoistureRecyclerview() {
+
+    private void setUpSoilMoistureRecyclerview() {
 
         LinearLayoutManager manager = new LinearLayoutManager(getApplicationContext());
         RecyclerView lightRecyclerview = findViewById(R.id.soil_ph_recyclerview);
@@ -68,7 +72,7 @@ public class LightActivity extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
-    List<Object> formData() {
+    private List<Object> formData() {
 
         List<Object> soilMoistureDatas = new ArrayList<>();
         List<String> months = new ArrayList<>();
@@ -87,6 +91,7 @@ public class LightActivity extends AppCompatActivity {
             Random r = new Random();
             int i1 = r.nextInt(1075 - 1000) + 1000;
             DashBoardDataClasses.LightData.LightValues values = new DashBoardDataClasses.LightData.LightValues(value, "" + i1);
+            Log.d(TAG, "formData: " + values);
         }
         for (int i = 0; i < 1; i++) {
             List<DashBoardDataClasses.LightData.LightValues> soilMoistureValues2 = new ArrayList<>();
@@ -109,7 +114,7 @@ public class LightActivity extends AppCompatActivity {
         return soilMoistureDatas;
     }
 
-    String getDate(int days) {
+    private String getDate(int days) {
 
         String format = "dd MMM yyyy";
         SimpleDateFormat dateFormat = new SimpleDateFormat(format, Locale.getDefault());

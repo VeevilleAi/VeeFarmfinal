@@ -22,8 +22,7 @@ import java.util.Objects;
 
 public class ShowFarmInMapActivity extends AppCompatActivity implements OnMapReadyCallback {
 
-    GoogleMap mMap;
-    Polygon polygon;
+    private GoogleMap mMap;
     private String farmName;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -73,7 +72,7 @@ public class ShowFarmInMapActivity extends AppCompatActivity implements OnMapRea
         polygonOptions.strokeColor(Color.YELLOW);
         polygonOptions.fillColor(Color.GREEN);
         polygonOptions.strokeWidth(1);
-        polygon = mMap.addPolygon(polygonOptions);
+        Polygon polygon = mMap.addPolygon(polygonOptions);
         LatLng latLng = getCentroid(polygon.getPoints());
         mMap.addMarker(new MarkerOptions().position(latLng).title(farmName + "-Banana"));
         PolygonOptions polygonOptions1 = new PolygonOptions();

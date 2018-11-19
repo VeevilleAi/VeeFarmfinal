@@ -69,7 +69,7 @@ public class TemperatureActivity extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
-    List<Object> formData() {
+    private List<Object> formData() {
 
         List<DashBoardDataClasses.TemperatureData.TempValue> soilMoistureValues1 = new ArrayList<>();
         List<Object> soilMoistureDatas = new ArrayList<>();
@@ -93,6 +93,7 @@ public class TemperatureActivity extends AppCompatActivity {
         }
         DashBoardDataClasses.TemperatureData soilMoistureData = new DashBoardDataClasses.TemperatureData(months.get(0), "Bengaluru", soilMoistureValues1);
         //soilMoistureDatas.add(soilMoistureData);
+        Log.d(TAG, "formData: "+soilMoistureData);
         for (int i = 0; i < 1; i++) {
             List<DashBoardDataClasses.TemperatureData.TempValue> soilMoistureValues2 = new ArrayList<>();
             for (int j = 5; j < 20; j++) {

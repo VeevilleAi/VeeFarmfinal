@@ -21,7 +21,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class SensGConnection {
+class SensGConnection {
 
     private Handler handler = new Handler();
     private List<String> humidityList = new ArrayList<>();
@@ -44,7 +44,7 @@ public class SensGConnection {
     }
 
 
-    void sendRequest() {
+    private void sendRequest() {
         String url = "http://" + IP + "/sensorStream";
         final String refer = "http://" + IP + "/index.html";
 
@@ -230,7 +230,7 @@ public class SensGConnection {
             valuesList.add(values);
         }
         long timestamp = System.currentTimeMillis();
-        return new ChatmessageDataClasses.SoilTemperature("Today", "Bengaluru", valuesList,timestamp);
+        return new ChatmessageDataClasses.SoilTemperature("Today", "Bengaluru", valuesList, timestamp);
     }
 
     ChatmessageDataClasses.Light getLight() {
@@ -245,7 +245,7 @@ public class SensGConnection {
 
         }
         long timestamp = System.currentTimeMillis();
-        return new ChatmessageDataClasses.Light("Today", "Bengaluru", valuesList,timestamp);
+        return new ChatmessageDataClasses.Light("Today", "Bengaluru", valuesList, timestamp);
     }
 
     private String gettimeForTime(int minutes) {

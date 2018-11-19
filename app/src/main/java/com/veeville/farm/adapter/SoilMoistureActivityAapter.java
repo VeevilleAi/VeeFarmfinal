@@ -41,6 +41,7 @@ public class SoilMoistureActivityAapter extends RecyclerView.Adapter<RecyclerVie
     private Context context;
     private List<Object> dataList;
     private String TAG = "SoilMoistureActivityAapter";
+
     public SoilMoistureActivityAapter(Context context, List<Object> dataList) {
         this.context = context;
         this.dataList = dataList;
@@ -60,13 +61,17 @@ public class SoilMoistureActivityAapter extends RecyclerView.Adapter<RecyclerVie
     @NonNull
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        RecyclerView.ViewHolder holder = null;
+        RecyclerView.ViewHolder holder;
         switch (viewType) {
             case 0:
                 View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.soil_moisture_activity_first_card, parent, false);
                 holder = new SoilpHCardHolder(view);
                 break;
             case 1:
+                view = LayoutInflater.from(parent.getContext()).inflate(R.layout.soil_ph_graph_data_card, parent, false);
+                holder = new SoilPhGraphHolder(view);
+                break;
+            default:
                 view = LayoutInflater.from(parent.getContext()).inflate(R.layout.soil_ph_graph_data_card, parent, false);
                 holder = new SoilPhGraphHolder(view);
                 break;
@@ -80,6 +85,7 @@ public class SoilMoistureActivityAapter extends RecyclerView.Adapter<RecyclerVie
 
         switch (holder.getItemViewType()) {
             case 0:
+                Log.d(TAG, "onBindViewHolder: ");
                 break;
             case 1:
                 setUpgraphData((SoilPhGraphHolder) holder, position);
@@ -135,7 +141,7 @@ public class SoilMoistureActivityAapter extends RecyclerView.Adapter<RecyclerVie
                 int hours = calendar.get(Calendar.HOUR_OF_DAY);
                 for (int i = 0; i <= hours; i++) {
                     if (i < 10)
-                        xVals.add("" + i);
+                        xVals.add("0" + i);
                     else
                         xVals.add("" + i);
                 }
@@ -224,14 +230,15 @@ public class SoilMoistureActivityAapter extends RecyclerView.Adapter<RecyclerVie
 
         ArrayList<String> xVals = setXAxisValues(type);
         ArrayList<Entry> yVals = setYAxisValues(xVals.size());
-        LineDataSet set1;
+        ArrayList<Entry> yValsTemp = setYAxisValues(xVals.size());
+        LineDataSet set1, set2;
         set1 = new LineDataSet(yVals, "Soil pH");
         set1.setFillAlpha(110);
         set1.setColor(Color.BLACK);
         set1.setCircleColor(Color.BLACK);
         set1.setLineWidth(1f);
         set1.setDrawCubic(true);
-        set1.setDrawFilled(true);
+        set1.setDrawFilled(false);
         set1.setFillColor(Color.rgb(168, 168, 168));
         set1.setCircleRadius(3f);
         set1.setDrawCircles(false);
@@ -242,8 +249,28 @@ public class SoilMoistureActivityAapter extends RecyclerView.Adapter<RecyclerVie
         set1.setDrawHighlightIndicators(true);
         set1.setHighlightEnabled(true);
         set1.setHighLightColor(Color.RED);
+
+
+        set2 = new LineDataSet(yValsTemp, "Soil pH");
+        set2.setFillAlpha(110);
+        set2.setColor(Color.BLACK);
+        set2.setCircleColor(Color.BLACK);
+        set2.setLineWidth(1f);
+        set2.setDrawCubic(true);
+        set2.setDrawFilled(false);
+        set2.setFillColor(Color.RED);
+        set2.setCircleRadius(3f);
+        set2.setDrawCircles(false);
+        set2.setDrawCircleHole(false);
+        set2.setValueTextSize(9f);
+        set2.setDrawValues(false);
+        set2.setColor(Color.GREEN);
+        set2.setDrawHighlightIndicators(true);
+        set2.setHighlightEnabled(true);
+        set2.setHighLightColor(Color.RED);
         ArrayList<ILineDataSet> dataSets = new ArrayList<>();
         dataSets.add(set1);
+        dataSets.add(set2);
         LineData data = new LineData(xVals, dataSets);
         chart.setDescription("");
 
@@ -304,6 +331,7 @@ public class SoilMoistureActivityAapter extends RecyclerView.Adapter<RecyclerVie
             this.titles = titles;
             this.selectedPosition = selectedPosition;
         }
+
         @NonNull
         @Override
         public GraphSingleTitleHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
@@ -312,7 +340,8 @@ public class SoilMoistureActivityAapter extends RecyclerView.Adapter<RecyclerVie
         }
 
         @Override
-        public void onBindViewHolder(@NonNull final GraphSingleTitleHolder holder, final int position) {
+        public void onBindViewHolder(@NonNull final GraphSingleTitleHolder holder, int positionTemp) {
+            final int position = holder.getAdapterPosition();
             if (selectedPosition == position) {
                 holder.titleCard.setCardBackgroundColor(Color.parseColor("#FFC20E"));
             } else {

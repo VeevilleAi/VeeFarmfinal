@@ -38,7 +38,7 @@ import java.util.Random;
 public class HumidityActivityAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
     private List<Object> humidityDataList;
-    private String TAG = "";
+    private String TAG = "HumidityActivityAdapter";
     private Context context;
 
     public HumidityActivityAdapter(Context context, List<Object> humidityDataList) {
@@ -60,13 +60,17 @@ public class HumidityActivityAdapter extends RecyclerView.Adapter<RecyclerView.V
     @NonNull
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        RecyclerView.ViewHolder holder = null;
+        RecyclerView.ViewHolder holder;
         switch (viewType) {
             case 0:
                 View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.humidity_activity_first_card, parent, false);
                 holder = new HumidityCardHolder(view);
                 break;
             case 1:
+                view = LayoutInflater.from(parent.getContext()).inflate(R.layout.soil_ph_graph_data_card, parent, false);
+                holder = new HumidityGraphCardHolder(view);
+                break;
+            default:
                 view = LayoutInflater.from(parent.getContext()).inflate(R.layout.soil_ph_graph_data_card, parent, false);
                 holder = new HumidityGraphCardHolder(view);
                 break;
@@ -80,7 +84,7 @@ public class HumidityActivityAdapter extends RecyclerView.Adapter<RecyclerView.V
     public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int position) {
         switch (holder.getItemViewType()) {
             case 0:
-
+                Log.d(TAG, "onBindViewHolder: ");
                 break;
             case 1:
                 setUpgraphData((HumidityGraphCardHolder) holder, position);
@@ -127,24 +131,6 @@ public class HumidityActivityAdapter extends RecyclerView.Adapter<RecyclerView.V
         return titles;
     }
 
-    private List<Integer> getActualValuesForGraph() {
-        List<Integer> counts = new ArrayList<>();
-        Calendar calendar = Calendar.getInstance();
-        int hours = calendar.get(Calendar.HOUR_OF_DAY);
-        counts.add(hours);
-
-        int weekDays = calendar.get(Calendar.DAY_OF_WEEK);
-        counts.add(weekDays);
-
-        int daysInMonth = calendar.get(Calendar.DAY_OF_MONTH);
-        counts.add(daysInMonth);
-        counts.add(daysInMonth);
-        int monthOfYear = calendar.get(Calendar.MONTH);
-        counts.add(monthOfYear);
-        counts.add(monthOfYear);
-        counts.add(monthOfYear);
-        return counts;
-    }
 
     private ArrayList<String> setXAxisValues(String type) {
         ArrayList<String> xVals = new ArrayList<>();
@@ -155,7 +141,7 @@ public class HumidityActivityAdapter extends RecyclerView.Adapter<RecyclerView.V
                 int hours = calendar.get(Calendar.HOUR_OF_DAY);
                 for (int i = 0; i <= hours; i++) {
                     if (i < 10)
-                        xVals.add("" + i);
+                        xVals.add("0" + i);
                     else
                         xVals.add("" + i);
                 }
@@ -333,7 +319,8 @@ public class HumidityActivityAdapter extends RecyclerView.Adapter<RecyclerView.V
         }
 
         @Override
-        public void onBindViewHolder(@NonNull final GraphSingleTitleHolder holder, final int position) {
+        public void onBindViewHolder(@NonNull final GraphSingleTitleHolder holder, int positionTemp) {
+            final int position = holder.getAdapterPosition();
             if (selectedPosition == position) {
                 holder.titleCard.setCardBackgroundColor(Color.parseColor("#FFC20E"));
             } else {

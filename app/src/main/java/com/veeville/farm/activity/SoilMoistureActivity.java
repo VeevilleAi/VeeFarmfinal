@@ -5,6 +5,8 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.text.format.DateFormat;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 
@@ -14,6 +16,7 @@ import com.veeville.farm.helper.AppSingletonClass;
 import com.veeville.farm.helper.DashBoardDataClasses;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.List;
 import java.util.Objects;
@@ -67,16 +70,24 @@ public class SoilMoistureActivity extends AppCompatActivity {
         }
         return true;
     }
+
     private List<Object> formData() {
 
         List<DashBoardDataClasses.SoilMoistureData.SoilMoistureValues> soilMoistureValues1 = new ArrayList<>();
         List<Object> soilMoistureDatas = new ArrayList<>();
         List<String> months = new ArrayList<>();
-        months.add(getMonth(getDate(0)));
-        months.add(getMonth(getDate(-1)));
-        months.add(getMonth(getDate(-2)));
-        months.add(getMonth(getDate(-3)));
-        months.add(getMonth(getDate(-4)));
+        Calendar calendar = Calendar.getInstance();
+
+        months.add(DateFormat.format("MMMM", calendar.getTime()).toString());
+        calendar.add(Calendar.MONTH, -1);
+        months.add(DateFormat.format("MMMM", calendar.getTime()).toString());
+        calendar.add(Calendar.MONTH, -1);
+        months.add(DateFormat.format("MMMM", calendar.getTime()).toString());
+        calendar.add(Calendar.MONTH, -1);
+        months.add(DateFormat.format("MMMM", calendar.getTime()).toString());
+        calendar.add(Calendar.MONTH, -1);
+        months.add(DateFormat.format("MMMM", calendar.getTime()).toString());
+        Log.d(TAG, "formData: " + Arrays.toString(months.toArray()));
         for (int j = 1; j < 2; j++) {
             String value;
             value = "0" + j;
@@ -88,6 +99,7 @@ public class SoilMoistureActivity extends AppCompatActivity {
         }
         DashBoardDataClasses.SoilMoistureData soilMoistureData = new DashBoardDataClasses.SoilMoistureData(months.get(0), "Bengaluru", soilMoistureValues1);
         //soilMoistureDatas.add(soilMoistureData);
+        Log.d(TAG, "formData: " + soilMoistureData);
         for (int i = 0; i < 1; i++) {
             List<DashBoardDataClasses.SoilMoistureData.SoilMoistureValues> soilMoistureValues2 = new ArrayList<>();
             for (int j = 1; j < 31; j++) {
@@ -110,52 +122,5 @@ public class SoilMoistureActivity extends AppCompatActivity {
         return soilMoistureDatas;
     }
 
-    private int getDate(int month) {
-        Calendar calendar = Calendar.getInstance();
-        calendar.add(Calendar.MONTH, month);
-        return calendar.get(Calendar.MONTH);
-    }
 
-    private String getMonth(int month) {
-        String monthOfYear = null;
-        switch (month) {
-            case 0:
-                monthOfYear = "January";
-                break;
-            case 1:
-                monthOfYear = "February";
-                break;
-            case 2:
-                monthOfYear = "March";
-                break;
-            case 3:
-                monthOfYear = "April";
-                break;
-            case 4:
-                monthOfYear = "May";
-                break;
-            case 5:
-                monthOfYear = "June";
-                break;
-            case 6:
-                monthOfYear = "July";
-                break;
-            case 7:
-                monthOfYear = "August";
-                break;
-            case 8:
-                monthOfYear = "September";
-                break;
-            case 9:
-                monthOfYear = "October";
-                break;
-            case 10:
-                monthOfYear = "November";
-                break;
-            case 11:
-                monthOfYear = "December";
-                break;
-        }
-        return monthOfYear;
-    }
 }
