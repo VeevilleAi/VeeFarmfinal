@@ -2,7 +2,6 @@ package com.veeville.farm.activity;
 
 import android.content.Context;
 import android.os.Handler;
-import android.util.Log;
 import android.widget.Toast;
 
 import com.android.volley.NoConnectionError;
@@ -12,6 +11,7 @@ import com.android.volley.TimeoutError;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.veeville.farm.helper.AppSingletonClass;
+import com.veeville.farm.helper.ChatBotDatabase;
 import com.veeville.farm.helper.ChatmessageDataClasses;
 
 import java.io.UnsupportedEncodingException;
@@ -27,7 +27,8 @@ class SensGConnection {
     private List<String> humidityList = new ArrayList<>();
     private List<String> tempList = new ArrayList<>();
     private List<String> lightList = new ArrayList<>();
-    private String IP, TAG = "SensGConnection";
+    private final String TAG = SensGConnection.class.getSimpleName();
+    private String IP;
     private Context context;
 
     SensGConnection(String Ip, Context context) {
@@ -43,15 +44,14 @@ class SensGConnection {
         handler.postDelayed(runnable, 2000);
     }
 
-
     private void sendRequest() {
         String url = "http://" + IP + "/sensorStream";
         final String refer = "http://" + IP + "/index.html";
-
+        logMessage("connecting to SENSg");
         StringRequest request = new StringRequest(Request.Method.GET, url, new Response.Listener<String>() {
             @Override
             public void onResponse(String response) {
-                Log.d(TAG, "onResponse: response string:success SENSg");
+                logMessage("response string:success SENSg");
                 try {
                     handleSensorData(response);
                 } catch (UnsupportedEncodingException e) {
@@ -63,13 +63,15 @@ class SensGConnection {
             public void onErrorResponse(VolleyError error) {
                 if (error instanceof NoConnectionError) {
                     Toast.makeText(context, "not yet connected to SENSg", Toast.LENGTH_SHORT).show();
+                    logErrorMessage("please connect to SENSg");
                 } else if (error instanceof TimeoutError) {
-                    Toast.makeText(context, "please check the connection", Toast.LENGTH_SHORT).show();
+                    //Toast.makeText(context, "please check the connection", Toast.LENGTH_SHORT).show();
+                    logErrorMessage("please try again");
                 }
-                Log.e(TAG, "onErrorResponse: " + error.toString());
+                logErrorMessage(error.toString());
                 if (error.networkResponse != null) {
                     String s = new String(error.networkResponse.data);
-                    Log.e(TAG, "onErrorResponse: actual error:" + s);
+                    logErrorMessage(s);
                 }
             }
         }) {
@@ -92,7 +94,7 @@ class SensGConnection {
         }
         int time, humidity, temperature, pressure, light, ir, noise, yaw, pitch, roll, magX, magY, magZ;
         time = ((byteArray[3] << 24 & 0xff) | (byteArray[2] << 16 & 0xff) | (byteArray[1] << 8) | (byteArray[0])) / 1000;
-        Log.d(TAG, "handleSensorData: " + time);
+        logMessage("time:" + time);
         int index = 4;
         humidity = byteArray[index] / 2;
         if (humidityList.size() < 20) {
@@ -105,7 +107,6 @@ class SensGConnection {
 
         temperature = byteArray[index + 1] << 8 | byteArray[index];
         temperature = temperature / 100;
-        Log.d(TAG, "handleSensorData: temp data:" + temperature);
         if (tempList.size() < 20) {
             tempList.add(temperature + "");
 
@@ -117,8 +118,8 @@ class SensGConnection {
         index += 2;
 
         pressure = byteArray[index + 3] << 24 | byteArray[index + 2] << 16 | byteArray[index + 1] << 8 | byteArray[index];
+        logMessage("Pressure:" + pressure);
         index += 4;
-        Log.d(TAG, "handleSensorData: " + pressure);
         light = byteArray[index + 3] << 24 | byteArray[index + 2] << 16 | byteArray[index + 1] << 8 | byteArray[index];
         if (lightList.size() < 20) {
             lightList.add(light + "");
@@ -128,15 +129,17 @@ class SensGConnection {
             lightList.add(0, light + "");
 
         }
+        ChatBotDatabase database = new ChatBotDatabase(context);
+        database.insertLightValues(System.currentTimeMillis() / 1000, light);
         index += 4;
 
         ir = byteArray[index + 1] << 8 | byteArray[index];
         ir = ir / 100;
+        logMessage("IR:" + ir);
         index += 2;
-        Log.d(TAG, "handleSensorData: " + ir);
         noise = byteArray[index];
+        logMessage("noise:" + noise);
         index++;
-        Log.d(TAG, "handleSensorData: " + noise);
 
         int accX = byteArray[index + 1] << 8 | byteArray[index];
         if (accX >= 32768) {
@@ -144,7 +147,6 @@ class SensGConnection {
         }
         accX = accX / 1000;
         index += 2;
-        Log.d(TAG, "handleSensorData: " + accX);
 
         int accY = byteArray[index + 1] << 8 | byteArray[index];
         if (accY >= 32768) {
@@ -152,14 +154,13 @@ class SensGConnection {
         }
         accY = accY / 1000;
         index += 2;
-        Log.d(TAG, "handleSensorData: " + accY);
 
         int accZ = byteArray[index + 1] << 8 | byteArray[index];
         if (accZ >= 32768) {
             accZ = -(65536 - accZ);
         }
         accZ = accZ / 1000;
-        Log.d(TAG, "handleSensorData: " + accZ);
+        logMessage("accX:" + accX + "\t accY:" + accY + "\taccZ:" + accZ);
         index += 2;
 
         yaw = byteArray[index + 1] << 8 | byteArray[index];
@@ -167,7 +168,7 @@ class SensGConnection {
             yaw = -(65536 - yaw);
         }
         yaw = yaw / 10;
-        Log.d(TAG, "handleSensorData: " + yaw);
+        logMessage("Yaw:" + yaw);
         index += 2;
 
 
@@ -176,7 +177,7 @@ class SensGConnection {
             pitch = -(65536 - pitch);
         }
         pitch = pitch / 10;
-        Log.d(TAG, "handleSensorData: " + pitch);
+        logMessage("Pitch:" + pitch);
         index += 2;
 
         roll = byteArray[index + 1] << 8 | byteArray[index];
@@ -184,13 +185,12 @@ class SensGConnection {
             roll = -(65536 - roll);
         }
         roll = roll / 10;
-        Log.d(TAG, "handleSensorData: " + roll);
+        logMessage("Roll:" + roll);
         index += 2;
 
         magX = byteArray[index + 1] << 8 | byteArray[index];
         if (magX >= 32768) {
             magX = -(65536 - magX);
-            Log.d(TAG, "handleSensorData: " + magX);
         }
 
         index += 2;
@@ -198,15 +198,14 @@ class SensGConnection {
         magY = byteArray[index + 1] << 8 | byteArray[index];
         if (magY >= 32768) {
             magY = -(65536 - magY);
-            Log.d(TAG, "handleSensorData: " + magY);
         }
         index += 2;
 
         magZ = byteArray[index + 1] << 8 | byteArray[index];
         if (magZ >= 32768) {
             magZ = -(65536 - magZ);
-            Log.d(TAG, "handleSensorData: " + magZ);
         }
+        logMessage("magX:" + magX + "\tmagY:" + magY + "\tmagZ:" + magZ);
     }
 
     ChatmessageDataClasses.Humidity getHumidity() {
@@ -261,5 +260,13 @@ class SensGConnection {
         calendar.add(Calendar.HOUR_OF_DAY, -hours);
         int hour = calendar.get(Calendar.HOUR_OF_DAY);
         return hour + "";
+    }
+
+    private void logMessage(String logMessage) {
+        AppSingletonClass.logDebugMessage(TAG, logMessage);
+    }
+
+    private void logErrorMessage(String logErrorMessage) {
+        AppSingletonClass.logErrorMessage(TAG, logErrorMessage);
     }
 }

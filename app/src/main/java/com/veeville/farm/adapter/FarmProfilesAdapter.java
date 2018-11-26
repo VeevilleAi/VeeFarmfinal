@@ -2,7 +2,6 @@ package com.veeville.farm.adapter;
 
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,6 +11,7 @@ import com.squareup.picasso.Picasso;
 import com.veeville.farm.R;
 import com.veeville.farm.farmer.FarmerHelperClasses.FarmProfile;
 import com.veeville.farm.farmer.FarmerHelperClasses.FarmerProfile;
+import com.veeville.farm.helper.AppSingletonClass;
 import com.veeville.farm.helper.CircleTransform;
 
 import java.util.List;
@@ -23,7 +23,7 @@ public class FarmProfilesAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
 
 
     private List<Object> objects;
-    private String TAG = "FarmProfilesAdapter";
+    private final String TAG = FarmProfilesAdapter.class.getSimpleName();
 
     public FarmProfilesAdapter(List<Object> objects) {
         this.objects = objects;
@@ -66,7 +66,6 @@ public class FarmProfilesAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
     public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int position) {
         switch (holder.getItemViewType()) {
             case 0:
-                Log.d(TAG, "onBindViewHolder: ");
                 break;
             case 1:
                 handleFarmProfile((SingleFarmProfileHolder) holder, position);
@@ -76,8 +75,7 @@ public class FarmProfilesAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
 
 
     private void handleFarmProfile(SingleFarmProfileHolder holder, int position) {
-        Log.d(TAG, "handleFarmProfile: " + holder + position);
-
+        logMessage("" + holder + position);
     }
 
     @Override
@@ -103,5 +101,9 @@ public class FarmProfilesAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
 
 
         }
+    }
+
+    private void logMessage(String logMessage) {
+        AppSingletonClass.logDebugMessage(TAG, logMessage);
     }
 }

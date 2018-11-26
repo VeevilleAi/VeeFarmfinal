@@ -11,6 +11,7 @@ import android.view.MenuItem;
 import com.veeville.farm.R;
 import com.veeville.farm.adapter.MarketPlaceAdapter;
 import com.veeville.farm.farmer.FarmerHelperClasses.MarketPlace;
+import com.veeville.farm.helper.AppSingletonClass;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -18,12 +19,44 @@ import java.util.Objects;
 
 public class MarketPlaceActivity extends AppCompatActivity {
 
+    private final String TAG = MarketPlaceActivity.class.getSimpleName();
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_market_place);
         setUpToolbar();
         setUpRecyclerview();
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        logMessage("onStart called");
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        logMessage("onResume called");
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        logMessage("onPause called");
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        logMessage("onStop called");
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        logMessage("onDestroy called");
     }
 
     private void setUpToolbar() {
@@ -57,5 +90,9 @@ public class MarketPlaceActivity extends AppCompatActivity {
         marketPlaceList.add(new MarketPlace("https://img.freepik.com/free-vector/fresh-tomato_1053-566.jpg?size=338&ext=jpg", "Tomato", "6", "5", "Mangalore", "100", "600", "It reduces Cardiovascular disease, including heart attacks and strokes"));
         marketPlaceList.add(new MarketPlace("https://res.cloudinary.com/hellofresh/image/upload/f_auto,fl_lossy,q_auto,w_640/v1/hellofresh_s3/image/554a3abff8b25e1d268b456d.png", "Potato", "30", "25", "Bangalore", "1000", "30000", "potatoes are naturally fat free, cholesterol free, and low in sodium. In addition, potatoes are an excellent source of vitamin C, and those eaten with the skin are a good source of potassium"));
         return marketPlaceList;
+    }
+
+    private void logMessage(String logMessage) {
+        AppSingletonClass.logDebugMessage(TAG, logMessage);
     }
 }

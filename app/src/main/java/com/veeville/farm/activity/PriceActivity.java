@@ -9,12 +9,12 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 
 import com.veeville.farm.R;
 import com.veeville.farm.adapter.VegPriceAdapter;
+import com.veeville.farm.helper.AppSingletonClass;
 import com.veeville.farm.helper.ChatBotDatabase;
 import com.veeville.farm.helper.Fruit;
 import com.veeville.farm.helper.FruitNames;
@@ -32,7 +32,7 @@ import java.util.Objects;
 
 public class PriceActivity extends AppCompatActivity {
 
-    private String TAG = "PriceActivity";
+    private final String TAG = PriceActivity.class.getSimpleName();
     private List<Fruit> fruits = new ArrayList<>();
     private VegPriceAdapter adapter;
 
@@ -44,6 +44,35 @@ public class PriceActivity extends AppCompatActivity {
         setUpRecycerview();
     }
 
+    @Override
+    protected void onStart() {
+        super.onStart();
+        logMessage("onStart called");
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        logMessage("onResume called");
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        logMessage("onPause called");
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        logMessage("onStop called");
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        logMessage("onDestroy called");
+    }
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         onBackPressed();
@@ -66,7 +95,6 @@ public class PriceActivity extends AppCompatActivity {
         if (fruitList.size() > 0) {
             fruits.addAll(fruitList);
         } else {
-            Log.d(TAG, "setUpRecycerview: no data found");
             insertVegAndFruitToDatabase();
         }
         adapter = new VegPriceAdapter(fruits, getApplicationContext());
@@ -116,59 +144,14 @@ public class PriceActivity extends AppCompatActivity {
 
     }
 
-    private class AsyncTaskFruitPrice extends AsyncTask<Void, Void, List<Fruit>> {
-
-        @Override
-        protected List<Fruit> doInBackground(Void... voids) {
-            Document doc;
-            List<Fruit> names = new ArrayList<>();
-            try {
-                doc = Jsoup.connect("https://www.livechennai.com/Fruits_price_chennai.asp").get();
-                Log.d(TAG, "scrapeWebsite: " + doc.title());
-                Element table = doc.select("table").get(1);
-                Elements rows = table.select("tr");
-                Log.d(TAG, "doInBackground: rows:" + rows.size());
-                long timestamp = System.currentTimeMillis() / 1000;
-                for (int i = 1; i < rows.size(); i++) {
-
-                    try {
-                        Elements columns = rows.get(i).select("td");
-                        Log.d(TAG, "doInBackground: column size:" + columns.size());
-                        String nameWithValue = columns.get(1).text();
-                        String[] array = nameWithValue.split("\\(");
-                        String name = array[0].trim();
-                        String pieceorKg = "(" + array[1];
-                        String price = columns.get(2).text();
-                        Fruit fruit = new Fruit(name, price, pieceorKg, "", true, timestamp);
-                        Log.d(TAG, "doInBackground: " + fruit.toString());
-                        names.add(fruit);
-
-                    } catch (Exception e) {
-                        Log.d(TAG, "doInBackground: " + e.toString());
-                    }
-                }
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-
-
-            return names;
-        }
-
-        @Override
-        protected void onPostExecute(List<Fruit> fruits) {
-            super.onPostExecute(fruits);
-            updateDataBase(fruits);
-            new AsyncTaskVegPrice().execute();
-
-        }
+    private void logMessage(String logMessage) {
+        AppSingletonClass.logDebugMessage(TAG, logMessage);
     }
 
     private void updateDataBase(List<Fruit> fruits) {
         ChatBotDatabase database = new ChatBotDatabase(PriceActivity.this);
         database.updatePriceOfFruitAndVeg(fruits);
         for (Fruit fruit : fruits) {
-            Log.d(TAG, "updateDataBase: " + fruit.toString());
 
         }
         updateRecyclerview();
@@ -184,26 +167,21 @@ public class PriceActivity extends AppCompatActivity {
             List<Fruit> names = new ArrayList<>();
             try {
                 doc = Jsoup.connect("https://www.livechennai.com/Vegetable_price_chennai.asp").get();
-                Log.d(TAG, "scrapeWebsite: " + doc.title());
                 Element table = doc.select("table").get(1);
                 Elements rows = table.select("tr");
-                Log.d(TAG, "doInBackground: rows:" + rows.size());
                 long timestamp = System.currentTimeMillis() / 1000;
                 for (int i = 1; i < rows.size(); i++) {
                     try {
                         Elements columns = rows.get(i).select("td");
-                        Log.d(TAG, "doInBackground: column size:" + columns.size());
                         String nameWithValue = columns.get(1).text();
                         String[] array = nameWithValue.split("\\(");
                         String name = array[0].trim();
                         String pieceorKg = "(" + array[1];
                         String price = columns.get(2).text();
                         Fruit fruit = new Fruit(name, price, pieceorKg, "", false, timestamp);
-                        Log.d(TAG, "doInBackground: " + fruit.toString());
                         names.add(fruit);
 
                     } catch (Exception e) {
-                        Log.d(TAG, "doInBackground: " + e.toString());
                     }
                 }
             } catch (IOException e) {
@@ -244,4 +222,49 @@ public class PriceActivity extends AppCompatActivity {
         database.insertVegetableAndFruitPrices(vegNames);
         new AsyncTaskFruitPrice().execute();
     }
+
+    private class AsyncTaskFruitPrice extends AsyncTask<Void, Void, List<Fruit>> {
+
+        @Override
+        protected List<Fruit> doInBackground(Void... voids) {
+            Document doc;
+            List<Fruit> names = new ArrayList<>();
+            try {
+                doc = Jsoup.connect("https://www.livechennai.com/Fruits_price_chennai.asp").get();
+                Element table = doc.select("table").get(1);
+                Elements rows = table.select("tr");
+                long timestamp = System.currentTimeMillis() / 1000;
+                for (int i = 1; i < rows.size(); i++) {
+
+                    try {
+                        Elements columns = rows.get(i).select("td");
+                        String nameWithValue = columns.get(1).text();
+                        String[] array = nameWithValue.split("\\(");
+                        String name = array[0].trim();
+                        String pieceorKg = "(" + array[1];
+                        String price = columns.get(2).text();
+                        Fruit fruit = new Fruit(name, price, pieceorKg, "", true, timestamp);
+                        names.add(fruit);
+
+                    } catch (Exception e) {
+                        logMessage(e.toString());
+                    }
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+
+
+            return names;
+        }
+
+        @Override
+        protected void onPostExecute(List<Fruit> fruits) {
+            super.onPostExecute(fruits);
+            updateDataBase(fruits);
+            new AsyncTaskVegPrice().execute();
+
+        }
+    }
+
 }

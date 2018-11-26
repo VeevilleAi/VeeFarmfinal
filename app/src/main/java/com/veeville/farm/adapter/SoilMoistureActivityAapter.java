@@ -7,7 +7,6 @@ import android.support.v7.widget.CardView;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -22,6 +21,7 @@ import com.github.mikephil.charting.data.LineData;
 import com.github.mikephil.charting.data.LineDataSet;
 import com.github.mikephil.charting.interfaces.datasets.ILineDataSet;
 import com.veeville.farm.R;
+import com.veeville.farm.helper.AppSingletonClass;
 import com.veeville.farm.helper.CustomMarkerView;
 import com.veeville.farm.helper.DashBoardDataClasses;
 
@@ -40,7 +40,7 @@ public class SoilMoistureActivityAapter extends RecyclerView.Adapter<RecyclerVie
 
     private Context context;
     private List<Object> dataList;
-    private String TAG = "SoilMoistureActivityAapter";
+    private final String TAG = SoilMoistureActivityAapter.class.getSimpleName();
 
     public SoilMoistureActivityAapter(Context context, List<Object> dataList) {
         this.context = context;
@@ -85,7 +85,6 @@ public class SoilMoistureActivityAapter extends RecyclerView.Adapter<RecyclerVie
 
         switch (holder.getItemViewType()) {
             case 0:
-                Log.d(TAG, "onBindViewHolder: ");
                 break;
             case 1:
                 setUpgraphData((SoilPhGraphHolder) holder, position);
@@ -95,6 +94,7 @@ public class SoilMoistureActivityAapter extends RecyclerView.Adapter<RecyclerVie
 
     @Override
     public int getItemCount() {
+        logMessage("size:" + dataList.size());
         return dataList.size();
     }
 
@@ -182,7 +182,6 @@ public class SoilMoistureActivityAapter extends RecyclerView.Adapter<RecyclerVie
                     SimpleDateFormat month_date = new SimpleDateFormat("MMMM", Locale.ENGLISH);
                     calendar.add(Calendar.MONTH, -i);
                     String temp = month_date.format(calendar.getTime());
-                    Log.d(TAG, "setXAxisValues: " + temp);
                     xVals.add(temp);
                 }
                 break;
@@ -195,7 +194,6 @@ public class SoilMoistureActivityAapter extends RecyclerView.Adapter<RecyclerVie
                     SimpleDateFormat month_date = new SimpleDateFormat("MMMM", Locale.ENGLISH);
                     calendar.add(Calendar.MONTH, -i);
                     String temp = month_date.format(calendar.getTime());
-                    Log.d(TAG, "setXAxisValues: " + temp);
                     xVals.add(temp);
                 }
 
@@ -400,6 +398,10 @@ public class SoilMoistureActivityAapter extends RecyclerView.Adapter<RecyclerVie
             mChart = view.findViewById(R.id.linechart);
             recyclerView = view.findViewById(R.id.recyclerview);
         }
+    }
+
+    private void logMessage(String logMessage) {
+        AppSingletonClass.logDebugMessage(TAG, logMessage);
     }
 }
 

@@ -15,6 +15,7 @@ import com.bumptech.glide.Glide;
 import com.veeville.farm.R;
 import com.veeville.farm.farmer.FarmDescriptionActivity;
 import com.veeville.farm.farmer.FarmerHelperClasses.Farm;
+import com.veeville.farm.helper.AppSingletonClass;
 
 import java.util.List;
 
@@ -25,7 +26,7 @@ public class FarmAdapter extends RecyclerView.Adapter<FarmAdapter.SingleFarmHold
 
     private List<Farm> farms;
     private Context context;
-
+    private final String TAG = FarmAdapter.class.getSimpleName();
     public FarmAdapter(List<Farm> farms, Context context) {
         this.farms = farms;
         this.context = context;
@@ -59,7 +60,12 @@ public class FarmAdapter extends RecyclerView.Adapter<FarmAdapter.SingleFarmHold
 
     @Override
     public int getItemCount() {
+        logMessage("size;" + farms.size());
         return farms.size();
+    }
+
+    private void logMessage(String logMessage) {
+        AppSingletonClass.logDebugMessage(TAG, logMessage);
     }
 
     class SingleFarmHolder extends RecyclerView.ViewHolder {
@@ -76,4 +82,5 @@ public class FarmAdapter extends RecyclerView.Adapter<FarmAdapter.SingleFarmHold
             cropName = view.findViewById(R.id.crop_name);
         }
     }
+
 }

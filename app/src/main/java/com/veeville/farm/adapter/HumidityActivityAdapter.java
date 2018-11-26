@@ -7,7 +7,6 @@ import android.support.v7.widget.CardView;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -22,6 +21,7 @@ import com.github.mikephil.charting.data.LineData;
 import com.github.mikephil.charting.data.LineDataSet;
 import com.github.mikephil.charting.interfaces.datasets.ILineDataSet;
 import com.veeville.farm.R;
+import com.veeville.farm.helper.AppSingletonClass;
 import com.veeville.farm.helper.CustomMarkerView;
 import com.veeville.farm.helper.DashBoardDataClasses;
 
@@ -38,7 +38,7 @@ import java.util.Random;
 public class HumidityActivityAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
     private List<Object> humidityDataList;
-    private String TAG = "HumidityActivityAdapter";
+    private final String TAG = HumidityActivityAdapter.class.getSimpleName();
     private Context context;
 
     public HumidityActivityAdapter(Context context, List<Object> humidityDataList) {
@@ -84,7 +84,6 @@ public class HumidityActivityAdapter extends RecyclerView.Adapter<RecyclerView.V
     public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int position) {
         switch (holder.getItemViewType()) {
             case 0:
-                Log.d(TAG, "onBindViewHolder: ");
                 break;
             case 1:
                 setUpgraphData((HumidityGraphCardHolder) holder, position);
@@ -95,6 +94,7 @@ public class HumidityActivityAdapter extends RecyclerView.Adapter<RecyclerView.V
 
     @Override
     public int getItemCount() {
+        logMessage("size:" + humidityDataList.size());
         return humidityDataList.size();
     }
 
@@ -182,7 +182,6 @@ public class HumidityActivityAdapter extends RecyclerView.Adapter<RecyclerView.V
                     SimpleDateFormat month_date = new SimpleDateFormat("MMMM", Locale.ENGLISH);
                     calendar.add(Calendar.MONTH, -i);
                     String temp = month_date.format(calendar.getTime());
-                    Log.d(TAG, "setXAxisValues: " + temp);
                     xVals.add(temp);
                 }
                 break;
@@ -195,7 +194,6 @@ public class HumidityActivityAdapter extends RecyclerView.Adapter<RecyclerView.V
                     SimpleDateFormat month_date = new SimpleDateFormat("MMMM", Locale.ENGLISH);
                     calendar.add(Calendar.MONTH, -i);
                     String temp = month_date.format(calendar.getTime());
-                    Log.d(TAG, "setXAxisValues: " + temp);
                     xVals.add(temp);
                 }
 
@@ -378,4 +376,7 @@ public class HumidityActivityAdapter extends RecyclerView.Adapter<RecyclerView.V
         }
     }
 
+    private void logMessage(String logMessage) {
+        AppSingletonClass.logDebugMessage(TAG, logMessage);
+    }
 }

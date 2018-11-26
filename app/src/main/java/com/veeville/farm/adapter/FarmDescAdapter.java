@@ -7,7 +7,6 @@ import android.support.annotation.NonNull;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -30,6 +29,7 @@ import com.veeville.farm.farmer.FarmerHelperClasses.FarmDesc;
 import com.veeville.farm.farmer.FarmerHelperClasses.FarmDescMap;
 import com.veeville.farm.farmer.FarmerHelperClasses.SoilTestResult;
 import com.veeville.farm.farmer.ShowFarmInMapActivity;
+import com.veeville.farm.helper.AppSingletonClass;
 import com.veeville.farm.helper.ChatmessageDataClasses;
 
 import java.util.ArrayList;
@@ -41,7 +41,7 @@ import java.util.List;
 public class FarmDescAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
     private List<Object> objects;
-    private String TAG = "FarmDescAdapter";
+    private final String TAG = FarmDescAdapter.class.getSimpleName();
     private Context context;
     private String farmname;
 
@@ -147,7 +147,7 @@ public class FarmDescAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
 
     private void handleSoilTestResultsGraph(final SoilTestGraphHolder holder, int position) {
 
-        Log.d(TAG, "handleSoilTestResultsGraph: " + position);
+        logMessage("" + position);
         ArrayList<Entry> yvalues = new ArrayList<>();
         yvalues.add(new Entry(20f, 0));
         yvalues.add(new Entry(20f, 1));
@@ -199,7 +199,6 @@ public class FarmDescAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
     }
 
     private void handleSoilTestResults(SoilTestResultHolder holder, int position) {
-        Log.d(TAG, "handleSoilTestResults: " + position);
         SoilTestResult result = (SoilTestResult) objects.get(position);
         LinearLayoutManager manager = new LinearLayoutManager(context);
         holder.recyclerView.setLayoutManager(manager);
@@ -208,7 +207,7 @@ public class FarmDescAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
     }
 
     private void handleLightCard(LightHolder holder, int position) {
-        Log.d(TAG, "handleLightCard: " + position);
+        logMessage("" + position);
         holder.light_card.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -219,12 +218,11 @@ public class FarmDescAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
     }
 
     private void handleFarmDesc(FarmDescCardHolder holder, int position) {
-        Log.d(TAG, "handleFarmDesc: " + position);
-        Log.d(TAG, "handleFarmDesc: " + holder);
+        logMessage("" + holder + position);
     }
 
     private void handleFarmDescMap(final FarmDescStaticMapHolder holder, int position) {
-        Log.d(TAG, "handleFarmDescMap: " + position);
+        logMessage("" + position);
         String url = "https://maps.googleapis.com/maps/api/staticmap?maptype=hybrid&size=600x300&zoom=15&key=AIzaSyBeilqJcTJPyZ--59DXSsK1mWrWL3guh8k&markers=13.053990,77.572937";
         Glide.with(context).load(url).into(holder.imageView);
 
@@ -240,8 +238,7 @@ public class FarmDescAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
     }
 
     private void handleSoilPh(SoilPhHolder holder, int position) {
-        ChatmessageDataClasses.SoilPH soilPH = (ChatmessageDataClasses.SoilPH) objects.get(position);
-        Log.d(TAG, "handleSoilPh: " + soilPH);
+        logMessage("" + position);
         holder.soilPhCard.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -252,8 +249,7 @@ public class FarmDescAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
     }
 
     private void handleSoilTmeprature(SoilTemperatureHolder holder, int position) {
-        ChatmessageDataClasses.SoilTemperature soilTemperature = (ChatmessageDataClasses.SoilTemperature) objects.get(position);
-        Log.d(TAG, "handleSoilTmeprature: " + soilTemperature);
+        logMessage("" + position);
         holder.soilTempCard.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -438,4 +434,9 @@ public class FarmDescAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         }
 
     }
+
+    private void logMessage(String logMessage) {
+        AppSingletonClass.logDebugMessage(TAG, logMessage);
+    }
+
 }

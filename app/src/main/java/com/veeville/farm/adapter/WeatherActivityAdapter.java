@@ -13,6 +13,7 @@ import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.veeville.farm.R;
+import com.veeville.farm.helper.AppSingletonClass;
 import com.veeville.farm.helper.ChatmessageDataClasses;
 
 import java.util.List;
@@ -24,6 +25,7 @@ public class WeatherActivityAdapter extends RecyclerView.Adapter<WeatherActivity
 
     private List<ChatmessageDataClasses.WeatherData> weatherDataList;
     private Context context;
+    private final String TAG = WeatherActivityAdapter.class.getSimpleName();
 
     public WeatherActivityAdapter(List<ChatmessageDataClasses.WeatherData> weatherData, Context context) {
         this.context = context;
@@ -61,6 +63,7 @@ public class WeatherActivityAdapter extends RecyclerView.Adapter<WeatherActivity
 
     @Override
     public int getItemCount() {
+        logMessage("size:" + weatherDataList.size());
         return weatherDataList.size();
     }
 
@@ -120,4 +123,7 @@ public class WeatherActivityAdapter extends RecyclerView.Adapter<WeatherActivity
         }
     }
 
+    private void logMessage(String logMessage) {
+        AppSingletonClass.logDebugMessage(TAG, logMessage);
+    }
 }

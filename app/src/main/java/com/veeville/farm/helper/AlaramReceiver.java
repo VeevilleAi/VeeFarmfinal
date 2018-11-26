@@ -6,7 +6,6 @@ import android.app.PendingIntent;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
-import android.util.Log;
 import android.widget.Toast;
 
 import com.veeville.farm.R;
@@ -18,7 +17,7 @@ import static android.content.Context.NOTIFICATION_SERVICE;
  */
 
 public class AlaramReceiver extends BroadcastReceiver {
-    private String TAG = "hello";
+    private final String TAG = AlaramReceiver.class.getSimpleName();
     private Context context;
 
     @Override
@@ -27,7 +26,6 @@ public class AlaramReceiver extends BroadcastReceiver {
         Toast.makeText(context, "Howdy partner", Toast.LENGTH_LONG).show();
         String title = intent.getStringExtra("title");
         String body = intent.getStringExtra("body");
-        Log.d(TAG, "onReceive: title:" + title + "\tbody:" + body);
         showNotification(title, body);
     }
 
@@ -45,6 +43,5 @@ public class AlaramReceiver extends BroadcastReceiver {
         noti.flags |= Notification.FLAG_AUTO_CANCEL;
         assert notificationManager != null;
         notificationManager.notify(0, noti);
-        Log.d(TAG, "showNotification: ");
     }
 }

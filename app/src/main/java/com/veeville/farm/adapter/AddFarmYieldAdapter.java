@@ -9,6 +9,7 @@ import android.widget.TextView;
 
 import com.veeville.farm.R;
 import com.veeville.farm.farmer.FarmerHelperClasses.Yield;
+import com.veeville.farm.helper.AppSingletonClass;
 
 import java.util.List;
 
@@ -18,6 +19,7 @@ import java.util.List;
 public class AddFarmYieldAdapter extends RecyclerView.Adapter<AddFarmYieldAdapter.AddSingleYearYieldHolder> {
 
 
+    private final String TAG = AddFarmYieldAdapter.class.getSimpleName();
     private List<Yield> yields;
 
     public AddFarmYieldAdapter(List<Yield> yields) {
@@ -41,6 +43,7 @@ public class AddFarmYieldAdapter extends RecyclerView.Adapter<AddFarmYieldAdapte
 
     @Override
     public int getItemCount() {
+        logMessage("count:" + yields.size());
         return yields.size();
     }
 
@@ -53,5 +56,9 @@ public class AddFarmYieldAdapter extends RecyclerView.Adapter<AddFarmYieldAdapte
             name = view.findViewById(R.id.name);
             quantity = view.findViewById(R.id.quantity);
         }
+    }
+
+    private void logMessage(String logMessage) {
+        AppSingletonClass.logDebugMessage(TAG, logMessage);
     }
 }

@@ -47,6 +47,7 @@
     <string name="percentage">%</string>
     <string name="relative">Relative</string>
     <string name="todo">TODO</string>
+    <string name="your_string_here"><u>ph Scale</u>.</string>
     <string name="humidity">Humidity</string>
     <string name="_69_soil_level_n70_1_m_above_soil_level">69% soil level 70% 1 m above Soil level</string>
     <string name="_6am">6am</string>

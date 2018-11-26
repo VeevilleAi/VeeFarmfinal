@@ -5,7 +5,6 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ProgressBar;
@@ -34,9 +33,12 @@ import java.util.Objects;
 public class WeatherActivity extends AppCompatActivity {
 
     private WeatherActivityAdapter adapter;
-    private String TAG = "WeatherActivity";
+    private final String TAG = WeatherActivity.class.getSimpleName();
     private ProgressBar progressBar;
     private List<ChatmessageDataClasses.WeatherData> weatherDataList = new ArrayList<>();
+
+    public WeatherActivity() {
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -55,6 +57,36 @@ public class WeatherActivity extends AppCompatActivity {
         setSupportActionBar(toolbar);
         Objects.requireNonNull(getSupportActionBar()).setDisplayHomeAsUpEnabled(true);
 
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        logMessage("onStart called");
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        logMessage("onResume called");
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        logMessage("onPause called");
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        logMessage("onStop called");
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        logMessage("onDestroy called");
     }
 
     private void setUpWeatherRecyclerview() {
@@ -102,9 +134,9 @@ public class WeatherActivity extends AppCompatActivity {
                     Toast.makeText(WeatherActivity.this, "something went wrong,please try again.", Toast.LENGTH_SHORT).show();
                     try {
                         String s = new String(error.networkResponse.data);
-                        Log.d(TAG, "onErrorResponse: error message:" + s);
+                        logErrorMessage(s);
                     } catch (Exception e) {
-                        Log.e(TAG, "onErrorResponse: " + e.toString());
+                        logErrorMessage(e.toString());
                     }
                 }
             }
@@ -117,7 +149,6 @@ public class WeatherActivity extends AppCompatActivity {
         try {
             JSONObject data = jsonObject.getJSONObject("data");
             JSONArray weather = data.getJSONArray("weather");
-            Log.d(TAG, "performWeatherData: days:" + weather.length());
             for (int i = 0; i < weather.length(); i++) {
                 JSONObject oneDayDetails = weather.getJSONObject(i);
                 String date = oneDayDetails.getString("date");
@@ -160,7 +191,6 @@ public class WeatherActivity extends AppCompatActivity {
                     weatherIconUrl = weatherIconUrlArray.getJSONObject(0).getString("value");
                     houlyDataLists.add(threeHOurlyStringList);
                 }
-                Log.d(TAG, "performWeatherData: hourly size:" + houlyDataLists.size());
                 long timestamp = System.currentTimeMillis();
                 ChatmessageDataClasses.WeatherData weatherData = new ChatmessageDataClasses.WeatherData(date, city, weatherIconUrl, maxTemperature, prec, hum, wind, houlyDataLists, timestamp);
                 weatherDataList.add(weatherData);
@@ -168,31 +198,16 @@ public class WeatherActivity extends AppCompatActivity {
             }
             adapter.notifyDataSetChanged();
         } catch (Exception e) {
-            e.printStackTrace();
+            logErrorMessage(e.toString());
         }
     }
 
-    @Override
-    protected void onStop() {
-        super.onStop();
-        AppSingletonClass.logDebugMessage(TAG, "ontop called");
+
+    private void logMessage(String logMessage) {
+        AppSingletonClass.logDebugMessage(TAG, logMessage);
     }
 
-    @Override
-    protected void onPause() {
-        super.onPause();
-        AppSingletonClass.logDebugMessage(TAG, "onPause called");
-    }
-
-    @Override
-    protected void onResume() {
-        super.onResume();
-        AppSingletonClass.logDebugMessage(TAG, "onResume called");
-    }
-
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        AppSingletonClass.logDebugMessage(TAG, "onDestroy called");
+    private void logErrorMessage(String logErrorMessage) {
+        AppSingletonClass.logErrorMessage(TAG, logErrorMessage);
     }
 }

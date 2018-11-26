@@ -11,11 +11,13 @@ import android.widget.ImageView;
 
 import com.squareup.picasso.Picasso;
 import com.veeville.farm.R;
+import com.veeville.farm.helper.AppSingletonClass;
 
 import java.util.Objects;
 
 public class ImageShowActivity extends AppCompatActivity {
 
+    private final String TAG = ImageShowActivity.class.getSimpleName();
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -34,7 +36,38 @@ public class ImageShowActivity extends AppCompatActivity {
             String url = getIntent().getStringExtra("image_url");
             Picasso.with(getApplicationContext()).load(url).into(imageView);
         }
+        logMessage("onCreate called");
 
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        logMessage("onStart called");
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        logMessage("onResume called");
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        logMessage("onPause called");
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        logMessage("onStop called");
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        logMessage("onDestroy called");
     }
 
     @Override
@@ -42,4 +75,9 @@ public class ImageShowActivity extends AppCompatActivity {
         onBackPressed();
         return super.onOptionsItemSelected(item);
     }
+
+    private void logMessage(String logMessage) {
+        AppSingletonClass.logDebugMessage(TAG, logMessage);
+    }
+
 }

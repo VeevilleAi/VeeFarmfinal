@@ -10,7 +10,6 @@ import android.support.annotation.NonNull;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -28,6 +27,7 @@ import android.widget.Toast;
 
 import com.veeville.farm.R;
 import com.veeville.farm.helper.AlaramReceiver;
+import com.veeville.farm.helper.AppSingletonClass;
 import com.veeville.farm.helper.DashBoardDataClasses;
 
 import java.util.Calendar;
@@ -39,7 +39,7 @@ import java.util.List;
 public class WorkFlowAdapter extends RecyclerView.Adapter<WorkFlowAdapter.SingleCardWorkHolder> {
     private Context context;
     private boolean wantTRepeat = false;
-    private String TAG = "WorkFlowAdapter";
+    private final String TAG = WorkFlowAdapter.class.getSimpleName();
     private List<DashBoardDataClasses.WorkFlowData> workFlowDataList;
 
     public WorkFlowAdapter(List<DashBoardDataClasses.WorkFlowData> workFlowDataList, Context context) {
@@ -73,6 +73,7 @@ public class WorkFlowAdapter extends RecyclerView.Adapter<WorkFlowAdapter.Single
 
     @Override
     public int getItemCount() {
+        logMessage("size:" + workFlowDataList.size());
         return workFlowDataList.size();
     }
 
@@ -185,7 +186,6 @@ public class WorkFlowAdapter extends RecyclerView.Adapter<WorkFlowAdapter.Single
                 intent.putExtra("title", "Remainder");
                 intent.putExtra("body", "spray water reminder");
                 alarmIntent = PendingIntent.getBroadcast(context, 0, intent, 0);
-                Log.d(TAG, "onClick: alaram set at " + calendar.getTimeInMillis());
                 assert alarmMgr != null;
                 alarmMgr.set(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), alarmIntent);
                 Toast.makeText(context, "Reminder set ", Toast.LENGTH_SHORT).show();
@@ -217,7 +217,6 @@ public class WorkFlowAdapter extends RecyclerView.Adapter<WorkFlowAdapter.Single
                     public void onDateSet(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
 
                         String date = dayOfMonth + "-" + (monthOfYear + 1) + "-" + year;
-                        Log.d(TAG, "onDateSet: date:" + date);
                         calendar.set(Calendar.DAY_OF_MONTH, dayOfMonth);
                         calendar.set(Calendar.MONTH, monthOfYear);
                         calendar.set(Calendar.YEAR, year);
@@ -242,12 +241,15 @@ public class WorkFlowAdapter extends RecyclerView.Adapter<WorkFlowAdapter.Single
                                 timePicker.setText(time);
                                 calendar.set(Calendar.MINUTE, minute);
                                 calendar.set(Calendar.HOUR_OF_DAY, hourOfDay);
-                                Log.d(TAG, "onTimeSet: time:" + time);
                             }
                         }, mHour, mMinute, false);
                 timePickerDialog.show();
             }
         });
 
+    }
+
+    private void logMessage(String logMessage) {
+        AppSingletonClass.logDebugMessage(TAG, logMessage);
     }
 }

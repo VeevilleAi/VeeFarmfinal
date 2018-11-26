@@ -22,6 +22,7 @@ import com.veeville.farm.activity.TemperatureActivity;
 import com.veeville.farm.activity.WeatherActivity;
 import com.veeville.farm.farmer.FarmsActivity;
 import com.veeville.farm.farmer.MarketPlaceActivity;
+import com.veeville.farm.helper.AppSingletonClass;
 import com.veeville.farm.helper.DashBoardClass;
 
 import java.util.List;
@@ -31,6 +32,7 @@ import java.util.List;
  */
 public class AppDashBoardAdapter extends RecyclerView.Adapter<AppDashBoardAdapter.SingleCardHolder> {
 
+    private final String TAG = AppDashBoardAdapter.class.getSimpleName();
     private List<DashBoardClass> dashBoardClasses;
     private Context context;
 
@@ -100,6 +102,7 @@ public class AppDashBoardAdapter extends RecyclerView.Adapter<AppDashBoardAdapte
 
     @Override
     public int getItemCount() {
+        logMessage("size:" + dashBoardClasses.size());
         return dashBoardClasses.size();
     }
 
@@ -117,4 +120,9 @@ public class AppDashBoardAdapter extends RecyclerView.Adapter<AppDashBoardAdapte
 
         }
     }
+
+    private void logMessage(String logMessage) {
+        AppSingletonClass.logDebugMessage(TAG, logMessage);
+    }
+
 }

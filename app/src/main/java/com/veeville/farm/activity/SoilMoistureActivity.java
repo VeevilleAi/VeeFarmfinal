@@ -6,7 +6,6 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.text.format.DateFormat;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 
@@ -16,7 +15,6 @@ import com.veeville.farm.helper.AppSingletonClass;
 import com.veeville.farm.helper.DashBoardDataClasses;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Calendar;
 import java.util.List;
 import java.util.Objects;
@@ -24,7 +22,7 @@ import java.util.Random;
 
 public class SoilMoistureActivity extends AppCompatActivity {
 
-    private final String TAG = "SoilMoistureActivity";
+    private final String TAG = SoilMoistureActivity.class.getSimpleName();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -32,7 +30,37 @@ public class SoilMoistureActivity extends AppCompatActivity {
         setContentView(R.layout.activity_soil_moisture);
         setUpUpToolbar();
         setUpSoilMoistureRecyclerview();
-        AppSingletonClass.logDebugMessage(TAG, TAG + " started");
+        logMessage("onCreate called");
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        logMessage("onStart called");
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        logMessage("onResume called");
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        logMessage("onPause called");
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        logMessage("onStop called");
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        logMessage("onDestroy called");
     }
 
     private void setUpUpToolbar() {
@@ -87,7 +115,6 @@ public class SoilMoistureActivity extends AppCompatActivity {
         months.add(DateFormat.format("MMMM", calendar.getTime()).toString());
         calendar.add(Calendar.MONTH, -1);
         months.add(DateFormat.format("MMMM", calendar.getTime()).toString());
-        Log.d(TAG, "formData: " + Arrays.toString(months.toArray()));
         for (int j = 1; j < 2; j++) {
             String value;
             value = "0" + j;
@@ -99,7 +126,6 @@ public class SoilMoistureActivity extends AppCompatActivity {
         }
         DashBoardDataClasses.SoilMoistureData soilMoistureData = new DashBoardDataClasses.SoilMoistureData(months.get(0), "Bengaluru", soilMoistureValues1);
         //soilMoistureDatas.add(soilMoistureData);
-        Log.d(TAG, "formData: " + soilMoistureData);
         for (int i = 0; i < 1; i++) {
             List<DashBoardDataClasses.SoilMoistureData.SoilMoistureValues> soilMoistureValues2 = new ArrayList<>();
             for (int j = 1; j < 31; j++) {
@@ -120,6 +146,10 @@ public class SoilMoistureActivity extends AppCompatActivity {
         }
         soilMoistureDatas.add(new DashBoardDataClasses.SensorGraph("1D", 0));
         return soilMoistureDatas;
+    }
+
+    private void logMessage(String logMessage) {
+        AppSingletonClass.logDebugMessage(TAG, logMessage);
     }
 
 

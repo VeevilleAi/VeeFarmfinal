@@ -7,7 +7,6 @@ import android.support.v7.widget.CardView;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -22,6 +21,7 @@ import com.github.mikephil.charting.data.LineData;
 import com.github.mikephil.charting.data.LineDataSet;
 import com.github.mikephil.charting.interfaces.datasets.ILineDataSet;
 import com.veeville.farm.R;
+import com.veeville.farm.helper.AppSingletonClass;
 import com.veeville.farm.helper.CustomMarkerView;
 import com.veeville.farm.helper.DashBoardDataClasses;
 
@@ -40,7 +40,7 @@ public class TemperatureActivityAdapter extends RecyclerView.Adapter<RecyclerVie
 
     private Context context;
     private List<Object> temperatureDataList;
-    private String TAG = "TemperatureActivityAdapter";
+    private final String TAG = TemperatureActivityAdapter.class.getSimpleName();
 
     public TemperatureActivityAdapter(Context context, List<Object> temperatureDataList) {
         this.context = context;
@@ -87,7 +87,6 @@ public class TemperatureActivityAdapter extends RecyclerView.Adapter<RecyclerVie
 
         switch (holder.getItemViewType()) {
             case 0:
-                Log.d(TAG, "onBindViewHolder: ");
                 break;
             case 1:
                 setUpgraphData((SoilTempGraphHolder) holder, position);
@@ -97,6 +96,7 @@ public class TemperatureActivityAdapter extends RecyclerView.Adapter<RecyclerVie
 
     @Override
     public int getItemCount() {
+        logMessage("Size:" + temperatureDataList.size());
         return temperatureDataList.size();
     }
 
@@ -185,7 +185,6 @@ public class TemperatureActivityAdapter extends RecyclerView.Adapter<RecyclerVie
                     SimpleDateFormat month_date = new SimpleDateFormat("MMMM", Locale.ENGLISH);
                     calendar.add(Calendar.MONTH, -i);
                     String temp = month_date.format(calendar.getTime());
-                    Log.d(TAG, "setXAxisValues: " + temp);
                     xVals.add(temp);
                 }
                 break;
@@ -198,7 +197,6 @@ public class TemperatureActivityAdapter extends RecyclerView.Adapter<RecyclerVie
                     SimpleDateFormat month_date = new SimpleDateFormat("MMMM", Locale.ENGLISH);
                     calendar.add(Calendar.MONTH, -i);
                     String temp = month_date.format(calendar.getTime());
-                    Log.d(TAG, "setXAxisValues: " + temp);
                     xVals.add(temp);
                 }
 
@@ -379,5 +377,7 @@ public class TemperatureActivityAdapter extends RecyclerView.Adapter<RecyclerVie
         }
     }
 
-
+    private void logMessage(String logMessage) {
+        AppSingletonClass.logDebugMessage(TAG, logMessage);
+    }
 }

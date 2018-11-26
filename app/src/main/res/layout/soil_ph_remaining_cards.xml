@@ -1,20 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
 <android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="170dp"
+    android:layout_height="150dp"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:layout_marginLeft="15dp"
-    android:layout_marginRight="15dp"
-    android:layout_marginTop="15dp"
-    app:cardCornerRadius="15dp"
     android:id="@+id/soilph_card"
     app:cardBackgroundColor="@color/white"
+    android:layout_margin="10dp"
     >
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical"
-        android:padding="15dp"
+        android:padding="10dp"
 
         >
         <LinearLayout
@@ -30,7 +27,7 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="@string/todo"
+                    android:text="Today"
                     android:id="@+id/date"
                     android:textSize="20sp"
                     android:fontFamily="@font/bitstream_utura_md_md_medium"
@@ -76,7 +73,7 @@
             />
         <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
+            android:layout_height="wrap_content">
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -89,6 +86,15 @@
         </RelativeLayout>
 
 
+        <TextView
+            android:id="@+id/show_phscale"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_gravity="end"
+            android:linksClickable="true"
+            android:padding="5dp"
+            android:text="@string/your_string_here"
+            android:textColorLink="@color/black" />
 
     </LinearLayout>
 

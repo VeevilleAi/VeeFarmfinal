@@ -19,7 +19,7 @@ import java.util.Objects;
 
 public class HumidityActivity extends AppCompatActivity {
 
-    private String TAG = "HumidityActivity";
+    private final String TAG = HumidityActivity.class.getSimpleName();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -27,7 +27,37 @@ public class HumidityActivity extends AppCompatActivity {
         setContentView(R.layout.activity_humidity);
         setUpToolbar();
         setUpHumidityRecyclerview();
-        AppSingletonClass.logDebugMessage(TAG, "HumidityActivity started");
+        logMessage("onCreate called");
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        logMessage("onStart called");
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        logMessage("onResume called");
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        logMessage("onPause called");
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        logMessage("onStop called");
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        logMessage("onDestroy called");
     }
 
     private void setUpToolbar() {
@@ -70,4 +100,7 @@ public class HumidityActivity extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
+    private void logMessage(String logMessage) {
+        AppSingletonClass.logDebugMessage(TAG, logMessage);
+    }
 }

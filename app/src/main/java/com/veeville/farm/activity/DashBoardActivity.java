@@ -8,7 +8,6 @@ import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 
@@ -32,7 +31,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class DashBoardActivity extends AppCompatActivity {
-    private String TAG = "DashBoardActivity";
+    private String TAG = DashBoardActivity.class.getSimpleName();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -41,6 +40,56 @@ public class DashBoardActivity extends AppCompatActivity {
         setUpToolbar();
         setupRecyclerview();
         checkDatabaseForPrice();
+        String logMessage = "onCreate Called";
+        logMessage(logMessage);
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        logMessage("onStart called");
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        logMessage("onResume called");
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        logMessage("onPause Called");
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        logMessage("onStop called");
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        logMessage("onDestroy called");
+    }
+
+    @Override
+    protected void onRestart() {
+        super.onRestart();
+        logMessage("onRestart called");
+    }
+
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        logMessage("onSaveInstanceState called");
+    }
+
+    @Override
+    protected void onRestoreInstanceState(Bundle savedInstanceState) {
+        super.onRestoreInstanceState(savedInstanceState);
+        logMessage("onRestoreInstanceState called");
     }
 
     @Override
@@ -93,113 +142,6 @@ public class DashBoardActivity extends AppCompatActivity {
 
     }
 
-
-    class AsyncTaskVegPrice extends AsyncTask<Void, Void, List<Fruit>> {
-
-
-        @Override
-        protected List<Fruit> doInBackground(Void... voids) {
-            Document doc;
-            List<Fruit> names = new ArrayList<>();
-            try {
-                doc = Jsoup.connect("https://www.livechennai.com/Vegetable_price_chennai.asp").get();
-                Log.d(TAG, "scrapeWebsite: " + doc.title());
-                Element table = doc.select("table").get(1);
-                Elements rows = table.select("tr");
-                Log.d(TAG, "doInBackground: rows:" + rows.size());
-                long timestamp = System.currentTimeMillis() / 1000;
-                for (int i = 1; i < rows.size(); i++) {
-                    try {
-                        Elements columns = rows.get(i).select("td");
-                        Log.d(TAG, "doInBackground: column size:" + columns.size());
-                        String nameWithValue = columns.get(1).text();
-                        String[] array = nameWithValue.split("\\(");
-                        String name = array[0].trim();
-                        String pieceorKg = "(" + array[1];
-                        String price = columns.get(2).text();
-                        Fruit fruit = new Fruit(name, price, pieceorKg, "", false, timestamp);
-                        Log.d(TAG, "doInBackground: " + fruit.toString());
-                        names.add(fruit);
-
-                    } catch (Exception e) {
-                        Log.d(TAG, "doInBackground: " + e.toString());
-                    }
-                }
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-            return names;
-        }
-
-        @Override
-        protected void onPostExecute(List<Fruit> fruitList) {
-            super.onPostExecute(fruitList);
-            updateDataBase(fruitList);
-        }
-    }
-
-    private class AsyncTaskFruitPrice extends AsyncTask<Void, Void, List<Fruit>> {
-
-        @Override
-        protected List<Fruit> doInBackground(Void... voids) {
-            Document doc;
-            List<Fruit> names = new ArrayList<>();
-            try {
-                doc = Jsoup.connect("https://www.livechennai.com/Fruits_price_chennai.asp").get();
-                Log.d(TAG, "scrapeWebsite: " + doc.title());
-                Element table = doc.select("table").get(1);
-                Elements rows = table.select("tr");
-                Log.d(TAG, "doInBackground: rows:" + rows.size());
-                long timestamp = System.currentTimeMillis() / 1000;
-                for (int i = 1; i < rows.size(); i++) {
-
-                    try {
-                        Elements columns = rows.get(i).select("td");
-                        Log.d(TAG, "doInBackground: column size:" + columns.size());
-                        String nameWithValue = columns.get(1).text();
-                        String[] array = nameWithValue.split("\\(");
-                        String name = array[0].trim();
-                        String pieceorKg = "(" + array[1];
-                        String price = columns.get(2).text();
-                        Fruit fruit = new Fruit(name, price, pieceorKg, "", true, timestamp);
-                        Log.d(TAG, "doInBackground: " + fruit.toString());
-                        names.add(fruit);
-
-                    } catch (Exception e) {
-                        Log.d(TAG, "doInBackground: " + e.toString());
-                    }
-                }
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-
-
-            return names;
-        }
-
-        @Override
-        protected void onPostExecute(List<Fruit> fruits) {
-            super.onPostExecute(fruits);
-            updateDataBase(fruits);
-            new AsyncTaskVegPrice().execute();
-
-        }
-    }
-
-    private void updateDataBase(List<Fruit> fruits) {
-        ChatBotDatabase database = new ChatBotDatabase(DashBoardActivity.this);
-        database.updatePriceOfFruitAndVeg(fruits);
-    }
-
-    private void setupRecyclerview() {
-        LinearLayoutManager manager = new GridLayoutManager(getApplicationContext(), 2);
-        RecyclerView recyclerView = findViewById(R.id.recyclerview);
-        recyclerView.setLayoutManager(manager);
-        AppDashBoardAdapter adapter = new AppDashBoardAdapter(getApplicationContext(), getDetails());
-        recyclerView.setAdapter(adapter);
-
-    }
-
     private List<DashBoardClass> getDetails() {
         DashBoardClass chat = new DashBoardClass("Chat", "Cerebro", "", R.drawable.cerebro_iocn);
         DashBoardClass workFlow = new DashBoardClass("WorkFlow", "WorkFLow", "", R.drawable.workflow_icon);
@@ -226,5 +168,110 @@ public class DashBoardActivity extends AppCompatActivity {
         dashBoardClasses.add(marketPlace);
         return dashBoardClasses;
 
+    }
+
+    private void logMessage(String logMessage) {
+        AppSingletonClass.logDebugMessage(TAG, logMessage);
+    }
+
+    private void updateDataBase(List<Fruit> fruits) {
+        ChatBotDatabase database = new ChatBotDatabase(DashBoardActivity.this);
+        database.updatePriceOfFruitAndVeg(fruits);
+    }
+
+    private void setupRecyclerview() {
+        LinearLayoutManager manager = new GridLayoutManager(getApplicationContext(), 2);
+        RecyclerView recyclerView = findViewById(R.id.recyclerview);
+        recyclerView.setLayoutManager(manager);
+        AppDashBoardAdapter adapter = new AppDashBoardAdapter(getApplicationContext(), getDetails());
+        recyclerView.setAdapter(adapter);
+
+    }
+
+    private void logErrorMessage(String logErrorMessage) {
+        AppSingletonClass.logErrorMessage(TAG, logErrorMessage);
+    }
+
+    class AsyncTaskVegPrice extends AsyncTask<Void, Void, List<Fruit>> {
+
+
+        @Override
+        protected List<Fruit> doInBackground(Void... voids) {
+            Document doc;
+            List<Fruit> names = new ArrayList<>();
+            try {
+                doc = Jsoup.connect("https://www.livechennai.com/Vegetable_price_chennai.asp").get();
+                Element table = doc.select("table").get(1);
+                Elements rows = table.select("tr");
+                long timestamp = System.currentTimeMillis() / 1000;
+                for (int i = 1; i < rows.size(); i++) {
+                    try {
+                        Elements columns = rows.get(i).select("td");
+                        String nameWithValue = columns.get(1).text();
+                        String[] array = nameWithValue.split("\\(");
+                        String name = array[0].trim();
+                        String pieceorKg = "(" + array[1];
+                        String price = columns.get(2).text();
+                        Fruit fruit = new Fruit(name, price, pieceorKg, "", false, timestamp);
+                        names.add(fruit);
+
+                    } catch (Exception e) {
+                        logMessage(e.toString());
+                    }
+                }
+            } catch (IOException e) {
+                logMessage(e.toString());
+            }
+            return names;
+        }
+
+        @Override
+        protected void onPostExecute(List<Fruit> fruitList) {
+            super.onPostExecute(fruitList);
+            updateDataBase(fruitList);
+        }
+    }
+
+    private class AsyncTaskFruitPrice extends AsyncTask<Void, Void, List<Fruit>> {
+
+        @Override
+        protected List<Fruit> doInBackground(Void... voids) {
+            Document doc;
+            List<Fruit> names = new ArrayList<>();
+            try {
+                doc = Jsoup.connect("https://www.livechennai.com/Fruits_price_chennai.asp").get();
+                Element table = doc.select("table").get(1);
+                Elements rows = table.select("tr");
+                long timestamp = System.currentTimeMillis() / 1000;
+                for (int i = 1; i < rows.size(); i++) {
+
+                    try {
+                        Elements columns = rows.get(i).select("td");
+                        String nameWithValue = columns.get(1).text();
+                        String[] array = nameWithValue.split("\\(");
+                        String name = array[0].trim();
+                        String pieceorKg = "(" + array[1];
+                        String price = columns.get(2).text();
+                        Fruit fruit = new Fruit(name, price, pieceorKg, "", true, timestamp);
+                        names.add(fruit);
+
+                    } catch (Exception e) {
+                        logErrorMessage(e.toString());
+                    }
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
+                logErrorMessage(e.toString());
+            }
+            return names;
+        }
+
+        @Override
+        protected void onPostExecute(List<Fruit> fruits) {
+            super.onPostExecute(fruits);
+            updateDataBase(fruits);
+            new AsyncTaskVegPrice().execute();
+
+        }
     }
 }

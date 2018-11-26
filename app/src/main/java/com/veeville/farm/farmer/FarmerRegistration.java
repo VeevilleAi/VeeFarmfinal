@@ -21,31 +21,68 @@ import java.util.Objects;
 
 public class FarmerRegistration extends AppCompatActivity {
 
-    private final String TAG = "FarmerRegistration";
+    private final String TAG = FarmerRegistration.class.getSimpleName();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_farmer_registration);
         getDataFromForm();
+        setUpToolbar();
+        String logMessage = "onCreate Called";
+        logMessage(logMessage);
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        logMessage("onStart called");
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        logMessage("onResume called");
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        logMessage("onPause called");
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        logMessage("onStop called");
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        logMessage("onDestroy called");
     }
 
     private void getDataFromForm() {
         String name, address, phoneNumber, emailId, profilepic;
         name = address = phoneNumber = emailId = profilepic = "";
         Farmer farmer = new Farmer(name, address, phoneNumber, emailId, profilepic);
-        setUpToolbar();
         uploadFarmerDetails(farmer);
+
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
+        String logMessage = "Menu Item Selected Called";
+        logMessage(logMessage);
         onBackPressed();
         return super.onOptionsItemSelected(item);
     }
 
     private void uploadFarmerDetails(Farmer farmer) {
 
+        String logMessage = "uploading farmer regitration details";
+        logMessage(logMessage);
         String url = "";
         JSONObject farmerObject = new JSONObject();
         try {
@@ -72,19 +109,6 @@ public class FarmerRegistration extends AppCompatActivity {
     }
 
 
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-    }
-
-
-    private void logMessage(String message) {
-        AppSingletonClass.logDebugMessage(TAG, message);
-    }
-
-    private void logErrorMessage(String errorMessage) {
-        AppSingletonClass.logErrorMessage(TAG, errorMessage);
-    }
 
     void setUpToolbar() {
         Toolbar toolbar = findViewById(R.id.my_toolbar);
@@ -94,4 +118,13 @@ public class FarmerRegistration extends AppCompatActivity {
         setSupportActionBar(toolbar);
         Objects.requireNonNull(getSupportActionBar()).setDisplayHomeAsUpEnabled(true);
     }
+
+    private void logMessage(String logMessage) {
+        AppSingletonClass.logDebugMessage(TAG, logMessage);
+    }
+
+    private void logErrorMessage(String logErrorMessage) {
+        AppSingletonClass.logErrorMessage(TAG, logErrorMessage);
+    }
+
 }

@@ -5,12 +5,12 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 
 import com.veeville.farm.R;
 import com.veeville.farm.adapter.LightActivityAdapter;
+import com.veeville.farm.helper.AppSingletonClass;
 import com.veeville.farm.helper.DashBoardDataClasses;
 
 import java.text.SimpleDateFormat;
@@ -23,7 +23,7 @@ import java.util.Random;
 
 public class LightActivity extends AppCompatActivity {
 
-    private String TAG = "LightActivity";
+    private final String TAG = LightActivity.class.getSimpleName();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -31,7 +31,36 @@ public class LightActivity extends AppCompatActivity {
         setContentView(R.layout.activity_light);
         setUpToolbar();
         setUpSoilMoistureRecyclerview();
-        Log.d(TAG, "onCreate: ");
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        logMessage("onStart called");
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        logMessage("onResume called");
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        logMessage("onPause called");
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        logMessage("onStop called");
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        logMessage("onDestroy called");
     }
 
     private void setUpToolbar() {
@@ -91,7 +120,7 @@ public class LightActivity extends AppCompatActivity {
             Random r = new Random();
             int i1 = r.nextInt(1075 - 1000) + 1000;
             DashBoardDataClasses.LightData.LightValues values = new DashBoardDataClasses.LightData.LightValues(value, "" + i1);
-            Log.d(TAG, "formData: " + values);
+            logMessage(values + "");
         }
         for (int i = 0; i < 1; i++) {
             List<DashBoardDataClasses.LightData.LightValues> soilMoistureValues2 = new ArrayList<>();
@@ -122,5 +151,9 @@ public class LightActivity extends AppCompatActivity {
         calendar.add(Calendar.DAY_OF_MONTH, days);
         return dateFormat.format(calendar.getTime());
 
+    }
+
+    private void logMessage(String logMessage) {
+        AppSingletonClass.logDebugMessage(TAG, logMessage);
     }
 }

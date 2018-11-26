@@ -18,6 +18,7 @@ import com.squareup.picasso.Picasso;
 import com.veeville.farm.R;
 import com.veeville.farm.farmer.CropMarketDescActivity;
 import com.veeville.farm.farmer.FarmerHelperClasses.MarketPlace;
+import com.veeville.farm.helper.AppSingletonClass;
 import com.veeville.farm.helper.CircleTransform;
 
 import java.util.List;
@@ -29,6 +30,7 @@ public class MarketPlaceAdapter extends RecyclerView.Adapter<MarketPlaceAdapter.
 
     private List<MarketPlace> marketPlaces;
     private Context context;
+    private final String TAG = MarketPlaceAdapter.class.getSimpleName();
 
     public MarketPlaceAdapter(Context context, List<MarketPlace> marketPlaces) {
         this.marketPlaces = marketPlaces;
@@ -110,7 +112,16 @@ public class MarketPlaceAdapter extends RecyclerView.Adapter<MarketPlaceAdapter.
 
     @Override
     public int getItemCount() {
+        logMessage("size:" + marketPlaces.size());
         return marketPlaces.size();
+    }
+
+    private void logMessage(String logMessage) {
+        AppSingletonClass.logDebugMessage(TAG, logMessage);
+    }
+
+    private void logErrorMessage(String logErrorMessage) {
+        AppSingletonClass.logErrorMessage(TAG, logErrorMessage);
     }
 
     class MarketPlaceHolder extends RecyclerView.ViewHolder {
@@ -132,5 +143,8 @@ public class MarketPlaceAdapter extends RecyclerView.Adapter<MarketPlaceAdapter.
             farmerPrice = view.findViewById(R.id.farmer_price);
 
         }
+
+
     }
+
 }

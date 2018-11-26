@@ -11,6 +11,7 @@ import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.veeville.farm.R;
+import com.veeville.farm.helper.AppSingletonClass;
 import com.veeville.farm.helper.Fruit;
 
 import java.util.List;
@@ -23,6 +24,7 @@ public class VegPriceAdapter extends RecyclerView.Adapter<VegPriceAdapter.PriceH
 
     private List<Fruit> fruits;
     private Context context;
+    private final String TAG = VegPriceAdapter.class.getSimpleName();
 
     public VegPriceAdapter(List<Fruit> fruits, Context context) {
         this.fruits = fruits;
@@ -48,6 +50,7 @@ public class VegPriceAdapter extends RecyclerView.Adapter<VegPriceAdapter.PriceH
 
     @Override
     public int getItemCount() {
+        logMessage("size:" + fruits.size());
         return fruits.size();
     }
 
@@ -66,5 +69,9 @@ public class VegPriceAdapter extends RecyclerView.Adapter<VegPriceAdapter.PriceH
     public void changeDataset(List<Fruit> fruitList) {
         fruits = fruitList;
         notifyDataSetChanged();
+    }
+
+    private void logMessage(String logMessage) {
+        AppSingletonClass.logDebugMessage(TAG, logMessage);
     }
 }

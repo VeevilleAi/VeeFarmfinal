@@ -8,7 +8,6 @@ import android.support.design.widget.TextInputLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
@@ -19,13 +18,14 @@ import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.veeville.farm.R;
+import com.veeville.farm.helper.AppSingletonClass;
 
 import java.util.Objects;
 
 public class FarmRegistrationActivity extends AppCompatActivity {
 
     public static final int REQUEST_CODE = 1;
-    private String TAG = "FarmRegistrationActivity";
+    private final String TAG = FarmRegistrationActivity.class.getSimpleName();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -51,6 +51,35 @@ public class FarmRegistrationActivity extends AppCompatActivity {
         });
     }
 
+    @Override
+    protected void onStart() {
+        super.onStart();
+        logMessage("onStart called");
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        logMessage("onResume called");
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        logMessage("onPause called");
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        logMessage("onStop called");
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        logMessage("onDestroy called");
+    }
     private void setUpToolbar() {
         Toolbar toolbar = findViewById(R.id.my_toolbar);
         toolbar.setTitle("Farm Registration");
@@ -81,7 +110,6 @@ public class FarmRegistrationActivity extends AppCompatActivity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        Log.d(TAG, "onActivityResult: requestcode:" + requestCode + "\tresult code:" + resultCode);
         if (requestCode == REQUEST_CODE && resultCode == RESULT_OK) {
             double[] longitudes = data.getDoubleArrayExtra("Longitudes");
             double[] latitudes = data.getDoubleArrayExtra("Latitudes");
@@ -91,14 +119,13 @@ public class FarmRegistrationActivity extends AppCompatActivity {
             showFarmInStaticMap(latitudes[0], longitudes[0]);
             updateArea(acre + "acre " + gunta + " gunta");
         } else {
-            Log.d(TAG, "onActivityResult: ");
+            logMessage("onActivity result didnt gt result");
         }
     }
 
     private void showFarmInStaticMap(double latitude, double longitude) {
 
         String url = "https://maps.googleapis.com/maps/api/staticmap?maptype=hybrid&size=600x300&zoom=16&center=" + latitude + "," + longitude + "&key=AIzaSyBeilqJcTJPyZ--59DXSsK1mWrWL3guh8k";
-        Log.d(TAG, "showFarmInStaticMap: " + url);
         ImageView imageView = findViewById(R.id.image);
         CardView cardView = findViewById(R.id.card);
         cardView.setVisibility(View.VISIBLE);
@@ -112,5 +139,9 @@ public class FarmRegistrationActivity extends AppCompatActivity {
         EditText areaTemp = findViewById(R.id.area);
         areaTemp.setText(area);
 
+    }
+
+    private void logMessage(String logMessage) {
+        AppSingletonClass.logDebugMessage(TAG, logMessage);
     }
 }

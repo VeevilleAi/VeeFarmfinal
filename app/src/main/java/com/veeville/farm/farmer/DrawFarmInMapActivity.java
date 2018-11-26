@@ -18,7 +18,6 @@ import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Toast;
@@ -44,6 +43,7 @@ import com.google.android.gms.maps.model.PolygonOptions;
 import com.google.android.gms.maps.model.PolylineOptions;
 import com.google.maps.android.SphericalUtil;
 import com.veeville.farm.R;
+import com.veeville.farm.helper.AppSingletonClass;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -53,7 +53,7 @@ import static android.Manifest.permission.ACCESS_FINE_LOCATION;
 public class DrawFarmInMapActivity extends AppCompatActivity implements OnMapReadyCallback {
 
     private final int PERMISSION_REQUEST_CODE = 101, REQUEST_CHECK_SETTINGS = 102;
-    String TAG = "DrawFarmInMapActivity";
+    private final String TAG = DrawFarmInMapActivity.class.getSimpleName();
     private GoogleMap map;
     private List<LatLng> latLngs = new ArrayList<>();
     private DrawFarmInMapActivity view;
@@ -68,9 +68,42 @@ public class DrawFarmInMapActivity extends AppCompatActivity implements OnMapRea
         setUpToolbar();
         displayLocationSettingsRequest(getApplicationContext());
         setUpLocationManager();
+        String logMessage = "onCreate Method Called";
+        logMessage(logMessage);
     }
 
+    @Override
+    protected void onStart() {
+        super.onStart();
+        logMessage("onStart called");
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        logMessage("onResume called");
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        logMessage("onPause called");
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        logMessage("onStop called");
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        logMessage("onDestroy called");
+    }
     private void setUpToolbar() {
+        String logMessage = "settingup toolbar";
+        logMessage(logMessage);
         Toolbar toolbar = findViewById(R.id.my_toolbar);
         toolbar.setTitle("draw your farm");
         toolbar.setTitleTextColor(Color.WHITE);
@@ -241,7 +274,6 @@ public class DrawFarmInMapActivity extends AppCompatActivity implements OnMapRea
         android.location.LocationListener listener1 = new android.location.LocationListener() {
             @Override
             public void onLocationChanged(Location location) {
-                Log.d(TAG, "onLocationChanged: " + location.getLongitude() + "\t" + location.getLatitude());
                 LatLng latLng = new LatLng(location.getLatitude(), location.getLongitude());
                 map.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng, 18));
             }
@@ -289,24 +321,29 @@ public class DrawFarmInMapActivity extends AppCompatActivity implements OnMapRea
                 switch (status.getStatusCode()) {
                     case LocationSettingsStatusCodes.SUCCESS:
                         setUpLocationManager();
-                        Log.i(TAG, "All location settings are satisfied.");
                         break;
                     case LocationSettingsStatusCodes.RESOLUTION_REQUIRED:
-                        Log.i(TAG, "Location settings are not satisfied. Show the user a dialog to upgrade location settings ");
 
                         try {
                             // Show the dialog by calling startResolutionForResult(), and check the result
                             // in onActivityResult().
                             status.startResolutionForResult(DrawFarmInMapActivity.this, REQUEST_CHECK_SETTINGS);
                         } catch (IntentSender.SendIntentException e) {
-                            Log.i(TAG, "PendingIntent unable to execute request.");
+                            logErrorMessage(e.toString());
                         }
                         break;
                     case LocationSettingsStatusCodes.SETTINGS_CHANGE_UNAVAILABLE:
-                        Log.i(TAG, "Location settings are inadequate, and cannot be fixed here. Dialog not created.");
                         break;
                 }
             }
         });
+    }
+
+    private void logMessage(String logMessage) {
+        AppSingletonClass.logDebugMessage(TAG, logMessage);
+    }
+
+    private void logErrorMessage(String logErrorMessage) {
+        AppSingletonClass.logErrorMessage(TAG, logErrorMessage);
     }
 }

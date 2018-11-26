@@ -14,6 +14,7 @@ import android.widget.TextView;
 import com.veeville.farm.R;
 import com.veeville.farm.activity.PriceActivity;
 import com.veeville.farm.farmer.FarmerHelperClasses.CropMarketplace;
+import com.veeville.farm.helper.AppSingletonClass;
 
 import java.util.List;
 
@@ -24,7 +25,7 @@ public class CropMarketDescAdapter extends RecyclerView.Adapter<RecyclerView.Vie
 
     private List<Object> objects;
     private Context context;
-
+    private final String TAG = CropMarketDescAdapter.class.getSimpleName();
     public CropMarketDescAdapter(Context context, List<Object> objects) {
         this.objects = objects;
         this.context = context;
@@ -94,6 +95,7 @@ public class CropMarketDescAdapter extends RecyclerView.Adapter<RecyclerView.Vie
 
     @Override
     public int getItemCount() {
+        logMessage("size:" + objects.size());
         return objects.size();
     }
 
@@ -116,6 +118,10 @@ public class CropMarketDescAdapter extends RecyclerView.Adapter<RecyclerView.Vie
             super(view);
             recyclerView = view.findViewById(R.id.recyclerview);
         }
+    }
+
+    private void logMessage(String logMessage) {
+        AppSingletonClass.logDebugMessage(TAG, logMessage);
     }
 
     private class PriceListAdapter extends RecyclerView.Adapter<PriceListAdapter.SinglePriceHolder> {

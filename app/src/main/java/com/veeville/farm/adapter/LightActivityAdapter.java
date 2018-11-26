@@ -7,7 +7,6 @@ import android.support.v7.widget.CardView;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -22,6 +21,7 @@ import com.github.mikephil.charting.data.LineData;
 import com.github.mikephil.charting.data.LineDataSet;
 import com.github.mikephil.charting.interfaces.datasets.ILineDataSet;
 import com.veeville.farm.R;
+import com.veeville.farm.helper.AppSingletonClass;
 import com.veeville.farm.helper.CustomMarkerView;
 import com.veeville.farm.helper.DashBoardDataClasses;
 
@@ -40,7 +40,7 @@ public class LightActivityAdapter extends RecyclerView.Adapter<RecyclerView.View
 
     private Context context;
     private List<Object> lightDataList;
-    private String TAG = "LightActivityAdapter";
+    private final String TAG = LightActivityAdapter.class.getSimpleName();
 
     public LightActivityAdapter(Context context, List<Object> lightDataList) {
         this.context = context;
@@ -85,7 +85,6 @@ public class LightActivityAdapter extends RecyclerView.Adapter<RecyclerView.View
 
         switch (holder.getItemViewType()) {
             case 0:
-                Log.d(TAG, "onBindViewHolder: ");
                 break;
             case 1:
                 setUpgraphData((LightValueGraphHolder) holder, position);
@@ -96,6 +95,7 @@ public class LightActivityAdapter extends RecyclerView.Adapter<RecyclerView.View
 
     @Override
     public int getItemCount() {
+        logMessage("size:" + lightDataList.size());
         return lightDataList.size();
     }
 
@@ -183,7 +183,6 @@ public class LightActivityAdapter extends RecyclerView.Adapter<RecyclerView.View
                     SimpleDateFormat month_date = new SimpleDateFormat("MMMM", Locale.ENGLISH);
                     calendar.add(Calendar.MONTH, -i);
                     String temp = month_date.format(calendar.getTime());
-                    Log.d(TAG, "setXAxisValues: " + temp);
                     xVals.add(temp);
                 }
                 break;
@@ -196,7 +195,6 @@ public class LightActivityAdapter extends RecyclerView.Adapter<RecyclerView.View
                     SimpleDateFormat month_date = new SimpleDateFormat("MMMM", Locale.ENGLISH);
                     calendar.add(Calendar.MONTH, -i);
                     String temp = month_date.format(calendar.getTime());
-                    Log.d(TAG, "setXAxisValues: " + temp);
                     xVals.add(temp);
                 }
 
@@ -381,4 +379,7 @@ public class LightActivityAdapter extends RecyclerView.Adapter<RecyclerView.View
         }
     }
 
+    private void logMessage(String logMessage) {
+        AppSingletonClass.logDebugMessage(TAG, logMessage);
+    }
 }

@@ -21,7 +21,7 @@ import java.util.Objects;
 
 public class CropWorkFlow extends AppCompatActivity {
 
-    private final String TAG = "CropWorkFlow";
+    private final String TAG = CropWorkFlow.class.getSimpleName();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -29,9 +29,52 @@ public class CropWorkFlow extends AppCompatActivity {
         setContentView(R.layout.activity_crop_work_flow);
         setUpToolbar();
         setUpRecyclerview();
-        AppSingletonClass.logDebugMessage(TAG, TAG + " started");
     }
 
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        logMessage("onStart called");
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        logMessage("onResume called");
+        logErrorMessage("onResume test");
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        logMessage("onPause called");
+    }
+
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        logMessage("onSaveInstanceState called");
+    }
+
+    @Override
+    protected void onRestoreInstanceState(Bundle savedInstanceState) {
+        super.onRestoreInstanceState(savedInstanceState);
+        logMessage("onRestoreInstanceState called");
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        logMessage("onStop called");
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        logMessage("onDestroy called");
+        logErrorMessage("test example");
+    }
 
     private void setUpToolbar() {
 
@@ -59,7 +102,6 @@ public class CropWorkFlow extends AppCompatActivity {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         onBackPressed();
-        AppSingletonClass.logDebugMessage(TAG, TAG + " finished");
         return super.onOptionsItemSelected(item);
     }
 
@@ -127,5 +169,13 @@ public class CropWorkFlow extends AppCompatActivity {
         Calendar calendar = Calendar.getInstance();
         calendar.add(Calendar.DAY_OF_MONTH, days);
         return dateFormat.format(calendar.getTime());
+    }
+
+    private void logMessage(String logMessage) {
+        AppSingletonClass.logDebugMessage(TAG, logMessage);
+    }
+
+    private void logErrorMessage(String logErrorMessage) {
+        AppSingletonClass.logErrorMessage(TAG, logErrorMessage);
     }
 }

@@ -6,7 +6,6 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.text.format.DateFormat;
-import android.util.Log;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -21,7 +20,7 @@ import java.util.Locale;
 
 public class ChatBotDatabase extends SQLiteOpenHelper {
 
-    private String TAG = "ChatBotDatabase";
+    private static final String LIGHTVALUETABLE = "light_value_table";
     private static final int DATABASE_VERSION = 1;
     private static final String DATABASE_NAME = "charbotdb";
 
@@ -29,7 +28,8 @@ public class ChatBotDatabase extends SQLiteOpenHelper {
     private static final String DATATYPE = "datatype";
     private static final String CHATDATA = "chatdata";
     private static final String TIMESTAMP = "timestamp";
-
+    private static final String lightValue = "LightValue";
+    private final String TAG = ChatBotDatabase.class.getSimpleName();
     private static final String TABLE_VEG_FRUIT_PRICE = "vegetable_fruits_price_table";
     private static final String COLUMN_VEG_FRUIT_NAME = "veg_fruit_name";
     private static final String COLUMN_VEG_FRUIT_PRICE = "veg_fruit_price";
@@ -54,7 +54,8 @@ public class ChatBotDatabase extends SQLiteOpenHelper {
                 TIMESTAMP + " INTEGER"+
                 ")";
         db.execSQL(CREATE_TABLE_TABLE_CHATBOTDATA);
-        Log.d(TAG, "table chatbotdata created");
+        logMessage("table chatbotdata created");
+
 
         String CREATE_TABLE_VEG_FRUIT_PRICE = "CREATE TABLE " + TABLE_VEG_FRUIT_PRICE +
                 "(" +
@@ -66,7 +67,6 @@ public class ChatBotDatabase extends SQLiteOpenHelper {
                 COLUMN_DATE + " INTEGER" +
 
                 ")";
-        Log.d(TAG, "onCreate: TABLE_VEG_FRUIT_PRICE query :" + CREATE_TABLE_VEG_FRUIT_PRICE);
         db.execSQL(CREATE_TABLE_VEG_FRUIT_PRICE);
 
 
@@ -74,7 +74,12 @@ public class ChatBotDatabase extends SQLiteOpenHelper {
                 COLUMN_MOBILE_NUMBER + " varchar(30)" +
                 ")";
         db.execSQL(CREATE_TABLE_REG_MOB_NUM);
-        Log.d(TAG, "onCreate: table created :TABLE_REGISTERED_MOBILE_NUMBER");
+
+        String createTableLIGHTValues = "CREATE TABLE " + LIGHTVALUETABLE + "(" +
+                TIMESTAMP + " INTEGER," +
+                lightValue + " INTEGER " +
+                ");";
+        db.execSQL(createTableLIGHTValues);
 
 
     }
@@ -89,13 +94,39 @@ public class ChatBotDatabase extends SQLiteOpenHelper {
 
     }
 
+    public void insertLightValues(long timeStamp, long lightValue) {
+        ContentValues values = new ContentValues();
+        values.put(ChatBotDatabase.lightValue, lightValue);
+        values.put(TIMESTAMP, timeStamp);
+        SQLiteDatabase db = this.getWritableDatabase();
+        db.insert(LIGHTVALUETABLE, null, values);
+
+    }
+
+    public List<LightValues> getAllLightValues() {
+
+        SQLiteDatabase db = this.getReadableDatabase();
+        String query = "SELECT * FROM " + LIGHTVALUETABLE;
+        Cursor cursor = db.rawQuery(query, null);
+        List<LightValues> lightValues = new ArrayList<>();
+        if (cursor.moveToFirst()) {
+            for (int i = 0; i < cursor.getCount(); i++) {
+                long timestamp = cursor.getLong(0);
+                long value = cursor.getLong(1);
+                LightValues values = new LightValues(timestamp, value);
+                lightValues.add(values);
+            }
+        }
+        cursor.close();
+        db.close();
+        return lightValues;
+    }
     public void deleteMobileNumber() {
 
         String query = "DELETE FROM " + TABLE_REGISTERED_MOBILE_NUMBER;
         SQLiteDatabase db = this.getWritableDatabase();
         db.execSQL(query);
         db.close();
-        Log.d(TAG, "deleteMobileNumber: number deleted successfully");
     }
 
     public boolean isUserRegistered() {
@@ -112,7 +143,6 @@ public class ChatBotDatabase extends SQLiteOpenHelper {
     public void insertChats(String datatype, String chat_data) {
         long timestamp = System.currentTimeMillis();
 
-        Log.d(TAG, "insertChats: "+timestamp);
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues values = new ContentValues();
         values.put(DATATYPE, datatype);
@@ -133,7 +163,6 @@ public class ChatBotDatabase extends SQLiteOpenHelper {
         calendar.set(Calendar.MILLISECOND,0);
         SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MMM-yyyy",Locale.ENGLISH);
         String s= dateFormat.format(calendar.getTime());
-        Log.d(TAG, "getDateToTimestamp: date:"+s);
         return calendar.getTime().getTime();
     }
     private String getDate(long time) {
@@ -231,7 +260,6 @@ public class ChatBotDatabase extends SQLiteOpenHelper {
             values.put(COLUMN_VEG_FRUIT_NAME, name.name);
             values.put(COLUMN_FRUIT_IMAGELINK, name.imageLink);
             long result = db.insert(TABLE_VEG_FRUIT_PRICE, null, values);
-            Log.d(TAG, "insertVegetableAndFruitPrices: result:" + result);
         }
         db.close();
 
@@ -245,7 +273,6 @@ public class ChatBotDatabase extends SQLiteOpenHelper {
             values.put(COLUMN_VEG_FRUIT_PRICE, fruit.price);
             values.put(COLUMN_VEG_FRUIT_KG_PIECE, fruit.pieceOrKg);
             int update = db.update(TABLE_VEG_FRUIT_PRICE, values, COLUMN_VEG_FRUIT_NAME + "='" + fruit.name + "'", null);
-            Log.d(TAG, "updatePriceOfFruitAndVeg: result:" + update);
         }
         db.close();
     }
@@ -263,13 +290,11 @@ public class ChatBotDatabase extends SQLiteOpenHelper {
                 String imageLink = cursor.getString(3);
                 boolean isFruit = false;
                 int var = cursor.getInt(4);
-                Log.d(TAG, "getAllPrices: " + var);
                 if (var == 1) {
                     isFruit = true;
                 }
                 long date = cursor.getInt(5);
                 Fruit fruit = new Fruit(name, price, size, imageLink, isFruit, date);
-                Log.d(TAG, "getAllPrices: " + fruit.toString());
                 fruits.add(fruit);
                 cursor.moveToNext();
             }
@@ -300,4 +325,13 @@ public class ChatBotDatabase extends SQLiteOpenHelper {
         db.close();
         return priceFruitList;
     }
+
+    private void logMessage(String logMessage) {
+        AppSingletonClass.logDebugMessage(TAG, logMessage);
+    }
+
+    private void logErrorMessage(String logErrorMessage) {
+        AppSingletonClass.logErrorMessage(TAG, logErrorMessage);
+    }
+
 }

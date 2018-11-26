@@ -28,7 +28,6 @@ import android.support.v7.widget.Toolbar;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Base64;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -81,10 +80,9 @@ public class ChatActivity extends AppCompatActivity implements QuickReplyAdapter
     private FloatingActionButton actionButton;
     private EditText inputtextmessage;
     private BotAdapter adapter;
-    private SensGConnection connection;
     private final int REQ_CODE_SPEECH_INPUT = 10;
     private List<Object> chatMessages = new ArrayList<>();
-    private String TAG = "ChatActivity";
+    private final String TAG = ChatActivity.class.getSimpleName();
     private Toolbar toolbar;
     private FloatingActionButton captureImage;
     private static final int CAMERA_REQUEST = 1888;
@@ -100,7 +98,6 @@ public class ChatActivity extends AppCompatActivity implements QuickReplyAdapter
     boolean tookPicture = false;
     private int SELECT_PICTURE = 101;
     private int countMessageForRegistarationPurpose = 0;
-
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
@@ -156,53 +153,6 @@ public class ChatActivity extends AppCompatActivity implements QuickReplyAdapter
         return true;
     }
 
-//    void dialogToAskIpOfSensG() {
-//        AlertDialog.Builder builder = new AlertDialog.Builder(ChatActivity.this);
-//        View view = LayoutInflater.from(getApplicationContext()).inflate(R.layout.dialog_layout_for_ip_of_sensg,null);
-//        builder.setView(view);
-//        final EditText ipAddress = view.findViewById(R.id.ip_of_sensg);
-//        ipAddress.requestFocus();
-//        Handler handler = new Handler();
-//        handler.postDelayed(new Runnable() {
-//            @Override
-//            public void run() {
-//                runOnUiThread(new Runnable() {
-//                    @Override
-//                    public void run() {
-//                        InputMethodManager inputMethodManager = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
-//                        assert inputMethodManager != null;
-//                        boolean result = inputMethodManager.showSoftInput(ipAddress, InputMethodManager.SHOW_IMPLICIT);
-//                        Log.d(TAG, "onResume: result:" + result);
-//                    }
-//                });
-//            }
-//        }, 200);
-//
-//        Button submit = view.findViewById(R.id.submit);
-//        Button cancel = view.findViewById(R.id.cancel);
-//        final AlertDialog dialog = builder.create();
-//        dialog.setCanceledOnTouchOutside(false);
-//        submit.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View view) {
-//                String IP = ipAddress.getText().toString();
-//                if (!IP.equals("")) {
-//                    dialog.dismiss();
-//                    connection = new SensGConnection(IP, getApplicationContext());
-//                    connection.sendRequest();
-//                } else {
-//                    Toast.makeText(getApplicationContext(), "please enter ip address", Toast.LENGTH_SHORT).show();
-//                }
-//            }
-//        });
-//        cancel.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View view) {
-//                dialog.dismiss();
-//            }
-//        });
-//        dialog.show();
-//    }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -373,7 +323,6 @@ public class ChatActivity extends AppCompatActivity implements QuickReplyAdapter
                 } else {
                     aSwitch.setChecked(false);
                 }
-                Log.d(TAG, "onCheckedChanged: ischecked:" + b);
 
             }
         });
@@ -421,7 +370,6 @@ public class ChatActivity extends AppCompatActivity implements QuickReplyAdapter
             @Override
             public void onResponse(JSONObject response) {
                 try {
-                    Log.d(TAG, "onResponse: " + response.toString());
                     JSONArray jsonArray = response.getJSONArray("results");
                     StringBuilder buffer = new StringBuilder();
                     for (int i = 0; i < jsonArray.length(); i++) {
@@ -495,7 +443,6 @@ public class ChatActivity extends AppCompatActivity implements QuickReplyAdapter
         ChatBotDatabase database = new ChatBotDatabase(getApplicationContext());
         database.insertChats("inputimagelink", imageLink);
         requestToQnAmaker(qNaQuesry);
-        Log.d(TAG, "insertImage: success till here");
 
     }
 
@@ -529,7 +476,6 @@ public class ChatActivity extends AppCompatActivity implements QuickReplyAdapter
         }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
-                Log.e(TAG, "onErrorResponse: " + error.toString());
             }
         }) {
             @Override
@@ -577,37 +523,48 @@ public class ChatActivity extends AppCompatActivity implements QuickReplyAdapter
 
     @Override
     public void updateMessageForRegistrayion(String message, boolean showCard) {
-        Log.d(TAG, "updateMessageForRegistrayion: called with message:" + message);
         showHintForRegistration(message, showCard);
     }
 
     @Override
     public void makeMessagesNormal(boolean shownormal) {
-        Log.d(TAG, "makeMessagesNormal: called:" + shownormal);
         adapter.changeDatasetMessage(shownormal);
     }
 
-    private class MyAsyncTask extends AsyncTask<AIRequest, Void, AIResponse> {
-        @Override
-        protected AIResponse doInBackground(AIRequest... requests) {
-            final AIRequest request = requests[0];
-            try {
-                return aiDataService.request(request);
-            } catch (AIServiceException e) {
-                Log.e(TAG, "doInBackground:" + e.toString());
-            }
-            return null;
+    private void translateTextToInputLanguage(String translatingText, String targetLanguage) {
+        String url = "https://translation.googleapis.com/language/translate/v2?key=AIzaSyAeN43km6hD8UHAUaFEZ8j9iCYFk8puvuE";
+        JSONObject jsonObject = new JSONObject();
+        try {
+            jsonObject.put("q", translatingText);
+            jsonObject.put("target", targetLanguage);
+        } catch (Exception e) {
+            logMesage("cought " + e.toString() + " while forming body for translating text ");
         }
 
-        @Override
-        protected void onPostExecute(AIResponse aiResponse) {
-            if (aiResponse != null) {
-                Result result = aiResponse.getResult();
-                processResult(result);
-            } else {
-                Log.d(TAG, "onPostExecute: airesponse is null");
+        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.POST, url, jsonObject, new Response.Listener<JSONObject>() {
+            @Override
+            public void onResponse(JSONObject response) {
+                logMesage("response from google translater :" + response.toString());
+                try {
+                    JSONObject resObject = response.getJSONObject("data");
+                    JSONArray jsonArray = resObject.getJSONArray("translations");
+                    JSONObject translatedObject = jsonArray.getJSONObject(0);
+                    String translatedText = translatedObject.getString("translatedText");
+                    logMesage("translated text by google :" + translatedText);
+                    insertTextMessage(translatedText, false);
+                } catch (JSONException e) {
+                    logErrormeesage("cought " + e.toString() + " while processing json data");
+                }
             }
-        }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                logErrormeesage("got error for google translate " + error.toString());
+
+            }
+        });
+        AppSingletonClass.getInstance().addToRequestQueue(jsonObjectRequest);
+
     }
 
 
@@ -665,7 +622,6 @@ public class ChatActivity extends AppCompatActivity implements QuickReplyAdapter
                         InputMethodManager inputMethodManager = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
                         assert inputMethodManager != null;
                         boolean result = inputMethodManager.showSoftInput(query, InputMethodManager.SHOW_IMPLICIT);
-                        Log.d(TAG, "onResume: result:" + result);
                     }
                 });
             }
@@ -719,7 +675,6 @@ public class ChatActivity extends AppCompatActivity implements QuickReplyAdapter
             assert bitmap != null;
             String stringImage = getStringImage(bitmap);
             alertDialogForImageWithText(stringImage);
-            Log.d(TAG, "onActivityResult: base64 string:" + stringImage);
             tookPicture = true;
 
 
@@ -742,7 +697,6 @@ public class ChatActivity extends AppCompatActivity implements QuickReplyAdapter
                 Bitmap bm = BitmapFactory.decodeStream(getContentResolver().openInputStream(selectedImageUri));
                 String stringImage = getStringImage(bm);
                 alertDialogForImageWithText(stringImage);
-                Log.d(TAG, "onActivityResult: base64 string:" + stringImage);
                 tookPicture = true;
             } catch (FileNotFoundException e) {
                 e.printStackTrace();
@@ -775,50 +729,13 @@ public class ChatActivity extends AppCompatActivity implements QuickReplyAdapter
         }
     }
 
-    private void translateTextToInputLanguage(String translatingText, String targetLanguage) {
-        AppSingletonClass.logDebugMessage(TAG, "translate text to given language : Query:" + translatingText + "\t language code:" + targetLanguage);
-        String url = "https://translation.googleapis.com/language/translate/v2?key=AIzaSyAeN43km6hD8UHAUaFEZ8j9iCYFk8puvuE";
-        JSONObject jsonObject = new JSONObject();
-        try {
-            jsonObject.put("q", translatingText);
-            jsonObject.put("target", targetLanguage);
-        } catch (Exception e) {
-            logMesage("cought " + e.toString() + " while forming body for translating text ");
-        }
-        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.POST, url, jsonObject, new Response.Listener<JSONObject>() {
-            @Override
-            public void onResponse(JSONObject response) {
-                logMesage("response from google translater :" + response.toString());
-                try {
-                    Log.d(TAG, "response:" + response.toString());
-                    JSONObject resObject = response.getJSONObject("data");
-                    JSONArray jsonArray = resObject.getJSONArray("translations");
-                    JSONObject translatedObject = jsonArray.getJSONObject(0);
-                    String translatedText = translatedObject.getString("translatedText");
-                    logMesage("translated text by google :" + translatedText);
-                    insertTextMessage(translatedText, false);
-                } catch (JSONException e) {
-                    logErrormeesage("cought " + e.toString() + " while processing json data");
-                }
-            }
-        }, new Response.ErrorListener() {
-            @Override
-            public void onErrorResponse(VolleyError error) {
-                logErrormeesage("got error for google translate " + error.toString());
-
-            }
-        });
-        AppSingletonClass.getInstance().addToRequestQueue(jsonObjectRequest);
-
-    }
-
     private void translateText(String translatingText) {
 
-        AppSingletonClass.logDebugMessage(TAG, "Translating text to English:" + translatingText);
         String targetLanguage = "en";
+
         logMesage("translating input text to english :" + translatingText);
         String url = "https://translation.googleapis.com/language/translate/v2?key=AIzaSyAeN43km6hD8UHAUaFEZ8j9iCYFk8puvuE";
-        Log.d(TAG, "translateText: " + translatingText);
+
         JSONObject jsonObject = new JSONObject();
         try {
             jsonObject.put("q", translatingText);
@@ -826,30 +743,11 @@ public class ChatActivity extends AppCompatActivity implements QuickReplyAdapter
         } catch (Exception e) {
             logErrormeesage("cought " + e.toString() + " while forming json body");
         }
-        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.POST, url, jsonObject, new Response.Listener<JSONObject>() {
-            @Override
-            public void onResponse(JSONObject response) {
-                logMesage("response from google translate :" + response.toString());
-                try {
-                    Log.d(TAG, "response:" + response.toString());
-                    JSONObject resObject = response.getJSONObject("data");
-                    JSONArray jsonArray = resObject.getJSONArray("translations");
-                    JSONObject translatedObject = jsonArray.getJSONObject(0);
-                    String translatedText = translatedObject.getString("translatedText");
-                    logMesage("translated text by google is :" + translatedText);
-                    requestToDialogFlow(translatedText);
-                } catch (JSONException e) {
-                    logErrormeesage("cought " + e.toString() + " while processing json data");
-                }
-            }
-        }, new Response.ErrorListener() {
-            @Override
-            public void onErrorResponse(VolleyError error) {
-                logErrormeesage("error message by google translater is :" + error.toString());
-            }
-        });
-        AppSingletonClass.getInstance().addToRequestQueue(jsonObjectRequest);
 
+    }
+
+    private void logMessage(String logMessage) {
+        AppSingletonClass.logDebugMessage(TAG, logMessage);
     }
 
     @Override
@@ -891,8 +789,6 @@ public class ChatActivity extends AppCompatActivity implements QuickReplyAdapter
     }
 
     private void uploadImageNew(final String encodedstring, final String question) {
-        Log.d(TAG, "uploadImageNew: question:" + question);
-        Log.d(TAG, "uploadImageNew: image id:" + encodedstring + "\t question:" + question);
         String url = "http://54.201.152.162:5000/vqa";
 
         final JSONObject requestBody = new JSONObject();
@@ -906,7 +802,6 @@ public class ChatActivity extends AppCompatActivity implements QuickReplyAdapter
             @Override
             public void onResponse(JSONObject response) {
                 try {
-                    Log.d(TAG, "onResponse: " + response);
                     JSONArray jsonArray = response.getJSONArray("results");
                     StringBuilder buffer = new StringBuilder();
                     for (int i = 0; i < jsonArray.length(); i++) {
@@ -1009,4 +904,30 @@ public class ChatActivity extends AppCompatActivity implements QuickReplyAdapter
         }
     }
 
+    private void logErrorMessage(String logErrorMessage) {
+        AppSingletonClass.logErrorMessage(TAG, logErrorMessage);
+    }
+
+    private class MyAsyncTask extends AsyncTask<AIRequest, Void, AIResponse> {
+        @Override
+        protected AIResponse doInBackground(AIRequest... requests) {
+            final AIRequest request = requests[0];
+            try {
+                return aiDataService.request(request);
+            } catch (AIServiceException e) {
+                logErrormeesage(e.toString());
+            }
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(AIResponse aiResponse) {
+            if (aiResponse != null) {
+                Result result = aiResponse.getResult();
+                processResult(result);
+            } else {
+                logErrormeesage(aiResponse.toString());
+            }
+        }
+    }
 }

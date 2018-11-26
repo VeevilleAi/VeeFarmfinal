@@ -10,6 +10,7 @@ import android.view.MenuItem;
 
 import com.veeville.farm.R;
 import com.veeville.farm.adapter.SoilPHActivityAdapter;
+import com.veeville.farm.helper.AppSingletonClass;
 import com.veeville.farm.helper.DashBoardDataClasses;
 
 import java.text.SimpleDateFormat;
@@ -21,6 +22,7 @@ import java.util.Objects;
 
 public class SoilPhActivity extends AppCompatActivity {
 
+    private final String TAG = SoilPhActivity.class.getSimpleName();
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
@@ -28,8 +30,40 @@ public class SoilPhActivity extends AppCompatActivity {
         setContentView(R.layout.activity_soil_ph);
         setUpToolbar();
         setUpSoilPhRecyclerview();
+        logMessage("onCreate called");
 
     }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        logMessage("onStart called");
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        logMessage("onResume called");
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        logMessage("onPause called");
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        logMessage("onStop called");
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        logMessage("onDestroy called");
+    }
+
 
     private void setUpToolbar() {
 
@@ -44,7 +78,7 @@ public class SoilPhActivity extends AppCompatActivity {
         RecyclerView soilPHRecyclerview = findViewById(R.id.soil_ph_recyclerview);
         LinearLayoutManager manager = new LinearLayoutManager(getApplicationContext());
         soilPHRecyclerview.setLayoutManager(manager);
-        SoilPHActivityAdapter adapter = new SoilPHActivityAdapter(formData(), getApplicationContext());
+        SoilPHActivityAdapter adapter = new SoilPHActivityAdapter(formData(), SoilPhActivity.this);
         soilPHRecyclerview.setAdapter(adapter);
 
     }
@@ -95,4 +129,11 @@ public class SoilPhActivity extends AppCompatActivity {
         return dateFormat.format(calendar.getTime());
     }
 
+    private void logMessage(String logMessage) {
+        AppSingletonClass.logDebugMessage(TAG, logMessage);
+    }
+
+    private void logErrorMessage(String logErrorMessage) {
+        AppSingletonClass.logErrorMessage(TAG, logErrorMessage);
+    }
 }

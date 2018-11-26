@@ -12,6 +12,7 @@ import com.squareup.picasso.Picasso;
 import com.veeville.farm.R;
 import com.veeville.farm.adapter.FarmProfilesAdapter;
 import com.veeville.farm.farmer.FarmerHelperClasses.FarmProfile;
+import com.veeville.farm.helper.AppSingletonClass;
 import com.veeville.farm.helper.CircleTransform;
 
 import java.util.ArrayList;
@@ -20,6 +21,7 @@ import java.util.Objects;
 
 public class FarmerProfileActivity extends AppCompatActivity {
 
+    private final String TAG = FarmerProfileActivity.class.getSimpleName();
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -31,8 +33,39 @@ public class FarmerProfileActivity extends AppCompatActivity {
 
         profilePic = findViewById(R.id.profile_image);
         Picasso.with(getApplicationContext()).load(imgUrl).resize(500, 500).centerCrop().transform(new CircleTransform()).into(profilePic);
+        String logMessage = "onCreate method Called";
+        logMessage(logMessage);
     }
 
+    @Override
+    protected void onStart() {
+        super.onStart();
+        logMessage("onStart called");
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        logMessage("onResume called");
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        logMessage("onPause called");
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        logMessage("onStop called");
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        logMessage("onDestroy called");
+    }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
@@ -41,6 +74,8 @@ public class FarmerProfileActivity extends AppCompatActivity {
     }
 
     private void setUpToolbar() {
+        String logMessage = "Setting toolbar";
+        logMessage(logMessage);
         Toolbar toolbar = findViewById(R.id.my_toolbar);
         toolbar.setTitle("Profile");
         setSupportActionBar(toolbar);
@@ -49,6 +84,8 @@ public class FarmerProfileActivity extends AppCompatActivity {
 
     private void setUpFarmsProfile() {
 
+        String logMessage = "setting farmer details recyclerview";
+        logMessage(logMessage);
         LinearLayoutManager manager = new LinearLayoutManager(getApplicationContext());
         manager.setOrientation(LinearLayoutManager.VERTICAL);
         FarmProfilesAdapter adapter = new FarmProfilesAdapter(getFarmerProfile());
@@ -59,6 +96,9 @@ public class FarmerProfileActivity extends AppCompatActivity {
     }
 
     private List<Object> getFarmerProfile() {
+
+        String logMessage = "getting Farmer profile details";
+        logMessage(logMessage);
         List<Object> objects = new ArrayList<>();
         //objects.add(new FarmerProfile("Prashant Chikkalaki","www.google.com","9878945634","India","prashantchikkalaki108@gmail.com","savalasang from Bijapur"));
         objects.add(new FarmProfile("Farm1", "fdfdf", "2", "Banana", "beginning", "4.5 quintol"));
@@ -68,5 +108,9 @@ public class FarmerProfileActivity extends AppCompatActivity {
         objects.add(new FarmProfile("Farm5", "", "7.8 acre", "Orange", "harvest", "1000kg"));
         objects.add(new FarmProfile("Farm6", "", "10 acre", "Mosambi", "harvest", "750 kg"));
         return objects;
+    }
+
+    private void logMessage(String logMessage) {
+        AppSingletonClass.logDebugMessage(TAG, logMessage);
     }
 }

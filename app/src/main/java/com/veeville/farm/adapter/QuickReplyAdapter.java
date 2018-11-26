@@ -7,8 +7,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
-
 import com.veeville.farm.R;
+import com.veeville.farm.helper.AppSingletonClass;
 import com.veeville.farm.helper.ChatmessageDataClasses;
 
 import java.util.List;
@@ -21,6 +21,7 @@ public class QuickReplyAdapter extends RecyclerView.Adapter<QuickReplyAdapter.Si
 
     private List<String> quickreplystrings;
     private QuickReplyOption option;
+    private final String TAG = QuickReplyAdapter.class.getSimpleName();
 
     QuickReplyAdapter(ChatmessageDataClasses.OptionMenu quickreplylist, QuickReplyOption option) {
         this.quickreplystrings = quickreplylist.menuItems;
@@ -51,6 +52,7 @@ public class QuickReplyAdapter extends RecyclerView.Adapter<QuickReplyAdapter.Si
 
     @Override
     public int getItemCount() {
+        logMessage("size:" + quickreplystrings.size());
         return quickreplystrings.size();
     }
 
@@ -69,5 +71,9 @@ public class QuickReplyAdapter extends RecyclerView.Adapter<QuickReplyAdapter.Si
         void insertDiseaseNames(String diseaseName);
 
         void insertImage(String qNaQuesry, String imageLink);
+    }
+
+    private void logMessage(String logMessage) {
+        AppSingletonClass.logDebugMessage(TAG, logMessage);
     }
 }

@@ -196,7 +196,8 @@ public class ChatmessageDataClasses {
         public String month, place;
         public List<LightValues> soilMoistureValues;
         public long timestamp;
-        public Light(String month, String place, List<LightValues> soilMoistureValues,long timestamp) {
+
+        public Light(String month, String place, List<LightValues> soilMoistureValues, long timestamp) {
             this.month = month;
             this.place = place;
             this.soilMoistureValues = soilMoistureValues;
@@ -206,10 +207,31 @@ public class ChatmessageDataClasses {
 
         public static class LightValues {
             public String date, value1;
+
             public LightValues(String date, String value1) {
                 this.date = date;
                 this.value1 = value1;
 
+            }
+        }
+    }
+
+    public static class HealthCard {
+        public List<SingleElementHealth> healthList;
+
+        public HealthCard(List<SingleElementHealth> healthList) {
+            this.healthList = healthList;
+        }
+
+        public static class SingleElementHealth {
+            public String title;
+            public float average, min, max;
+
+            public SingleElementHealth(String title, float average, float min, float max) {
+                this.average = average;
+                this.min = min;
+                this.max = max;
+                this.title = title;
             }
         }
     }

@@ -4,7 +4,6 @@ import android.app.Activity;
 import android.content.Context;
 import android.os.AsyncTask;
 import android.support.annotation.NonNull;
-import android.util.Log;
 import android.widget.Toast;
 
 import com.android.volley.Request;
@@ -45,6 +44,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Objects;
+import java.util.Random;
 import java.util.concurrent.TimeUnit;
 
 import ai.api.model.ResponseMessage;
@@ -61,7 +62,7 @@ public class ProcessBotResponse {
     private Context context;
     private List<Object> messages = new ArrayList<>();
     private String selectedLanguage;
-    private String TAG = "ProcessBotResponse";
+    private final String TAG = ProcessBotResponse.class.getSimpleName();
     private ProcessedResult processedResult;
     private UpdateMessageForRegistration updateMessageForRegistration;
 
@@ -96,10 +97,31 @@ public class ProcessBotResponse {
         translateTextToSelectedLanguage(speech);
     }
 
+    private List<String> getFarmElements() {
+        List<String> elements = new ArrayList<>();
+        elements.add("SoilPh");
+        elements.add("Soil Moisture");
+        elements.add("Soil Temp");
+        elements.add("Light");
+        elements.add("Humidity");
+        return elements;
+    }
+
+    private void addHealthCardReport() {
+        List<ChatmessageDataClasses.HealthCard.SingleElementHealth> singleElementHealths = new ArrayList<>();
+        List<String> elements = getFarmElements();
+        Random random = new Random();
+        for (int i = 0; i < 5; i++) {
+            int value = random.nextInt(80);
+            ChatmessageDataClasses.HealthCard.SingleElementHealth elementHealth = new ChatmessageDataClasses.HealthCard.SingleElementHealth(elements.get(i), value, value - 8, value + 23);
+            singleElementHealths.add(elementHealth);
+        }
+        messages.add(new ChatmessageDataClasses.HealthCard(singleElementHealths));
+    }
     // performing task based on action
     private void performAction(String speech) {
         String action = result.getAction();
-        Log.d(TAG, "performOnAction: action complete:" + action);
+        logMessage("Action:" + action);
         switch (action) {
             case "how.to.grow.vegetable":
                 addSpeechToMessage(speech);
@@ -167,13 +189,17 @@ public class ProcessBotResponse {
                 addSpeechToMessage(speech);
                 addMessagesToRecyclerview();
                 break;
+            case "healthcard":
+                addSpeechToMessage(speech);
+                addHealthCardReport();
+                addMessagesToRecyclerview();
+                break;
             default:
                 addSpeechToMessage(speech);
                 getPayload();
                 addMessagesToRecyclerview();
         }
     }
-
 
     private void handleMobileNumberAuthontication(String speech) {
 
@@ -184,7 +210,7 @@ public class ProcessBotResponse {
             if (map.containsKey("country") && map.containsKey("number")) {
                 String country = map.get("country").getAsString();
                 String mobNumber = map.get("number").getAsString();
-                Log.d(TAG, "handleMobileNumberAuthontication: country:" + country + "\tnumber:" + mobNumber);
+                logMessage("Aountry:" + country + "\tNumber:" + mobNumber);
                 Countries countries = new Countries();
                 String countryCode = null;
                 List<Countries> countriesList = countries.getCountries();
@@ -203,7 +229,7 @@ public class ProcessBotResponse {
 
 
             } else {
-                Log.d(TAG, "handleMobileNumberAuthontication: thank you failed to get");
+                logMessage("Failed to get details try again");
 
             }
         } else {
@@ -212,14 +238,11 @@ public class ProcessBotResponse {
             try {
                 PhoneAuthCredential credential = PhoneAuthProvider.getCredential(verifixationIdMain, code);
                 String message = "Neat!\n" + "We have confirmed your number. No more topsy turvy for you anymore.";
-
                 signInWithPhoneAuthCredential(credential, message);
-
                 AppSingletonClass.isOTPsent = false;
 
             } catch (Exception e) {
-                Log.e(TAG, "handleMobileNumberAuthontication: " + e.toString());
-                e.printStackTrace();
+                logErrormeesage(e.toString());
             }
         }
     }
@@ -243,7 +266,7 @@ public class ProcessBotResponse {
             if (map.containsKey("time-period")) {
                 time_period = map.get("time-period").getAsString();
             }
-            Log.d(TAG, "processWeatherData: city:" + city + "\tdate:" + date + "\tdate period:" + date_period + "\ttime period:" + time_period);
+            logErrorMessage("processWeatherData: city:" + city + "\tdate:" + date + "\tdate period:" + date_period + "\ttime period:" + time_period);
             weatherApidata(date, city);
         } else mobileRegistration();
     }
@@ -333,7 +356,7 @@ public class ProcessBotResponse {
         } else {
             mobileRegistration();
         }
-        Log.d(TAG, "handleVideoIntents: youtube query:" + buffer.toString());
+        logMessage("Youtube Query:" + buffer.toString());
     }
 
     private void getPayload() {
@@ -356,7 +379,7 @@ public class ProcessBotResponse {
                         List<String> dataOfImages = new ArrayList<>();
                         List<String> diseaseNames = new ArrayList<>();
                         JsonArray jsonElements = jsonObject.getAsJsonArray("images");
-                        Log.d(TAG, "getPayload: " + jsonElements.size());
+                        logMessage("Payload size:" + jsonElements.size());
                         for (int i = 0; i < jsonElements.size(); i++) {
                             JsonObject object = jsonElements.get(i).getAsJsonObject();
                             String imageLink = object.get("image_url").getAsString();
@@ -370,7 +393,7 @@ public class ProcessBotResponse {
                         messages.add(image);
                     }
                 } catch (Exception e) {
-                    Log.e(TAG, "getPayload: " + e.toString());
+                    logErrorMessage(e.toString());
                 }
             }
         }
@@ -393,14 +416,14 @@ public class ProcessBotResponse {
         }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
-                Log.e(TAG, "onErrorResponse: " + error.toString());
+                logErrorMessage(error.toString());
             }
         });
         AppSingletonClass.getInstance().addToRequestQueue(request);
     }
 
     private void performWeatherData(JSONObject jsonObject, String city) {
-        Log.d(TAG, "onResponse: " + jsonObject.toString());
+        logMessage("JSON weather response:" + jsonObject.toString());
         try {
             JSONObject data = jsonObject.getJSONObject("data");
             JSONArray weather = data.getJSONArray("weather");
@@ -442,8 +465,6 @@ public class ProcessBotResponse {
                     weatherIconUrl = weatherIconUrlArray.getJSONObject(0).getString("value");
                     houlyDataLists.add(threeHOurlyStringList);
                 }
-                Log.d(TAG, "performWeatherData: hourly size:" + houlyDataLists.size());
-                Log.d(TAG, "performWeatherData: city:" + city);
                 long timestamp = System.currentTimeMillis();
                 ChatmessageDataClasses.WeatherData weatherData = new ChatmessageDataClasses.WeatherData(date, city, weatherIconUrl, maxTemperature, prec, hum, wind, houlyDataLists, timestamp);
                 messages.add(weatherData);
@@ -463,7 +484,7 @@ public class ProcessBotResponse {
         JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET, url, object, new Response.Listener<JSONObject>() {
             @Override
             public void onResponse(JSONObject response) {
-                Log.d(TAG, "onResponse: " + response.toString());
+                logMessage("youtube response:" + response.toString());
                 List<String> videoIDs = new ArrayList<>();
                 List<String> imageLinks = new ArrayList<>();
                 try {
@@ -501,7 +522,7 @@ public class ProcessBotResponse {
         }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
-                Log.e(TAG, "onErrorResponse: " + error.toString());
+                logErrorMessage(error.toString());
             }
         });
         AppSingletonClass.getInstance().addToRequestQueue(request);
@@ -515,7 +536,7 @@ public class ProcessBotResponse {
     private void translateTextToSelectedLanguage(String translatingText) {
         logMesage("trnaslating to given Language :" + translatingText);
         String url = "https://translation.googleapis.com/language/translate/v2?key=AIzaSyAeN43km6hD8UHAUaFEZ8j9iCYFk8puvuE";
-        Log.d(TAG, "translateText: " + translatingText);
+
         JSONObject jsonObject = new JSONObject();
         try {
             jsonObject.put("q", translatingText);
@@ -523,11 +544,11 @@ public class ProcessBotResponse {
         } catch (Exception e) {
             logErrormeesage("cought " + e.toString() + "  while forming request body for google translate");
         }
+        logMessage("translateTextToSelectedLanguage:" + jsonObject.toString());
         JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.POST, url, jsonObject, new Response.Listener<JSONObject>() {
             @Override
             public void onResponse(JSONObject response) {
                 try {
-                    Log.d(TAG, "response:" + response.toString());
                     JSONObject resObject = response.getJSONObject("data");
                     JSONArray jsonArray = resObject.getJSONArray("translations");
                     JSONObject translatedObject = jsonArray.getJSONObject(0);
@@ -628,7 +649,7 @@ public class ProcessBotResponse {
         }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
-                Log.e(TAG, "onErrorResponse: " + error.toString());
+                logErrorMessage(error.toString());
             }
         }) {
             @Override
@@ -645,7 +666,6 @@ public class ProcessBotResponse {
     private void translateTextToSelectedLanguageForQnaMaker(String translatingText) {
         logMesage("trnaslating to given Language :" + translatingText);
         String url = "https://translation.googleapis.com/language/translate/v2?key=AIzaSyAeN43km6hD8UHAUaFEZ8j9iCYFk8puvuE";
-        Log.d(TAG, "translateText: " + translatingText);
         JSONObject jsonObject = new JSONObject();
         try {
             jsonObject.put("q", translatingText);
@@ -657,7 +677,6 @@ public class ProcessBotResponse {
             @Override
             public void onResponse(JSONObject response) {
                 try {
-                    Log.d(TAG, "response:" + response.toString());
                     JSONObject resObject = response.getJSONObject("data");
                     JSONArray jsonArray = resObject.getJSONArray("translations");
                     JSONObject translatedObject = jsonArray.getJSONObject(0);
@@ -686,8 +705,6 @@ public class ProcessBotResponse {
     //authonticating User Mobile number
     private void authonticateMobileNumber(String mobileNumber) {
 
-        Log.d(TAG, "authonticateMobileNumber: " + mobileNumber);
-
         PhoneAuthProvider.OnVerificationStateChangedCallbacks mCallbacks = new PhoneAuthProvider.OnVerificationStateChangedCallbacks() {
 
             @Override
@@ -702,7 +719,7 @@ public class ProcessBotResponse {
 
             @Override
             public void onVerificationFailed(FirebaseException e) {
-                Log.w(TAG, "onVerificationFailed", e);
+                logErrormeesage(e.toString());
 
                 if (e instanceof FirebaseAuthInvalidCredentialsException) {
                     Toast.makeText(context, "invalid mobile number", Toast.LENGTH_SHORT).show();
@@ -727,7 +744,6 @@ public class ProcessBotResponse {
 
             @Override
             public void onCodeSent(String verificationId, PhoneAuthProvider.ForceResendingToken token) {
-                Log.d(TAG, "onCodeSent:" + verificationId);
                 ChatMessagesHelperFunctions helperFunctions = new ChatMessagesHelperFunctions(context);
                 String message = "Excellent!\n" + "You will now receive an OTP, please share that too.";
                 updateMessageForRegistration.updateMessageForRegistrayion(message, false);
@@ -762,10 +778,9 @@ public class ProcessBotResponse {
                     public void onComplete(@NonNull Task<AuthResult> task) {
                         long timestamp = System.currentTimeMillis();
                         if (task.isSuccessful()) {
-                            FirebaseUser user = task.getResult().getUser();
+                            FirebaseUser user = Objects.requireNonNull(task.getResult()).getUser();
                             ChatBotDatabase database = new ChatBotDatabase(context);
                             database.insertMobileNumber(user.getPhoneNumber());
-                            Log.d(TAG, "onComplete: " + user.getPhoneNumber());
                             new MyAsyncTask().execute(user.getPhoneNumber());
                             ChatMessagesHelperFunctions helperFunctions = new ChatMessagesHelperFunctions(context);
                             helperFunctions.insertResponseTextMessage(message);
@@ -776,7 +791,6 @@ public class ProcessBotResponse {
                             addMessagesToRecyclerview();
 
                         } else {
-                            Log.w(TAG, "signInWithCredential:failure", task.getException());
                             if (task.getException() instanceof FirebaseAuthInvalidCredentialsException) {
                                 Toast.makeText(context, "invalid verification code", Toast.LENGTH_SHORT).show();
                                 String responseMessage = "Awww!\n" + "We didn’t get the OTP. You’re gonna have to start all over again ";
@@ -798,6 +812,20 @@ public class ProcessBotResponse {
         processedResult.result(messages);
     }
 
+    private void logMessage(String logMessage) {
+        AppSingletonClass.logDebugMessage(TAG, logMessage);
+    }
+
+    interface UpdateMessageForRegistration {
+        void updateMessageForRegistrayion(String message, boolean showCard);
+
+        void makeMessagesNormal(boolean showNormal);
+    }
+
+    private void logErrorMessage(String logErrorMessage) {
+        AppSingletonClass.logErrorMessage(TAG, logErrorMessage);
+    }
+
     //insert user Mobile number to AWS database
     class MyAsyncTask extends AsyncTask<String, Void, Integer> {
         @Override
@@ -813,11 +841,10 @@ public class ProcessBotResponse {
                 Connection connection = DriverManager.getConnection(DatabaseCredentials.Url + DatabaseCredentials.database, DatabaseCredentials.UserName, DatabaseCredentials.Password);
                 Statement stmt = connection.createStatement();
                 String insetQuery = "insert into RegisteredMobileNumber values('" + number + "');";
-                Log.d(TAG, "doInBackground: query:" + insetQuery);
                 return stmt.executeUpdate(insetQuery);
 
             } catch (Exception e) {
-                Log.e(TAG, "doInBackground: " + e.toString());
+                logErrormeesage(e.toString());
             }
             return 0;
         }
@@ -827,11 +854,4 @@ public class ProcessBotResponse {
             super.onPostExecute(s);
         }
     }
-
-    interface UpdateMessageForRegistration {
-        void updateMessageForRegistrayion(String message, boolean showCard);
-
-        void makeMessagesNormal(boolean showNormal);
-    }
-
 }

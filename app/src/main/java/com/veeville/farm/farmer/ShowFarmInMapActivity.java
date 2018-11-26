@@ -16,6 +16,7 @@ import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.Polygon;
 import com.google.android.gms.maps.model.PolygonOptions;
 import com.veeville.farm.R;
+import com.veeville.farm.helper.AppSingletonClass;
 
 import java.util.List;
 import java.util.Objects;
@@ -24,6 +25,7 @@ public class ShowFarmInMapActivity extends AppCompatActivity implements OnMapRea
 
     private GoogleMap mMap;
     private String farmName;
+    private final String TAG = ShowFarmInMapActivity.class.getSimpleName();
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -31,10 +33,44 @@ public class ShowFarmInMapActivity extends AppCompatActivity implements OnMapRea
         setUpToolbar();
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
+        String logMessage = "onCreate Called";
+        logMessage(logMessage);
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        logMessage("onStart called");
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        logMessage("onResume called");
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        logMessage("onPause called");
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        logMessage("onStop called");
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        logMessage("onDestroy called");
     }
 
     @Override
     public void onMapReady(GoogleMap googleMap) {
+        String logMessage = "google map loaded";
+        logMessage(logMessage);
         mMap = googleMap;
         mMap.setMapType(GoogleMap.MAP_TYPE_HYBRID);
         mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(17.141728, 75.729168), 15));
@@ -43,7 +79,10 @@ public class ShowFarmInMapActivity extends AppCompatActivity implements OnMapRea
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
+
         onBackPressed();
+        String logMessage = "Menu Item Selected";
+        logMessage(logMessage);
         return super.onOptionsItemSelected(item);
     }
 
@@ -55,6 +94,8 @@ public class ShowFarmInMapActivity extends AppCompatActivity implements OnMapRea
         toolbar.setSubtitleTextColor(Color.WHITE);
         setSupportActionBar(toolbar);
         Objects.requireNonNull(getSupportActionBar()).setDisplayHomeAsUpEnabled(true);
+        String logMessage = "setting up toolbar";
+        logMessage(logMessage);
     }
 
     private void addAllFarmsToMap() {
@@ -113,6 +154,9 @@ public class ShowFarmInMapActivity extends AppCompatActivity implements OnMapRea
         LatLng temp2 = getCentroid(polygon2.getPoints());
         mMap.addMarker(new MarkerOptions().position(temp2).title("Farm3-Potato"));
 
+        String logMessage = "added all Farms to Map";
+        logMessage(logMessage);
+
     }
 
     @Override
@@ -139,5 +183,9 @@ public class ShowFarmInMapActivity extends AppCompatActivity implements OnMapRea
         centroid[0] = centroid[0] / totalPoints;
         centroid[1] = centroid[1] / totalPoints;
         return new LatLng(centroid[0], centroid[1]);
+    }
+
+    private void logMessage(String logMessage) {
+        AppSingletonClass.logDebugMessage(TAG, logMessage);
     }
 }

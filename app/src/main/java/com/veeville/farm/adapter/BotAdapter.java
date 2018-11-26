@@ -9,7 +9,6 @@ import android.support.v7.widget.CardView;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Base64;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -30,6 +29,7 @@ import com.veeville.farm.activity.SoilPhActivity;
 import com.veeville.farm.activity.TemperatureActivity;
 import com.veeville.farm.activity.WeatherActivity;
 import com.veeville.farm.activity.YouTubePlayerVersion2;
+import com.veeville.farm.helper.AppSingletonClass;
 import com.veeville.farm.helper.ChatmessageDataClasses;
 import com.veeville.farm.helper.InputImageClass;
 import com.veeville.farm.helper.OptionMenuItems;
@@ -49,7 +49,7 @@ public class BotAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
 {
     private List<Object> messagelist;
     private Context context;
-    private final String TAG = "BotAdapter";
+    private final String TAG = BotAdapter.class.getSimpleName();
     private QuickReplyAdapter.QuickReplyOption option;
     private boolean showNormal = false;
 
@@ -61,7 +61,6 @@ public class BotAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
 
     @Override
     public int getItemViewType(int position) {
-        Log.d(TAG, "getItemViewType: ");
         if (messagelist.get(position) instanceof ChatmessageDataClasses.InputTextMessage) {
             return 0;
         } else if (messagelist.get(position) instanceof ChatmessageDataClasses.ResponseTextMessage) {
@@ -96,6 +95,8 @@ public class BotAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
             return 17;
         } else if (messagelist.get(position) instanceof ChatmessageDataClasses.DateInMessage) {
             return 18;
+        } else if (messagelist.get(position) instanceof ChatmessageDataClasses.HealthCard) {
+            return 19;
         } else {
             return -1;
         }
@@ -118,6 +119,10 @@ public class BotAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
                 viewHolder = new InputTextMessageHolder(view);
                 break;
             case 1:
+                view = LayoutInflater.from(parent.getContext()).inflate(R.layout.simpletextresponse, parent, false);
+                viewHolder = new ResponseTextMessageHolder(view);
+                break;
+            case 2:
                 view = LayoutInflater.from(parent.getContext()).inflate(R.layout.simpletextresponse, parent, false);
                 viewHolder = new ResponseTextMessageHolder(view);
                 break;
@@ -183,6 +188,13 @@ public class BotAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
                 view = LayoutInflater.from(parent.getContext()).inflate(R.layout.dateview_card, parent, false);
                 viewHolder = new DateInMessageHolder(view);
                 break;
+            case 19:
+                view = LayoutInflater.from(parent.getContext()).inflate(R.layout.farm_health_card_layout, parent, false);
+                viewHolder = new HealthCardHolder(view);
+                break;
+            default:
+                view = LayoutInflater.from(parent.getContext()).inflate(R.layout.farm_health_card_layout, parent, false);
+                viewHolder = new HealthCardHolder(view);
         }
         return viewHolder;
     }
@@ -249,9 +261,27 @@ public class BotAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
             case 18:
                 handleDate((DateInMessageHolder) holder, position);
                 break;
+            case 19:
+                handleFarmHealthCard((HealthCardHolder) holder, position);
+                break;
         }
     }
 
+    @Override
+    public int getItemCount() {
+        logMessage("size:" + messagelist.size());
+        return messagelist.size();
+    }
+
+
+    private void handleFarmHealthCard(HealthCardHolder holder, int position) {
+
+        LinearLayoutManager manager = new LinearLayoutManager(context);
+        holder.recyclerView.setLayoutManager(manager);
+        ChatmessageDataClasses.HealthCard healthCard = (ChatmessageDataClasses.HealthCard) messagelist.get(position);
+        FarmHealthCardAdapter adapter = new FarmHealthCardAdapter(context, healthCard.healthList);
+        holder.recyclerView.setAdapter(adapter);
+    }
 
     private void handleVegFruitPrice(VegFruitPriceCardHolder holder, int position) {
 
@@ -281,7 +311,6 @@ public class BotAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
         holder.temp.setText(weather);
         holder.date.setText(weatherData.date);
         holder.place.setText(weatherData.place);
-        Log.d(TAG, "handleWeatherCardData: place:" + weatherData.place);
         String humidity = "Humidty(%): " + weatherData.humidity;
         String windSpeed = "WindSpeed(kmph): " + weatherData.wind;
         String precipitation = "Precipitation: " + weatherData.precipitation;
@@ -292,7 +321,7 @@ public class BotAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
         Glide.with(context).load(weatherData.imgLink).into(holder.weather_image);
         manager.setOrientation(LinearLayoutManager.HORIZONTAL);
         holder.recyclerView.setLayoutManager(manager);
-        WeatherBottomAdapter adapter = new WeatherBottomAdapter(weatherData.tempHourly);
+        WeatherTimeWithTempAdapter adapter = new WeatherTimeWithTempAdapter(weatherData.tempHourly, context);
         holder.recyclerView.setAdapter(adapter);
         holder.weahter_card.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -311,7 +340,7 @@ public class BotAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
         holder.date.setText(light.month);
         LinearLayoutManager manager = new LinearLayoutManager(context);
         manager.setOrientation(LinearLayoutManager.HORIZONTAL);
-        LightValuesAdapter adapter = new LightValuesAdapter(light.soilMoistureValues);
+        LightTimeWithValuesAdapter adapter = new LightTimeWithValuesAdapter(light.soilMoistureValues);
         holder.valuesRecyclerview.setLayoutManager(manager);
         holder.valuesRecyclerview.setAdapter(adapter);
         holder.valuesRecyclerview.scrollToPosition(5);
@@ -452,6 +481,61 @@ public class BotAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
         });
     }
 
+    private void handleVideoCard(ResponseVideoMessageHolder videoHolder, int position) {
+        LinearLayoutManager manager = new LinearLayoutManager(context);
+        manager.setOrientation(LinearLayoutManager.HORIZONTAL);
+        videoHolder.recyclerView.setLayoutManager(manager);
+        ChatmessageDataClasses.ResponseVideoMessage responseVideoMessage = (ChatmessageDataClasses.ResponseVideoMessage) messagelist.get(position);
+        VideoListAdapter adapter = new VideoListAdapter(responseVideoMessage.thumbnail, responseVideoMessage.videoIds, responseVideoMessage.timestamp);
+        videoHolder.recyclerView.setAdapter(adapter);
+    }
+
+    private void handleQuickReplies(QuickReplyHolder holder, int position) {
+
+        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(context);
+        linearLayoutManager.setOrientation(LinearLayoutManager.HORIZONTAL);
+        holder.quickreplyrecyclerview.setLayoutManager(linearLayoutManager);
+        QuickReplyAdapter quickReplyAdapter = new QuickReplyAdapter((ChatmessageDataClasses.OptionMenu) messagelist.get(position), option);
+        holder.quickreplyrecyclerview.setAdapter(quickReplyAdapter);
+    }
+
+    private void handleOverviewOutPutData(ResponseTextMessageHolder myholderOutput, int position) {
+
+        ChatmessageDataClasses.ResponseTextMessage responseData = (ChatmessageDataClasses.ResponseTextMessage) messagelist.get(position);
+        myholderOutput.singlemesssage.setText(responseData.responseTextMessage);
+        myholderOutput.time.setText(getTime(responseData.timestamp));
+        if (showNormal) {
+            myholderOutput.singlemesssage.setRotation(0);
+        } else {
+            myholderOutput.singlemesssage.setRotation(180);
+        }
+    }
+
+    private void handleInputTextMessage(final InputTextMessageHolder myholderInput, int position) {
+
+        ChatmessageDataClasses.InputTextMessage inputData = (ChatmessageDataClasses.InputTextMessage) messagelist.get(position);
+        myholderInput.singlemesssage.setText(inputData.inputTextMessage);
+        myholderInput.time.setText(getTime(inputData.timestamp));
+    }
+
+
+    private void handleSingleMovie(SingleMovieHolder holder, int position) {
+
+        final ChatmessageDataClasses.InputImageMessage movieClass = (ChatmessageDataClasses.InputImageMessage) messagelist.get(position);
+        holder.time.setText(getTime(movieClass.timestamp));
+        Picasso.with(context).load(movieClass.imageLink).into(holder.movieposter);
+        holder.movieposter.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(view.getContext(), ImageShowActivity.class);
+                intent.putExtra("image_url", movieClass.imageLink);
+                view.getContext().startActivity(intent);
+            }
+        });
+
+
+    }
+
     class SoilMoistureHolder extends RecyclerView.ViewHolder {
         RecyclerView valuesRecyclerview;
         TextView date, place;
@@ -467,6 +551,9 @@ public class BotAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
         }
     }
 
+    private void logMessage(String logMessage) {
+        AppSingletonClass.logDebugMessage(TAG, logMessage);
+    }
     class DateInMessageHolder extends RecyclerView.ViewHolder {
         TextView textView;
 
@@ -553,68 +640,6 @@ public class BotAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
             soilTempCard = view.findViewById(R.id.soil_temperature_card);
         }
     }
-
-    private void handleVideoCard(ResponseVideoMessageHolder videoHolder, int position) {
-        LinearLayoutManager manager = new LinearLayoutManager(context);
-        manager.setOrientation(LinearLayoutManager.HORIZONTAL);
-        videoHolder.recyclerView.setLayoutManager(manager);
-        ChatmessageDataClasses.ResponseVideoMessage responseVideoMessage = (ChatmessageDataClasses.ResponseVideoMessage) messagelist.get(position);
-        VideoListAdapter adapter = new VideoListAdapter(responseVideoMessage.thumbnail, responseVideoMessage.videoIds, responseVideoMessage.timestamp);
-        videoHolder.recyclerView.setAdapter(adapter);
-    }
-
-    private void handleQuickReplies(QuickReplyHolder holder, int position) {
-
-        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(context);
-        linearLayoutManager.setOrientation(LinearLayoutManager.HORIZONTAL);
-        holder.quickreplyrecyclerview.setLayoutManager(linearLayoutManager);
-        QuickReplyAdapter quickReplyAdapter = new QuickReplyAdapter((ChatmessageDataClasses.OptionMenu) messagelist.get(position), option);
-        holder.quickreplyrecyclerview.setAdapter(quickReplyAdapter);
-    }
-
-    private void handleOverviewOutPutData(ResponseTextMessageHolder myholderOutput, int position) {
-
-        ChatmessageDataClasses.ResponseTextMessage responseData = (ChatmessageDataClasses.ResponseTextMessage) messagelist.get(position);
-        myholderOutput.singlemesssage.setText(responseData.responseTextMessage);
-        myholderOutput.time.setText(getTime(responseData.timestamp));
-        if (showNormal) {
-            myholderOutput.singlemesssage.setRotation(0);
-        } else {
-            myholderOutput.singlemesssage.setRotation(180);
-        }
-    }
-
-    private void handleInputTextMessage(final InputTextMessageHolder myholderInput, int position) {
-
-        ChatmessageDataClasses.InputTextMessage inputData = (ChatmessageDataClasses.InputTextMessage) messagelist.get(position);
-        myholderInput.singlemesssage.setText(inputData.inputTextMessage);
-        myholderInput.time.setText(getTime(inputData.timestamp));
-    }
-
-
-    private void handleSingleMovie(SingleMovieHolder holder, int position) {
-
-        final ChatmessageDataClasses.InputImageMessage movieClass = (ChatmessageDataClasses.InputImageMessage) messagelist.get(position);
-        holder.time.setText(getTime(movieClass.timestamp));
-        Picasso.with(context).load(movieClass.imageLink).into(holder.movieposter);
-        holder.movieposter.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent intent = new Intent(view.getContext(), ImageShowActivity.class);
-                intent.putExtra("image_url", movieClass.imageLink);
-                view.getContext().startActivity(intent);
-            }
-        });
-
-
-    }
-
-
-    @Override
-    public int getItemCount() {
-        return messagelist.size();
-    }
-
 
     class HumidityCardHolder extends RecyclerView.ViewHolder {
         RecyclerView valuesRecyclerview;
@@ -721,6 +746,7 @@ public class BotAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
             visualQna = view.findViewById(R.id.vqna_recyclerview);
         }
     }
+
 
     class MainOptionMenuAdapter extends RecyclerView.Adapter<MainOptionMenuAdapter.ItemHolderOptionMenu> {
         List<String> menuNames;
@@ -862,118 +888,12 @@ public class BotAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
         }
     }
 
-    class VisualQnaAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
+    class HealthCardHolder extends RecyclerView.ViewHolder {
+        RecyclerView recyclerView;
 
-        List vqNaList;
-
-        VisualQnaAdapter(List vqNaList) {
-            this.vqNaList = vqNaList;
-        }
-
-        @Override
-        public int getItemViewType(int position) {
-            if (vqNaList.get(position) instanceof ChatmessageDataClasses.InputTextMessage) {
-                return 0;
-            } else if (vqNaList.get(position) instanceof ChatmessageDataClasses.ResponseTextMessage) {
-                return 1;
-            } else if (vqNaList.get(position) instanceof ChatmessageDataClasses.InputImageMessage) {
-                return 2;
-            } else {
-                return -1;
-            }
-        }
-
-        @NonNull
-        @Override
-        public RecyclerView.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-
-            RecyclerView.ViewHolder holder = null;
-            switch (viewType) {
-                case 0:
-                    View view = LayoutInflater.from(context).inflate(R.layout.simpletextcardinput, parent, false);
-                    holder = new InputTextHolder(view);
-                    break;
-                case 1:
-                    view = LayoutInflater.from(context).inflate(R.layout.simpletextresponse, parent, false);
-                    holder = new ResponseTextMessage(view);
-                    break;
-                case 2:
-                    view = LayoutInflater.from(context).inflate(R.layout.inputimagecard, parent, false);
-                    holder = new InputImageHolder(view);
-                    break;
-            }
-            return holder;
-        }
-
-        @Override
-        public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int position) {
-            switch (holder.getItemViewType()) {
-                case 0:
-                    handleInputTextMessage((InputTextHolder) holder, position);
-                    break;
-                case 1:
-                    handleResponseMessage((ResponseTextMessage) holder, position);
-                    break;
-                case 2:
-                    handleInputImage((InputImageHolder) holder, position);
-                    break;
-            }
-        }
-
-        void handleInputImage(InputImageHolder holder, int position) {
-            ChatmessageDataClasses.InputImageMessage inputImageMessage = (ChatmessageDataClasses.InputImageMessage) vqNaList.get(position);
-            byte[] decodedString = Base64.decode(inputImageMessage.imageLink, Base64.DEFAULT);
-            Bitmap decodedByte = BitmapFactory.decodeByteArray(decodedString, 0, decodedString.length);
-            holder.imageView.setImageBitmap(decodedByte);
-            holder.time.setText(getTime(inputImageMessage.timestamp));
-        }
-
-        void handleInputTextMessage(InputTextHolder holder, int position) {
-            ChatmessageDataClasses.InputTextMessage inputTextMessage = (ChatmessageDataClasses.InputTextMessage) vqNaList.get(position);
-            holder.time.setText(getTime(inputTextMessage.timestamp));
-            holder.textView.setText(inputTextMessage.inputTextMessage);
-        }
-
-        void handleResponseMessage(ResponseTextMessage holder, int position) {
-            ChatmessageDataClasses.ResponseTextMessage message = (ChatmessageDataClasses.ResponseTextMessage) vqNaList.get(position);
-            holder.time.setText(getTime(message.timestamp));
-            holder.textView.setText(message.responseTextMessage);
-        }
-
-        @Override
-        public int getItemCount() {
-            return vqNaList.size();
-        }
-
-        class InputTextHolder extends RecyclerView.ViewHolder {
-            TextView textView, time;
-
-            InputTextHolder(View view) {
-                super(view);
-                textView = view.findViewById(R.id.singletextmessage);
-                time = view.findViewById(R.id.time);
-            }
-        }
-
-        class InputImageHolder extends RecyclerView.ViewHolder {
-            ImageView imageView;
-            TextView time;
-
-            InputImageHolder(View view) {
-                super(view);
-                imageView = view.findViewById(R.id.imageinput);
-                time = view.findViewById(R.id.time);
-            }
-        }
-
-        class ResponseTextMessage extends RecyclerView.ViewHolder {
-            TextView textView, time;
-
-            ResponseTextMessage(View view) {
-                super(view);
-                textView = view.findViewById(R.id.singletextmessage);
-                time = view.findViewById(R.id.time);
-            }
+        HealthCardHolder(View view) {
+            super(view);
+            recyclerView = view.findViewById(R.id.recyclerview);
         }
     }
 
@@ -1090,76 +1010,121 @@ public class BotAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
         }
     }
 
-    class LightValuesAdapter extends RecyclerView.Adapter<LightValuesAdapter.SingleValueHolder> {
-        List<ChatmessageDataClasses.Light.LightValues> lightValues;
+    class VisualQnaAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
-        LightValuesAdapter(List<ChatmessageDataClasses.Light.LightValues> lightValues) {
-            this.lightValues = lightValues;
-        }
+        List vqNaList;
 
-        @NonNull
-        @Override
-        public SingleValueHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-            View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.soil_moisture_time_value, parent, false);
-            return new SingleValueHolder(view);
+        VisualQnaAdapter(List vqNaList) {
+            this.vqNaList = vqNaList;
         }
 
         @Override
-        public void onBindViewHolder(@NonNull SingleValueHolder holder, int position) {
-            holder.value.setText(lightValues.get(position).value1);
-            holder.time.setText(lightValues.get(position).date);
-
-        }
-
-        @Override
-        public int getItemCount() {
-            return lightValues.size();
-        }
-
-        class SingleValueHolder extends RecyclerView.ViewHolder {
-            TextView time, value;
-
-            SingleValueHolder(View view) {
-                super(view);
-                time = view.findViewById(R.id.time);
-                value = view.findViewById(R.id.value);
+        public int getItemViewType(int position) {
+            if (vqNaList.get(position) instanceof ChatmessageDataClasses.InputTextMessage) {
+                return 0;
+            } else if (vqNaList.get(position) instanceof ChatmessageDataClasses.ResponseTextMessage) {
+                return 1;
+            } else if (vqNaList.get(position) instanceof ChatmessageDataClasses.InputImageMessage) {
+                return 2;
+            } else {
+                return -1;
             }
         }
-    }
-
-    class WeatherBottomAdapter extends RecyclerView.Adapter<WeatherBottomAdapter.ThreeHourHolder> {
-        List<List<String>> lists;
-
-        WeatherBottomAdapter(List<List<String>> lists) {
-            this.lists = lists;
-        }
 
         @NonNull
         @Override
-        public ThreeHourHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-            View view = LayoutInflater.from(context).inflate(R.layout.weather_time_value_card, parent, false);
-            return new ThreeHourHolder(view);
+        public RecyclerView.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+
+            RecyclerView.ViewHolder holder;
+            switch (viewType) {
+                case 0:
+                    View view = LayoutInflater.from(context).inflate(R.layout.simpletextcardinput, parent, false);
+                    holder = new InputTextHolder(view);
+                    break;
+                case 1:
+                    view = LayoutInflater.from(context).inflate(R.layout.simpletextresponse, parent, false);
+                    holder = new ResponseTextMessage(view);
+                    break;
+                case 2:
+                    view = LayoutInflater.from(context).inflate(R.layout.inputimagecard, parent, false);
+                    holder = new InputImageHolder(view);
+                    break;
+                default:
+                    view = LayoutInflater.from(context).inflate(R.layout.inputimagecard, parent, false);
+                    holder = new InputImageHolder(view);
+
+            }
+            return holder;
         }
 
         @Override
-        public void onBindViewHolder(@NonNull ThreeHourHolder holder, int position) {
-            holder.time.setText(lists.get(position).get(0));
-            holder.temp.setText(lists.get(position).get(1));
-            Log.d(TAG, "onBindViewHolder: values:time:" + lists.get(position).get(0) + "\ttemp:" + lists.get(position).get(1));
+        public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int position) {
+            switch (holder.getItemViewType()) {
+                case 0:
+                    handleInputTextMessage((InputTextHolder) holder, position);
+                    break;
+                case 1:
+                    handleResponseMessage((ResponseTextMessage) holder, position);
+                    break;
+                case 2:
+                    handleInputImage((InputImageHolder) holder, position);
+                    break;
+            }
+        }
+
+        void handleInputImage(InputImageHolder holder, int position) {
+            ChatmessageDataClasses.InputImageMessage inputImageMessage = (ChatmessageDataClasses.InputImageMessage) vqNaList.get(position);
+            byte[] decodedString = Base64.decode(inputImageMessage.imageLink, Base64.DEFAULT);
+            Bitmap decodedByte = BitmapFactory.decodeByteArray(decodedString, 0, decodedString.length);
+            holder.imageView.setImageBitmap(decodedByte);
+            holder.time.setText(getTime(inputImageMessage.timestamp));
+        }
+
+        void handleInputTextMessage(InputTextHolder holder, int position) {
+            ChatmessageDataClasses.InputTextMessage inputTextMessage = (ChatmessageDataClasses.InputTextMessage) vqNaList.get(position);
+            holder.time.setText(getTime(inputTextMessage.timestamp));
+            holder.textView.setText(inputTextMessage.inputTextMessage);
+        }
+
+        void handleResponseMessage(ResponseTextMessage holder, int position) {
+            ChatmessageDataClasses.ResponseTextMessage message = (ChatmessageDataClasses.ResponseTextMessage) vqNaList.get(position);
+            holder.time.setText(getTime(message.timestamp));
+            holder.textView.setText(message.responseTextMessage);
         }
 
         @Override
         public int getItemCount() {
-            return lists.size();
+            return vqNaList.size();
         }
 
-        class ThreeHourHolder extends RecyclerView.ViewHolder {
-            TextView time, temp;
+        class InputTextHolder extends RecyclerView.ViewHolder {
+            TextView textView, time;
 
-            ThreeHourHolder(View view) {
+            InputTextHolder(View view) {
                 super(view);
+                textView = view.findViewById(R.id.singletextmessage);
                 time = view.findViewById(R.id.time);
-                temp = view.findViewById(R.id.temperature);
+            }
+        }
+
+        class InputImageHolder extends RecyclerView.ViewHolder {
+            ImageView imageView;
+            TextView time;
+
+            InputImageHolder(View view) {
+                super(view);
+                imageView = view.findViewById(R.id.imageinput);
+                time = view.findViewById(R.id.time);
+            }
+        }
+
+        class ResponseTextMessage extends RecyclerView.ViewHolder {
+            TextView textView, time;
+
+            ResponseTextMessage(View view) {
+                super(view);
+                textView = view.findViewById(R.id.singletextmessage);
+                time = view.findViewById(R.id.time);
             }
         }
     }

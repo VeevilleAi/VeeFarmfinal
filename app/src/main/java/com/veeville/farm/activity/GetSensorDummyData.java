@@ -91,4 +91,5 @@ public class GetSensorDummyData {
         long timestamp = System.currentTimeMillis();
         return new ChatmessageDataClasses.SoilMoisture("July", "Bengaluru", soilMoistureValues2, timestamp);
     }
+
 }

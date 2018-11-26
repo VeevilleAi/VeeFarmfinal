@@ -11,6 +11,7 @@ import android.view.MenuItem;
 import com.veeville.farm.R;
 import com.veeville.farm.adapter.AddFarmYieldAdapter;
 import com.veeville.farm.farmer.FarmerHelperClasses.Yield;
+import com.veeville.farm.helper.AppSingletonClass;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -18,6 +19,7 @@ import java.util.Objects;
 
 public class AddPreviousYieldFarmActivity extends AppCompatActivity {
 
+    private final String TAG = AddPreviousYieldFarmActivity.class.getSimpleName();
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -26,6 +28,35 @@ public class AddPreviousYieldFarmActivity extends AppCompatActivity {
         setUpRecyclerview();
     }
 
+    @Override
+    protected void onStart() {
+        super.onStart();
+        logMessage("onStart called");
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        logMessage("onResume called");
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        logMessage("onPause called");
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        logMessage("onStop called");
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        logMessage("onDestroy called");
+    }
     private void setUpToolbar() {
         Toolbar toolbar = findViewById(R.id.my_toolbar);
         toolbar.setTitle("Previous Years Yield");
@@ -64,4 +95,7 @@ public class AddPreviousYieldFarmActivity extends AppCompatActivity {
         return yields;
     }
 
+    private void logMessage(String logMessage) {
+        AppSingletonClass.logDebugMessage(TAG, logMessage);
+    }
 }

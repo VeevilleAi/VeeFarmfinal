@@ -3,14 +3,15 @@ package com.veeville.farm.adapter;
 import android.content.Context;
 import android.graphics.Color;
 import android.support.annotation.NonNull;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.github.mikephil.charting.charts.LineChart;
@@ -22,6 +23,7 @@ import com.github.mikephil.charting.data.LineData;
 import com.github.mikephil.charting.data.LineDataSet;
 import com.github.mikephil.charting.interfaces.datasets.ILineDataSet;
 import com.veeville.farm.R;
+import com.veeville.farm.helper.AppSingletonClass;
 import com.veeville.farm.helper.CustomMarkerView;
 import com.veeville.farm.helper.DashBoardDataClasses;
 
@@ -38,7 +40,7 @@ import java.util.Random;
  */
 public class SoilPHActivityAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
-    private String TAG = "SoilPHActivityAdapter";
+    private final String TAG = SoilPHActivityAdapter.class.getSimpleName();
     private List<Object> soilPHList;
     private Context context;
 
@@ -64,8 +66,8 @@ public class SoilPHActivityAdapter extends RecyclerView.Adapter<RecyclerView.Vie
         RecyclerView.ViewHolder holder;
         switch (viewType) {
             case 0:
-                View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.soil_ph_first_card, parent, false);
-                holder = new SoilpHCardHolder(view);
+                View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.soil_ph_remaining_cards, parent, false);
+                holder = new SoilPhFirstCardHolder(view);
                 break;
             case 1:
                 view = LayoutInflater.from(parent.getContext()).inflate(R.layout.soil_ph_graph_data_card, parent, false);
@@ -84,7 +86,7 @@ public class SoilPHActivityAdapter extends RecyclerView.Adapter<RecyclerView.Vie
 
         switch (holder.getItemViewType()) {
             case 0:
-                Log.d(TAG, "onBindViewHolder: ");
+                handleFirstPhCard((SoilPhFirstCardHolder) holder, position);
                 break;
             case 1:
                 setUpgraphData((SoilPhGraphHolder) holder, position);
@@ -93,7 +95,45 @@ public class SoilPHActivityAdapter extends RecyclerView.Adapter<RecyclerView.Vie
 
     }
 
+    private void handleFirstPhCard(SoilPhFirstCardHolder holder, int position) {
+        logMessage("" + position);
+        holder.showPhScale.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                showAlertDialogForPhScale();
+            }
+        });
+    }
 
+    private void showAlertDialogForPhScale() {
+
+        AlertDialog.Builder builder = new AlertDialog.Builder(context);
+        View view = LayoutInflater.from(context).inflate(R.layout.soil_ph_scale_view, null);
+        builder.setView(view);
+        AlertDialog dialog = builder.create();
+        dialog.show();
+        LinearLayoutManager manager = new GridLayoutManager(context, 15);
+        RecyclerView recyclerView = view.findViewById(R.id.recyclerview);
+        recyclerView.setLayoutManager(manager);
+        SoilPhValuesAdapter adapter = new SoilPhValuesAdapter(getSoilPhValues());
+        recyclerView.setAdapter(adapter);
+    }
+
+
+    private List<String> getSoilPhValues() {
+        List<String> soilPhValues = new ArrayList<>();
+        for (int i = 0; i < 15; i++) {
+            if (i < 10)
+                soilPhValues.add("0" + i);
+            else
+                soilPhValues.add("" + i);
+        }
+        return soilPhValues;
+    }
+
+    private void logMessage(String logMessage) {
+        AppSingletonClass.logDebugMessage(TAG, logMessage);
+    }
     @Override
     public int getItemCount() {
         return soilPHList.size();
@@ -183,7 +223,6 @@ public class SoilPHActivityAdapter extends RecyclerView.Adapter<RecyclerView.Vie
                     SimpleDateFormat month_date = new SimpleDateFormat("MMMM", Locale.ENGLISH);
                     calendar.add(Calendar.MONTH, -i);
                     String temp = month_date.format(calendar.getTime());
-                    Log.d(TAG, "setXAxisValues: " + temp);
                     xVals.add(temp);
                 }
                 break;
@@ -196,7 +235,6 @@ public class SoilPHActivityAdapter extends RecyclerView.Adapter<RecyclerView.Vie
                     SimpleDateFormat month_date = new SimpleDateFormat("MMMM", Locale.ENGLISH);
                     calendar.add(Calendar.MONTH, -i);
                     String temp = month_date.format(calendar.getTime());
-                    Log.d(TAG, "setXAxisValues: " + temp);
                     xVals.add(temp);
                 }
 
@@ -363,14 +401,68 @@ public class SoilPHActivityAdapter extends RecyclerView.Adapter<RecyclerView.Vie
 
     }
 
-    class SoilpHCardHolder extends RecyclerView.ViewHolder {
-        TextView date, place, value;
+    class SoilPhValuesAdapter extends RecyclerView.Adapter<SoilPhValuesAdapter.SingleSoilPhHolder> {
 
-        SoilpHCardHolder(View view) {
+        List<String> phValues;
+
+        SoilPhValuesAdapter(List<String> phValues) {
+            this.phValues = phValues;
+        }
+
+        @NonNull
+        @Override
+        public SingleSoilPhHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+            View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.soil_ph_single_value, parent, false);
+            return new SingleSoilPhHolder(view);
+        }
+
+        @Override
+        public void onBindViewHolder(@NonNull SingleSoilPhHolder holder, int positionTemp) {
+            int position = holder.getAdapterPosition();
+            holder.soilPhValue.setText(phValues.get(position));
+            logMessage("ph values:" + phValues.get(position));
+            int phValue = Integer.parseInt(phValues.get(position));
+
+            if (phValue < 4 || phValue > 10) {
+                holder.soilphColor.setBackgroundColor(Color.parseColor("#de1f26"));
+            }
+            if ((phValue > 3 && phValue < 6) || (phValue > 8 && phValue < 11)) {
+                holder.soilphColor.setBackgroundColor(Color.parseColor("#fee024"));
+            } else {
+                holder.soilphColor.setBackgroundColor(Color.parseColor("#1f8d44"));
+            }
+            if (phValue == 7) {
+                holder.marker.setVisibility(View.VISIBLE);
+            } else {
+                holder.marker.setVisibility(View.INVISIBLE);
+            }
+        }
+
+        @Override
+        public int getItemCount() {
+            return phValues.size();
+        }
+
+        class SingleSoilPhHolder extends RecyclerView.ViewHolder {
+            TextView soilPhValue, marker;
+            LinearLayout soilphColor;
+
+            SingleSoilPhHolder(View view) {
+                super(view);
+                soilPhValue = view.findViewById(R.id.soil_ph_value);
+                soilphColor = view.findViewById(R.id.soil_ph_color);
+                marker = view.findViewById(R.id.present_ph_value_marker);
+            }
+        }
+
+    }
+
+    class SoilPhFirstCardHolder extends RecyclerView.ViewHolder {
+        TextView showPhScale;
+
+        SoilPhFirstCardHolder(View view) {
             super(view);
-            date = view.findViewById(R.id.date);
-            place = view.findViewById(R.id.place);
-            value = view.findViewById(R.id.value);
+            showPhScale = view.findViewById(R.id.show_phscale);
         }
     }
 
@@ -385,4 +477,15 @@ public class SoilPHActivityAdapter extends RecyclerView.Adapter<RecyclerView.Vie
             recyclerView = view.findViewById(R.id.recyclerview);
         }
     }
+
+    class SoilpHCardHolder extends RecyclerView.ViewHolder {
+
+        RecyclerView recyclerView;
+
+        SoilpHCardHolder(View view) {
+            super(view);
+            recyclerView = view.findViewById(R.id.recyclerview);
+        }
+    }
+
 }

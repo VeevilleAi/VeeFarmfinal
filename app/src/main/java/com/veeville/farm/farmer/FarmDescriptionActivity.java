@@ -14,6 +14,7 @@ import com.veeville.farm.adapter.FarmDescAdapter;
 import com.veeville.farm.farmer.FarmerHelperClasses.FarmDesc;
 import com.veeville.farm.farmer.FarmerHelperClasses.FarmDescMap;
 import com.veeville.farm.farmer.FarmerHelperClasses.SoilTestResult;
+import com.veeville.farm.helper.AppSingletonClass;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -21,15 +22,47 @@ import java.util.Objects;
 
 public class FarmDescriptionActivity extends AppCompatActivity {
 
+    private final String TAG = FarmDescriptionActivity.class.getSimpleName();
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_farmers_farm);
         setUpToolbar();
         setUpRecyclerview();
+        String logMessage = "onCreate Method Called";
+        logMessage(logMessage);
     }
 
 
+    @Override
+    protected void onStart() {
+        super.onStart();
+        logMessage("onStart called");
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        logMessage("onResume called");
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        logMessage("onPause called");
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        logMessage("onStop called");
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        logMessage("onDestroy called");
+    }
     private void setUpToolbar() {
         String farmName = getIntent().getStringExtra("farmName");
         String cropName = getIntent().getStringExtra("cropName");
@@ -40,6 +73,8 @@ public class FarmDescriptionActivity extends AppCompatActivity {
         toolbar.setSubtitleTextColor(Color.WHITE);
         setSupportActionBar(toolbar);
         Objects.requireNonNull(getSupportActionBar()).setDisplayHomeAsUpEnabled(true);
+        String logMessage = "Setting toolbar";
+        logMessage(logMessage);
     }
 
     @Override
@@ -49,6 +84,8 @@ public class FarmDescriptionActivity extends AppCompatActivity {
     }
 
     private void setUpRecyclerview() {
+        String logMessage = "Farm Desc recyclerview  Called";
+        logMessage(logMessage);
         LinearLayoutManager manager = new LinearLayoutManager(getApplicationContext());
         RecyclerView recyclerView = findViewById(R.id.recyclerview);
         String farmName = getIntent().getStringExtra("farmName");
@@ -58,6 +95,8 @@ public class FarmDescriptionActivity extends AppCompatActivity {
     }
 
     private List<Object> getfarmDescriptions() {
+        String logMessage = "getting Farm description";
+        logMessage(logMessage);
         List<Object> objects = new ArrayList<>();
         objects.add(new FarmDesc());
         objects.add(new FarmDescMap());
@@ -68,5 +107,13 @@ public class FarmDescriptionActivity extends AppCompatActivity {
         //objects.add(getSoilTestResults());
         objects.add(new SoilTestResult.SoilTestGraph());
         return objects;
+    }
+
+    private void logMessage(String logMessage) {
+        AppSingletonClass.logDebugMessage(TAG, logMessage);
+    }
+
+    private void logErrorMessage(String logErrorMessage) {
+        AppSingletonClass.logErrorMessage(TAG, logErrorMessage);
     }
 }

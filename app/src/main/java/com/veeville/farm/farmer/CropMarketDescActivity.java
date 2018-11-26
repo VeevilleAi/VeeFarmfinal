@@ -11,6 +11,7 @@ import android.view.MenuItem;
 import com.veeville.farm.R;
 import com.veeville.farm.adapter.CropMarketDescAdapter;
 import com.veeville.farm.farmer.FarmerHelperClasses.CropMarketplace;
+import com.veeville.farm.helper.AppSingletonClass;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -18,12 +19,43 @@ import java.util.Objects;
 
 public class CropMarketDescActivity extends AppCompatActivity {
 
+    private final String TAG = CropMarketDescActivity.class.getSimpleName();
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_crop_market_desc);
         setUpToolbar();
         setUpRecyclerview();
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        logMessage("onStart called");
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        logMessage("onResume called");
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        logMessage("onPause called");
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        logMessage("onStop called");
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        logMessage("onDestroy called");
     }
 
     private void setUpToolbar() {
@@ -66,4 +98,9 @@ public class CropMarketDescActivity extends AppCompatActivity {
         objects.add(new CropMarketplace.CropMarketPlacePrice(list));
         return objects;
     }
+
+    private void logMessage(String logMessage) {
+        AppSingletonClass.logDebugMessage(TAG, logMessage);
+    }
+
 }

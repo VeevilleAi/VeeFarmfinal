@@ -11,9 +11,11 @@ import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 import android.view.View;
+
 import com.veeville.farm.R;
 import com.veeville.farm.adapter.FarmAdapter;
 import com.veeville.farm.farmer.FarmerHelperClasses.Farm;
+import com.veeville.farm.helper.AppSingletonClass;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -21,6 +23,7 @@ import java.util.Objects;
 
 public class FarmsActivity extends AppCompatActivity {
 
+    private final String TAG = FarmsActivity.class.getSimpleName();
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -30,7 +33,38 @@ public class FarmsActivity extends AppCompatActivity {
         addNewFarm();
     }
 
+    @Override
+    protected void onStart() {
+        super.onStart();
+        logMessage("onStart called");
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        logMessage("onResume called");
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        logMessage("onPause called");
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        logMessage("onStop called");
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        logMessage("onDestroy called");
+    }
     private void addNewFarm() {
+        String logMessage = "add Farm Called";
+        logMessage(logMessage);
         FloatingActionButton addFarm = findViewById(R.id.add_new_farm);
         addFarm.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -43,6 +77,8 @@ public class FarmsActivity extends AppCompatActivity {
     }
 
     private void setUpToolbar() {
+        String logMessage = "setting up toolbar";
+        logMessage(logMessage);
         Toolbar toolbar = findViewById(R.id.my_toolbar);
         toolbar.setTitle("Farms-Crop");
         toolbar.setTitleTextColor(Color.WHITE);
@@ -53,6 +89,8 @@ public class FarmsActivity extends AppCompatActivity {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
+        String logMessage = "Menu Item Selected";
+        logMessage(logMessage);
         onBackPressed();
         return super.onOptionsItemSelected(item);
     }
@@ -65,6 +103,8 @@ public class FarmsActivity extends AppCompatActivity {
         recyclerView.setLayoutManager(manager);
         FarmAdapter adapter = new FarmAdapter(getFarms(), getApplicationContext());
         recyclerView.setAdapter(adapter);
+        String logMessage = "setting up Farms Recyclerview";
+        logMessage(logMessage);
     }
 
     private List<Farm> getFarms() {
@@ -79,6 +119,13 @@ public class FarmsActivity extends AppCompatActivity {
         farms.add(farm3);
         farms.add(farm4);
         farms.add(farm5);
+        String logMessage = "getting Farms ";
+        logMessage(logMessage);
         return farms;
     }
+
+    private void logMessage(String logMessage) {
+        AppSingletonClass.logDebugMessage(TAG, logMessage);
+    }
+
 }

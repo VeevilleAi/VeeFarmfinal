@@ -13,7 +13,7 @@ import com.google.firebase.auth.FirebaseAuth;
  */
 
 public class AppSingletonClass extends Application {
-    String TAG = "AppSingletonClass";
+    private final String TAG = AppSingletonClass.class.getSimpleName();
     private RequestQueue mRequestQueue;
     public static String MODEL_FILE;
     public static String LABEL_FILE;
@@ -37,6 +37,7 @@ public class AppSingletonClass extends Application {
         Log.d("VeevilleFarm " + TAG, messageToLog);
     }
 
+
     public static void logErrorMessage(String TAG, String errorMessageToPrint) {
         Log.e("VeevilleFarm " + TAG, errorMessageToPrint);
     }
@@ -51,5 +52,9 @@ public class AppSingletonClass extends Application {
     public <T> void addToRequestQueue(Request<T> req) {
         req.setTag(TAG);
         getRequestQueue().add(req);
+    }
+
+    public <T> void removeFromRequestQueue() {
+        getRequestQueue().cancelAll(TAG);
     }
 }

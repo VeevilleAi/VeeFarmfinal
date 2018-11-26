@@ -5,12 +5,12 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 
 import com.veeville.farm.R;
 import com.veeville.farm.adapter.TemperatureActivityAdapter;
+import com.veeville.farm.helper.AppSingletonClass;
 import com.veeville.farm.helper.DashBoardDataClasses;
 
 import java.text.SimpleDateFormat;
@@ -22,13 +22,43 @@ import java.util.Objects;
 import java.util.Random;
 
 public class TemperatureActivity extends AppCompatActivity {
-    String TAG = "TemperatureActivity";
+    private final String TAG = TemperatureActivity.class.getSimpleName();
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_temperature);
         setUpToolbar();
         setUpHumidityRecyclerview();
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        logMessage("onStart called");
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        logMessage("onResume called");
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        logMessage("onPause called");
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        logMessage("onStop called");
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        logMessage("onDestroy called");
     }
 
     private void setUpToolbar() {
@@ -64,7 +94,7 @@ public class TemperatureActivity extends AppCompatActivity {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         String title = item.getTitle().toString();
-        Log.d(TAG, "onOptionsItemSelected: " + title);
+        logMessage(title);
         onBackPressed();
         return super.onOptionsItemSelected(item);
     }
@@ -93,7 +123,6 @@ public class TemperatureActivity extends AppCompatActivity {
         }
         DashBoardDataClasses.TemperatureData soilMoistureData = new DashBoardDataClasses.TemperatureData(months.get(0), "Bengaluru", soilMoistureValues1);
         //soilMoistureDatas.add(soilMoistureData);
-        Log.d(TAG, "formData: "+soilMoistureData);
         for (int i = 0; i < 1; i++) {
             List<DashBoardDataClasses.TemperatureData.TempValue> soilMoistureValues2 = new ArrayList<>();
             for (int j = 5; j < 20; j++) {
@@ -123,4 +152,7 @@ public class TemperatureActivity extends AppCompatActivity {
         return dateFormat.format(calendar.getTime());
     }
 
+    private void logMessage(String logMessage) {
+        AppSingletonClass.logDebugMessage(TAG, logMessage);
+    }
 }
