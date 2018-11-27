@@ -23,6 +23,7 @@ import java.util.Random;
 
 public class TemperatureActivity extends AppCompatActivity {
     private final String TAG = TemperatureActivity.class.getSimpleName();
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -122,6 +123,7 @@ public class TemperatureActivity extends AppCompatActivity {
             soilMoistureValues1.add(values);
         }
         DashBoardDataClasses.TemperatureData soilMoistureData = new DashBoardDataClasses.TemperatureData(months.get(0), "Bengaluru", soilMoistureValues1);
+        logMessage(soilMoistureData + "");
         //soilMoistureDatas.add(soilMoistureData);
         for (int i = 0; i < 1; i++) {
             List<DashBoardDataClasses.TemperatureData.TempValue> soilMoistureValues2 = new ArrayList<>();

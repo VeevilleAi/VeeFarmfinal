@@ -134,6 +134,7 @@ public class SoilPHActivityAdapter extends RecyclerView.Adapter<RecyclerView.Vie
     private void logMessage(String logMessage) {
         AppSingletonClass.logDebugMessage(TAG, logMessage);
     }
+
     @Override
     public int getItemCount() {
         return soilPHList.size();

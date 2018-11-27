@@ -18,6 +18,7 @@ import java.util.Objects;
 public class ImageShowActivity extends AppCompatActivity {
 
     private final String TAG = ImageShowActivity.class.getSimpleName();
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

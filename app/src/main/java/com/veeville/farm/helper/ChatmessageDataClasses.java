@@ -1,4 +1,5 @@
 package com.veeville.farm.helper;
+
 import java.util.List;
 
 /**
@@ -9,9 +10,9 @@ public class ChatmessageDataClasses {
         public String inputTextMessage;
         public long timestamp;
 
-        public InputTextMessage(String inputTextMessage,long timestamp) {
+        public InputTextMessage(String inputTextMessage, long timestamp) {
             this.inputTextMessage = inputTextMessage;
-            this.timestamp =timestamp;
+            this.timestamp = timestamp;
         }
     }
 
@@ -19,9 +20,9 @@ public class ChatmessageDataClasses {
         public long timestamp;
         public String imageLink;
 
-        public InputImageMessage(String imageLink,long timestamp) {
+        public InputImageMessage(String imageLink, long timestamp) {
             this.imageLink = imageLink;
-            this.timestamp =timestamp;
+            this.timestamp = timestamp;
         }
     }
 
@@ -29,29 +30,31 @@ public class ChatmessageDataClasses {
         public String title, description, imageLink;
         public long timestamp;
 
-        public VegFruitPrice(String title, String description, String imageLink,long timestamp) {
+        public VegFruitPrice(String title, String description, String imageLink, long timestamp) {
             this.title = title;
             this.description = description;
             this.imageLink = imageLink;
-            this.timestamp =timestamp;
+            this.timestamp = timestamp;
         }
     }
 
-    public static class DateInMessage{
+    public static class DateInMessage {
 
         public String date;
-        protected DateInMessage(String date){
+
+        protected DateInMessage(String date) {
             this.date = date;
         }
 
     }
+
     public static class ResponseTextMessage {
         public String responseTextMessage;
         public long timestamp;
 
-        public ResponseTextMessage(String inputTextMessage,long timestamp) {
+        public ResponseTextMessage(String inputTextMessage, long timestamp) {
             this.responseTextMessage = inputTextMessage;
-            this.timestamp =timestamp;
+            this.timestamp = timestamp;
         }
     }
 
@@ -61,39 +64,42 @@ public class ChatmessageDataClasses {
         public List<String> videoIds;
         public long timestamp;
 
-        public ResponseVideoMessage(List<String> videoIds, List<String> thumbnail,long timestamp) {
+        public ResponseVideoMessage(List<String> videoIds, List<String> thumbnail, long timestamp) {
             this.videoIds = videoIds;
             this.thumbnail = thumbnail;
-            this.timestamp =timestamp;
+            this.timestamp = timestamp;
         }
     }
 
     public static class OptionMenu {
         public List<String> menuItems;
         public long timestamp;
-        public OptionMenu(List<String> menuItems,long timestamp) {
+
+        public OptionMenu(List<String> menuItems, long timestamp) {
             this.menuItems = menuItems;
-            this.timestamp =timestamp;
+            this.timestamp = timestamp;
         }
     }
 
     public static class ResponseImages {
         public List<String> imageLinks, dataOfImages, diseaseNames;
         public long timestamp;
-        public ResponseImages(List<String> imageLinks, List<String> dataOfImages, List<String> diseaseNames,long timestamp) {
+
+        public ResponseImages(List<String> imageLinks, List<String> dataOfImages, List<String> diseaseNames, long timestamp) {
             this.imageLinks = imageLinks;
             this.dataOfImages = dataOfImages;
             this.diseaseNames = diseaseNames;
-            this.timestamp =timestamp;
+            this.timestamp = timestamp;
         }
     }
 
     public static class VisualQnA {
         public List elements;
         public long timestamp;
-        public VisualQnA(List elements,long timestamp) {
+
+        public VisualQnA(List elements, long timestamp) {
             this.elements = elements;
-            this.timestamp =timestamp;
+            this.timestamp = timestamp;
         }
     }
 
@@ -106,11 +112,12 @@ public class ChatmessageDataClasses {
             this.date = date;
             this.place = place;
             this.humidityDataValues = humidityDataValues;
-            this.timestamp =timestamp;
+            this.timestamp = timestamp;
         }
 
         public static class HumidityDataValues {
             public String hour, hAbsulute, hRelative;
+
             public HumidityDataValues(String hour, String hAbsulute, String hRelative) {
                 this.hour = hour;
                 this.hAbsulute = hAbsulute;
@@ -122,11 +129,12 @@ public class ChatmessageDataClasses {
     public static class SoilPH {
         public String date, place, value;
         public long timestamp;
+
         public SoilPH(String date, String place, String value) {
             this.date = date;
             this.place = place;
             this.value = value;
-            this.timestamp =timestamp;
+            this.timestamp = timestamp;
         }
     }
 
@@ -134,16 +142,18 @@ public class ChatmessageDataClasses {
         public String date, place;
         public List<TempValue> soilMoistureValues;
         public long timestamp;
-        public SoilTemperature(String date, String place, List<TempValue> soilMoistureValues,long timestamp) {
+
+        public SoilTemperature(String date, String place, List<TempValue> soilMoistureValues, long timestamp) {
             this.date = date;
             this.place = place;
             this.soilMoistureValues = soilMoistureValues;
-            this.timestamp =timestamp;
+            this.timestamp = timestamp;
         }
 
 
         public static class TempValue {
             public String date, value1;
+
             public TempValue(String date, String value1) {
                 this.date = date;
                 this.value1 = value1;
@@ -155,16 +165,18 @@ public class ChatmessageDataClasses {
         public String month, place;
         public List<SoilMoistureValues> soilMoistureValues;
         public long timestamp;
-        public SoilMoisture(String month, String place, List<SoilMoistureValues> soilMoistureValues,long timestamp) {
+
+        public SoilMoisture(String month, String place, List<SoilMoistureValues> soilMoistureValues, long timestamp) {
             this.month = month;
             this.place = place;
             this.soilMoistureValues = soilMoistureValues;
-            this.timestamp =timestamp;
+            this.timestamp = timestamp;
         }
 
 
         public static class SoilMoistureValues {
             public String date, value1, value2;
+
             public SoilMoistureValues(String date, String value1, String value2) {
                 this.date = date;
                 this.value1 = value1;
@@ -178,7 +190,8 @@ public class ChatmessageDataClasses {
         public String date, place, imgLink, temp, precipitation, humidity, wind;
         public List<List<String>> tempHourly;
         public long timestamp;
-        public WeatherData(String date, String place, String imgLink, String temp, String precipitation, String humidity, String wind, List<List<String>> tempHourly,long timestamp) {
+
+        public WeatherData(String date, String place, String imgLink, String temp, String precipitation, String humidity, String wind, List<List<String>> tempHourly, long timestamp) {
             this.date = date;
             this.place = place;
             this.imgLink = imgLink;
@@ -187,7 +200,7 @@ public class ChatmessageDataClasses {
             this.humidity = humidity;
             this.wind = wind;
             this.tempHourly = tempHourly;
-            this.timestamp =timestamp;
+            this.timestamp = timestamp;
         }
 
     }
@@ -201,7 +214,7 @@ public class ChatmessageDataClasses {
             this.month = month;
             this.place = place;
             this.soilMoistureValues = soilMoistureValues;
-            this.timestamp =timestamp;
+            this.timestamp = timestamp;
         }
 
 

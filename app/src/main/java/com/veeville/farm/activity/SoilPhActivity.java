@@ -23,6 +23,7 @@ import java.util.Objects;
 public class SoilPhActivity extends AppCompatActivity {
 
     private final String TAG = SoilPhActivity.class.getSimpleName();
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
@@ -126,6 +127,7 @@ public class SoilPhActivity extends AppCompatActivity {
         SimpleDateFormat dateFormat = new SimpleDateFormat(format, Locale.getDefault());
         Calendar calendar = Calendar.getInstance();
         calendar.add(Calendar.DAY_OF_MONTH, days);
+        logErrorMessage(days + " days");
         return dateFormat.format(calendar.getTime());
     }
 

@@ -87,8 +87,12 @@ public class ProcessBotResponse {
     //got the result from after translating to given language
     private void translate(String speech) {
 
-        if (!result.isActionIncomplete())
+        if (!result.isActionIncomplete()) {
             performAction(speech);
+        } else {
+            addSpeechToMessage(speech);
+            addMessagesToRecyclerview();
+        }
 
     }
 
@@ -118,6 +122,7 @@ public class ProcessBotResponse {
         }
         messages.add(new ChatmessageDataClasses.HealthCard(singleElementHealths));
     }
+
     // performing task based on action
     private void performAction(String speech) {
         String action = result.getAction();

@@ -129,6 +129,7 @@ public class DashBoardDataClasses {
             }
 
         }
+
         public static class TempValue {
             public String date, value1;
 

@@ -26,6 +26,7 @@ public class CropMarketDescAdapter extends RecyclerView.Adapter<RecyclerView.Vie
     private List<Object> objects;
     private Context context;
     private final String TAG = CropMarketDescAdapter.class.getSimpleName();
+
     public CropMarketDescAdapter(Context context, List<Object> objects) {
         this.objects = objects;
         this.context = context;

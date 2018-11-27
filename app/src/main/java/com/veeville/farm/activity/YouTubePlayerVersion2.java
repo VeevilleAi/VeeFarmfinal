@@ -17,6 +17,7 @@ public class YouTubePlayerVersion2 extends AppCompatActivity {
     private static final String YOUTUBE_API_KEY = "AIzaSyDZj76GPBWBAP3m78M-kbYH6wMsuDB5rsw";
 
     private final String TAG = YouTubePlayerVersion2.class.getSimpleName();
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

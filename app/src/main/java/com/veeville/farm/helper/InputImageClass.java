@@ -9,7 +9,7 @@ public class InputImageClass {
     public boolean isUploadSuccess;
     public long timestamp;
 
-    public InputImageClass(String imagebytes, boolean isUploadSuccess,long timestamp) {
+    public InputImageClass(String imagebytes, boolean isUploadSuccess, long timestamp) {
         this.imagebytes = imagebytes;
         this.isUploadSuccess = isUploadSuccess;
         this.timestamp = timestamp;

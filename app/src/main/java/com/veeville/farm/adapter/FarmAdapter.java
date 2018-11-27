@@ -27,6 +27,7 @@ public class FarmAdapter extends RecyclerView.Adapter<FarmAdapter.SingleFarmHold
     private List<Farm> farms;
     private Context context;
     private final String TAG = FarmAdapter.class.getSimpleName();
+
     public FarmAdapter(List<Farm> farms, Context context) {
         this.farms = farms;
         this.context = context;

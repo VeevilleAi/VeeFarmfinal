@@ -125,6 +125,7 @@ public class SoilMoistureActivity extends AppCompatActivity {
             soilMoistureValues1.add(values);
         }
         DashBoardDataClasses.SoilMoistureData soilMoistureData = new DashBoardDataClasses.SoilMoistureData(months.get(0), "Bengaluru", soilMoistureValues1);
+        logMessage(soilMoistureData + "");
         //soilMoistureDatas.add(soilMoistureData);
         for (int i = 0; i < 1; i++) {
             List<DashBoardDataClasses.SoilMoistureData.SoilMoistureValues> soilMoistureValues2 = new ArrayList<>();

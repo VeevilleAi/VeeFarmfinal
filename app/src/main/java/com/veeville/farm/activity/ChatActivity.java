@@ -622,6 +622,7 @@ public class ChatActivity extends AppCompatActivity implements QuickReplyAdapter
                         InputMethodManager inputMethodManager = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
                         assert inputMethodManager != null;
                         boolean result = inputMethodManager.showSoftInput(query, InputMethodManager.SHOW_IMPLICIT);
+                        logErrormeesage(result+"");
                     }
                 });
             }
@@ -744,11 +745,32 @@ public class ChatActivity extends AppCompatActivity implements QuickReplyAdapter
             logErrormeesage("cought " + e.toString() + " while forming json body");
         }
 
+        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.POST, url, jsonObject, new Response.Listener<JSONObject>() {
+            @Override
+            public void onResponse(JSONObject response) {
+                logMesage("response from google translater :" + response.toString());
+                try {
+                    JSONObject resObject = response.getJSONObject("data");
+                    JSONArray jsonArray = resObject.getJSONArray("translations");
+                    JSONObject translatedObject = jsonArray.getJSONObject(0);
+                    String translatedText = translatedObject.getString("translatedText");
+                    logMesage("translated text by google :" + translatedText);
+                    requestToDialogFlow(translatedText);
+
+                } catch (JSONException e) {
+                    logErrormeesage("cought " + e.toString() + " while processing json data");
+                }
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                logErrormeesage("got error for google translate " + error.toString());
+
+            }
+        });
+        AppSingletonClass.getInstance().addToRequestQueue(jsonObjectRequest);
     }
 
-    private void logMessage(String logMessage) {
-        AppSingletonClass.logDebugMessage(TAG, logMessage);
-    }
 
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
@@ -904,9 +926,7 @@ public class ChatActivity extends AppCompatActivity implements QuickReplyAdapter
         }
     }
 
-    private void logErrorMessage(String logErrorMessage) {
-        AppSingletonClass.logErrorMessage(TAG, logErrorMessage);
-    }
+
 
     private class MyAsyncTask extends AsyncTask<AIRequest, Void, AIResponse> {
         @Override
@@ -926,7 +946,7 @@ public class ChatActivity extends AppCompatActivity implements QuickReplyAdapter
                 Result result = aiResponse.getResult();
                 processResult(result);
             } else {
-                logErrormeesage(aiResponse.toString());
+                logErrormeesage("AI response in null");
             }
         }
     }

@@ -109,9 +109,8 @@ public class BotAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
         return dateFormat.format(calendar.getTime());
     }
 
-    @NonNull
     @Override
-    public RecyclerView.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+    public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         RecyclerView.ViewHolder viewHolder = null;
         switch (viewType) {
             case 0:
@@ -554,6 +553,7 @@ public class BotAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
     private void logMessage(String logMessage) {
         AppSingletonClass.logDebugMessage(TAG, logMessage);
     }
+
     class DateInMessageHolder extends RecyclerView.ViewHolder {
         TextView textView;
 

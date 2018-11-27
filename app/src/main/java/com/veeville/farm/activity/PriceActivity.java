@@ -73,6 +73,7 @@ public class PriceActivity extends AppCompatActivity {
         super.onDestroy();
         logMessage("onDestroy called");
     }
+
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         onBackPressed();
