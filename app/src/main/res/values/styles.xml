@@ -9,6 +9,14 @@
 
     </style>
 
+    <style name="appTheme" parent="Theme.AppCompat.Light.DarkActionBar">
+        <!-- Customize your theme here. -->
+        <item name="colorPrimary">@color/colorPrimary</item>
+        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
+        <item name="colorAccent">@color/yellow</item>
+        <item name="android:fontFamily">@style/fontstyle</item>
+
+    </style>
     <style name="fontstyle" parent="android:Widget.TextView">
         <item name="android:fontFamily">@font/raleway_medium</item>
     </style>

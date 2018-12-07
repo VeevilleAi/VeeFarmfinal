@@ -85,6 +85,7 @@ public class SoilMoistureActivityAapter extends RecyclerView.Adapter<RecyclerVie
 
         switch (holder.getItemViewType()) {
             case 0:
+                handleTodaySoilMoistureCard((SoilpHCardHolder) holder, position);
                 break;
             case 1:
                 setUpgraphData((SoilPhGraphHolder) holder, position);
@@ -92,6 +93,92 @@ public class SoilMoistureActivityAapter extends RecyclerView.Adapter<RecyclerVie
         }
     }
 
+    private void handleTodaySoilMoistureCard(SoilpHCardHolder holder, int position) {
+
+        DashBoardDataClasses.SoilMoistureData data = (DashBoardDataClasses.SoilMoistureData) dataList.get(position);
+        List<DashBoardDataClasses.SoilMoistureData.SoilMoistureValues> soilMoistureValues = data.soilMoistureValues;
+        LinearLayoutManager manager = new LinearLayoutManager(context);
+        manager.setOrientation(LinearLayoutManager.HORIZONTAL);
+        holder.recyclerView.setLayoutManager(manager);
+        TodaySoilMoistureAdapter adapter = new TodaySoilMoistureAdapter(soilMoistureValues);
+        holder.recyclerView.setAdapter(adapter);
+        holder.recyclerView.scrollToPosition(soilMoistureValues.size() - 1);
+    }
+
+    private void setData(final LineChart chart, String type) {
+
+        ArrayList<String> xVals = setXAxisValues(type);
+        ArrayList<Entry> yVals = setYAxisValues(xVals.size());
+        LineDataSet set1;
+        set1 = new LineDataSet(yVals, "Soil pH");
+        set1.setFillAlpha(110);
+        set1.setColor(Color.BLACK);
+        set1.setCircleColor(Color.BLACK);
+        set1.setLineWidth(1f);
+        set1.setDrawCubic(true);
+        set1.setDrawFilled(true);
+        set1.setFillColor(Color.rgb(168, 168, 168));
+        set1.setCircleRadius(3f);
+        set1.setDrawCircles(false);
+        set1.setDrawCircleHole(false);
+        set1.setValueTextSize(9f);
+        set1.setDrawValues(false);
+        set1.setColor(Color.rgb(120, 120, 120));
+        set1.setDrawHighlightIndicators(true);
+        set1.setHighlightEnabled(true);
+        set1.setHighLightColor(Color.RED);
+        ArrayList<ILineDataSet> dataSets = new ArrayList<>();
+        dataSets.add(set1);
+        LineData data = new LineData(xVals, dataSets);
+        chart.setDescription("");
+
+        chart.setData(data);
+        chart.animateX(2000);
+        Legend l = chart.getLegend();
+        l.setFormSize(10f); // set the size of the legend forms/shapes
+        l.setForm(Legend.LegendForm.CIRCLE); // set what type of form/shape should be used
+        l.setPosition(Legend.LegendPosition.BELOW_CHART_LEFT);
+        l.setTextSize(12f);
+        l.setTextColor(Color.BLACK);
+        l.setXEntrySpace(5f); // set the space between the legend entries on the x-axis
+        l.setYEntrySpace(5f); // set the space between the legend entries on the y-axis
+
+
+        String legendText = "";
+        switch (type) {
+            case "1D":
+                legendText = "X - time in hours , Y - Soil Moisture Values";
+                break;
+            case "1W":
+                legendText = "X - time in days , Y -  Soil Moisture Values";
+                break;
+            case "1M":
+                legendText = "X - time in days , Y -  Soil Moisture Values";
+                break;
+            case "3M":
+                legendText = "X - time in week , Y -  Soil Moisture Values";
+                break;
+            case "6M":
+                legendText = "X - time in week , Y -  Soil Moisture Values";
+                break;
+            case "1Y":
+                legendText = "X - time in months , Y -  Soil Moisture Values";
+                break;
+            case "2Y":
+                legendText = "X - time in months , Y -  Soil Moisture Values";
+                break;
+        }
+        l.setCustom(new int[]{Color.BLACK}, new String[]{legendText});
+
+        chart.setDrawMarkerViews(false);
+        YAxis leftAxis = chart.getAxisLeft();
+        leftAxis.setEnabled(false);
+        chart.setDrawGridBackground(false);
+        XAxis xAxis = chart.getXAxis();
+        xAxis.setDrawGridLines(false);
+        xAxis.setDrawAxisLine(false);
+
+    }
     @Override
     public int getItemCount() {
         logMessage("size:" + dataList.size());
@@ -224,99 +311,43 @@ public class SoilMoistureActivityAapter extends RecyclerView.Adapter<RecyclerVie
         return yVals;
     }
 
-    private void setData(final LineChart chart, String type) {
+    class TodaySoilMoistureAdapter extends RecyclerView.Adapter<TodaySoilMoistureAdapter.SingleValueHolder> {
+        List<DashBoardDataClasses.SoilMoistureData.SoilMoistureValues> soilMoistureValues;
 
-        ArrayList<String> xVals = setXAxisValues(type);
-        ArrayList<Entry> yVals = setYAxisValues(xVals.size());
-        ArrayList<Entry> yValsTemp = setYAxisValues(xVals.size());
-        LineDataSet set1, set2;
-        set1 = new LineDataSet(yVals, "Soil pH");
-        set1.setFillAlpha(110);
-        set1.setColor(Color.BLACK);
-        set1.setCircleColor(Color.BLACK);
-        set1.setLineWidth(1f);
-        set1.setDrawCubic(true);
-        set1.setDrawFilled(false);
-        set1.setFillColor(Color.rgb(168, 168, 168));
-        set1.setCircleRadius(3f);
-        set1.setDrawCircles(false);
-        set1.setDrawCircleHole(false);
-        set1.setValueTextSize(9f);
-        set1.setDrawValues(false);
-        set1.setColor(Color.rgb(120, 120, 120));
-        set1.setDrawHighlightIndicators(true);
-        set1.setHighlightEnabled(true);
-        set1.setHighLightColor(Color.RED);
-
-
-        set2 = new LineDataSet(yValsTemp, "Soil pH");
-        set2.setFillAlpha(110);
-        set2.setColor(Color.BLACK);
-        set2.setCircleColor(Color.BLACK);
-        set2.setLineWidth(1f);
-        set2.setDrawCubic(true);
-        set2.setDrawFilled(false);
-        set2.setFillColor(Color.RED);
-        set2.setCircleRadius(3f);
-        set2.setDrawCircles(false);
-        set2.setDrawCircleHole(false);
-        set2.setValueTextSize(9f);
-        set2.setDrawValues(false);
-        set2.setColor(Color.GREEN);
-        set2.setDrawHighlightIndicators(true);
-        set2.setHighlightEnabled(true);
-        set2.setHighLightColor(Color.RED);
-        ArrayList<ILineDataSet> dataSets = new ArrayList<>();
-        dataSets.add(set1);
-        dataSets.add(set2);
-        LineData data = new LineData(xVals, dataSets);
-        chart.setDescription("");
-
-        chart.setData(data);
-        chart.animateX(2000);
-        Legend l = chart.getLegend();
-        l.setFormSize(10f); // set the size of the legend forms/shapes
-        l.setForm(Legend.LegendForm.CIRCLE); // set what type of form/shape should be used
-        l.setPosition(Legend.LegendPosition.BELOW_CHART_LEFT);
-        l.setTextSize(12f);
-        l.setTextColor(Color.BLACK);
-        l.setXEntrySpace(5f); // set the space between the legend entries on the x-axis
-        l.setYEntrySpace(5f); // set the space between the legend entries on the y-axis
-
-
-        String legendText = "";
-        switch (type) {
-            case "1D":
-                legendText = "X - time in hours , Y - Soil Moisture Values";
-                break;
-            case "1W":
-                legendText = "X - time in days , Y -  Soil Moisture Values";
-                break;
-            case "1M":
-                legendText = "X - time in days , Y -  Soil Moisture Values";
-                break;
-            case "3M":
-                legendText = "X - time in week , Y -  Soil Moisture Values";
-                break;
-            case "6M":
-                legendText = "X - time in week , Y -  Soil Moisture Values";
-                break;
-            case "1Y":
-                legendText = "X - time in months , Y -  Soil Moisture Values";
-                break;
-            case "2Y":
-                legendText = "X - time in months , Y -  Soil Moisture Values";
-                break;
+        TodaySoilMoistureAdapter(List<DashBoardDataClasses.SoilMoistureData.SoilMoistureValues> tempValues) {
+            this.soilMoistureValues = tempValues;
         }
-        l.setCustom(new int[]{Color.BLACK}, new String[]{legendText});
 
-        chart.setDrawMarkerViews(false);
-        YAxis leftAxis = chart.getAxisLeft();
-        leftAxis.setEnabled(false);
-        chart.setDrawGridBackground(false);
-        XAxis xAxis = chart.getXAxis();
-        xAxis.setDrawGridLines(false);
-        xAxis.setDrawAxisLine(false);
+        @NonNull
+        @Override
+        public SingleValueHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+            View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.humidity_value_card_with_time, parent, false);
+            return new SingleValueHolder(view);
+        }
+
+        @Override
+        public void onBindViewHolder(@NonNull SingleValueHolder holder, int position) {
+            DashBoardDataClasses.SoilMoistureData.SoilMoistureValues value = soilMoistureValues.get(position);
+            holder.time.setText(value.date);
+            holder.value.setText(value.value1);
+            holder.vale2.setText(value.value2);
+        }
+
+        @Override
+        public int getItemCount() {
+            return soilMoistureValues.size();
+        }
+
+        class SingleValueHolder extends RecyclerView.ViewHolder {
+            TextView time, value, vale2;
+
+            SingleValueHolder(View view) {
+                super(view);
+                time = view.findViewById(R.id.time_humidity);
+                value = view.findViewById(R.id.h_relative);
+                vale2 = view.findViewById(R.id.h_absolute);
+            }
+        }
 
     }
 
@@ -379,12 +410,13 @@ public class SoilMoistureActivityAapter extends RecyclerView.Adapter<RecyclerVie
 
     class SoilpHCardHolder extends RecyclerView.ViewHolder {
         TextView date, place, value;
-
+        RecyclerView recyclerView;
         SoilpHCardHolder(View view) {
             super(view);
             date = view.findViewById(R.id.date);
             place = view.findViewById(R.id.place);
             value = view.findViewById(R.id.value);
+            recyclerView = view.findViewById(R.id.recyclerview);
         }
     }
 

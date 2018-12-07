@@ -187,6 +187,7 @@ public class WorkFlowAdapter extends RecyclerView.Adapter<WorkFlowAdapter.Single
                 intent.putExtra("body", "spray water reminder");
                 alarmIntent = PendingIntent.getBroadcast(context, 0, intent, 0);
                 assert alarmMgr != null;
+                logMessage(calendar.getTimeInMillis() + " alaram time ");
                 alarmMgr.set(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), alarmIntent);
                 Toast.makeText(context, "Reminder set ", Toast.LENGTH_SHORT).show();
                 if (wantTRepeat) {

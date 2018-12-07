@@ -3,7 +3,6 @@ package com.veeville.farm.adapter;
 import android.content.Context;
 import android.graphics.Color;
 import android.support.annotation.NonNull;
-import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
@@ -27,7 +26,6 @@ import com.veeville.farm.helper.AppSingletonClass;
 import com.veeville.farm.helper.CustomMarkerView;
 import com.veeville.farm.helper.DashBoardDataClasses;
 
-import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -97,27 +95,13 @@ public class SoilPHActivityAdapter extends RecyclerView.Adapter<RecyclerView.Vie
 
     private void handleFirstPhCard(SoilPhFirstCardHolder holder, int position) {
         logMessage("" + position);
-        holder.showPhScale.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                showAlertDialogForPhScale();
-            }
-        });
-    }
-
-    private void showAlertDialogForPhScale() {
-
-        AlertDialog.Builder builder = new AlertDialog.Builder(context);
-        View view = LayoutInflater.from(context).inflate(R.layout.soil_ph_scale_view, null);
-        builder.setView(view);
-        AlertDialog dialog = builder.create();
-        dialog.show();
         LinearLayoutManager manager = new GridLayoutManager(context, 15);
-        RecyclerView recyclerView = view.findViewById(R.id.recyclerview);
-        recyclerView.setLayoutManager(manager);
+        holder.recyclerView.setLayoutManager(manager);
         SoilPhValuesAdapter adapter = new SoilPhValuesAdapter(getSoilPhValues());
-        recyclerView.setAdapter(adapter);
+        holder.recyclerView.setAdapter(adapter);
+
     }
+
 
 
     private List<String> getSoilPhValues() {
@@ -260,10 +244,7 @@ public class SoilPHActivityAdapter extends RecyclerView.Adapter<RecyclerView.Vie
         ArrayList<Entry> yVals = new ArrayList<>();
         for (int i = 0; i < count; i++) {
             Random random = new Random();
-            float randomValue = (random.nextFloat() * (8.2f - 6.5f) + 6.5f);
-            DecimalFormat format = new DecimalFormat("##.##");
-            String temp = format.format(randomValue);
-            randomValue = Float.parseFloat(temp);
+            float randomValue = random.nextFloat() % 14.0f;
             yVals.add(new Entry(randomValue, i));
         }
         return yVals;
@@ -366,9 +347,9 @@ public class SoilPHActivityAdapter extends RecyclerView.Adapter<RecyclerView.Vie
         public void onBindViewHolder(@NonNull final GraphSingleTitleHolder holder, int positionTemp) {
             final int position = holder.getAdapterPosition();
             if (selectedPosition == position) {
-                holder.titleCard.setCardBackgroundColor(Color.parseColor("#FFC20E"));
-            } else {
                 holder.titleCard.setCardBackgroundColor(Color.parseColor("#DFBA74"));
+            } else {
+                holder.titleCard.setCardBackgroundColor(Color.parseColor("#FFC20E"));
             }
 
             holder.title.setText(titles.get(position));
@@ -404,8 +385,8 @@ public class SoilPHActivityAdapter extends RecyclerView.Adapter<RecyclerView.Vie
 
     class SoilPhValuesAdapter extends RecyclerView.Adapter<SoilPhValuesAdapter.SingleSoilPhHolder> {
 
-        List<String> phValues;
-
+        private List<String> phValues;
+        private int phValue = 6;
         SoilPhValuesAdapter(List<String> phValues) {
             this.phValues = phValues;
         }
@@ -422,21 +403,22 @@ public class SoilPHActivityAdapter extends RecyclerView.Adapter<RecyclerView.Vie
             int position = holder.getAdapterPosition();
             holder.soilPhValue.setText(phValues.get(position));
             logMessage("ph values:" + phValues.get(position));
-            int phValue = Integer.parseInt(phValues.get(position));
 
-            if (phValue < 4 || phValue > 10) {
-                holder.soilphColor.setBackgroundColor(Color.parseColor("#de1f26"));
-            }
-            if ((phValue > 3 && phValue < 6) || (phValue > 8 && phValue < 11)) {
-                holder.soilphColor.setBackgroundColor(Color.parseColor("#fee024"));
+
+            if (phValue - 3 >= position || phValue + 3 <= position) {
+
+                holder.soilphColor.setBackgroundColor(Color.GRAY);
             } else {
-                holder.soilphColor.setBackgroundColor(Color.parseColor("#1f8d44"));
+                if (position < 4 || position > 10) {
+                    holder.soilphColor.setBackgroundColor(Color.parseColor("#de1f26"));
+                }
+                if ((position > 3 && position < 6) || (position > 8 && position < 11)) {
+                    holder.soilphColor.setBackgroundColor(Color.parseColor("#fee024"));
+                } else {
+                    holder.soilphColor.setBackgroundColor(Color.parseColor("#1f8d44"));
+                }
             }
-            if (phValue == 7) {
-                holder.marker.setVisibility(View.VISIBLE);
-            } else {
-                holder.marker.setVisibility(View.INVISIBLE);
-            }
+
         }
 
         @Override
@@ -445,14 +427,13 @@ public class SoilPHActivityAdapter extends RecyclerView.Adapter<RecyclerView.Vie
         }
 
         class SingleSoilPhHolder extends RecyclerView.ViewHolder {
-            TextView soilPhValue, marker;
+            TextView soilPhValue;
             LinearLayout soilphColor;
 
             SingleSoilPhHolder(View view) {
                 super(view);
                 soilPhValue = view.findViewById(R.id.soil_ph_value);
                 soilphColor = view.findViewById(R.id.soil_ph_color);
-                marker = view.findViewById(R.id.present_ph_value_marker);
             }
         }
 
@@ -460,10 +441,11 @@ public class SoilPHActivityAdapter extends RecyclerView.Adapter<RecyclerView.Vie
 
     class SoilPhFirstCardHolder extends RecyclerView.ViewHolder {
         TextView showPhScale;
-
+        RecyclerView recyclerView;
         SoilPhFirstCardHolder(View view) {
             super(view);
             showPhScale = view.findViewById(R.id.show_phscale);
+            recyclerView = view.findViewById(R.id.recyclerview);
         }
     }
 
@@ -475,16 +457,6 @@ public class SoilPHActivityAdapter extends RecyclerView.Adapter<RecyclerView.Vie
         SoilPhGraphHolder(View view) {
             super(view);
             mChart = view.findViewById(R.id.linechart);
-            recyclerView = view.findViewById(R.id.recyclerview);
-        }
-    }
-
-    class SoilpHCardHolder extends RecyclerView.ViewHolder {
-
-        RecyclerView recyclerView;
-
-        SoilpHCardHolder(View view) {
-            super(view);
             recyclerView = view.findViewById(R.id.recyclerview);
         }
     }

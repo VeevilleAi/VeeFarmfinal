@@ -22,9 +22,6 @@ public class SplashActivity extends AppCompatActivity {
     private String TAG = SplashActivity.class.getSimpleName();
     private int SPLASH_SCREEN_TIMEOUT;
     private Handler handler;
-    //    private void logErrorMessage(String logErrorMessage){
-//        AppSingletonClass.logErrorMessage(TAG,logErrorMessage);
-//    }
     private Runnable runnable = new Runnable() {
         @Override
         public void run() {

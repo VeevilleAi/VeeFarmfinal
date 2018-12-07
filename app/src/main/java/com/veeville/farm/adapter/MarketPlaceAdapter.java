@@ -19,7 +19,6 @@ import com.veeville.farm.R;
 import com.veeville.farm.farmer.CropMarketDescActivity;
 import com.veeville.farm.farmer.FarmerHelperClasses.MarketPlace;
 import com.veeville.farm.helper.AppSingletonClass;
-import com.veeville.farm.helper.CircleTransform;
 
 import java.util.List;
 
@@ -48,7 +47,7 @@ public class MarketPlaceAdapter extends RecyclerView.Adapter<MarketPlaceAdapter.
     public void onBindViewHolder(@NonNull MarketPlaceHolder holder, final int temp_position) {
         final int position = holder.getAdapterPosition();
         final MarketPlace marketPlace = marketPlaces.get(position);
-        Picasso.with(context).load(marketPlace.imgicon).resize(500, 500).centerCrop().transform(new CircleTransform()).into(holder.cropIcon);
+        Picasso.with(context).load(marketPlace.imgicon).resize(500, 500).into(holder.cropIcon);
         holder.cropName.setText(marketPlace.cropName);
         String totalMoney = marketPlace.totalMoney;
         holder.amount.setText(totalMoney);
@@ -118,6 +117,7 @@ public class MarketPlaceAdapter extends RecyclerView.Adapter<MarketPlaceAdapter.
 
     private void logMessage(String logMessage) {
         AppSingletonClass.logDebugMessage(TAG, logMessage);
+        logErrorMessage(logMessage);
     }
 
     private void logErrorMessage(String logErrorMessage) {

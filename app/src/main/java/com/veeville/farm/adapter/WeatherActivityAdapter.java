@@ -47,11 +47,11 @@ public class WeatherActivityAdapter extends RecyclerView.Adapter<WeatherActivity
         holder.date.setText(weatherData.date);
         Glide.with(context).load(weatherData.imgLink).into(holder.weather_icon);
         holder.place.setText(weatherData.place);
-        String humidity = "Humidty(%):" + weatherData.humidity;
-        String windSpeed = "WindSpeed(kmph):" + weatherData.wind;
+        String humidity = ":" + weatherData.humidity;
+        String windSpeed = ":" + weatherData.wind;
         holder.humidity.setText(humidity);
         holder.windSpeed.setText(windSpeed);
-        String precipitation = "Precipitation:" + weatherData.precipitation;
+        String precipitation = ":" + weatherData.precipitation;
         holder.prec.setText(precipitation);
         LinearLayoutManager manager = new LinearLayoutManager(context);
         manager.setOrientation(LinearLayoutManager.HORIZONTAL);

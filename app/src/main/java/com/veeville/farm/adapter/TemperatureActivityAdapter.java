@@ -87,11 +87,60 @@ public class TemperatureActivityAdapter extends RecyclerView.Adapter<RecyclerVie
 
         switch (holder.getItemViewType()) {
             case 0:
+                handleTodayTempCard((SoilTempHolder) holder, position);
                 break;
             case 1:
                 setUpgraphData((SoilTempGraphHolder) holder, position);
                 break;
         }
+    }
+
+    private void handleTodayTempCard(SoilTempHolder holder, int position) {
+        DashBoardDataClasses.TemperatureData data = (DashBoardDataClasses.TemperatureData) temperatureDataList.get(position);
+        List<DashBoardDataClasses.TemperatureData.TempValue> tempValues = data.soilMoistureValues;
+        LinearLayoutManager manager = new LinearLayoutManager(context);
+        manager.setOrientation(LinearLayoutManager.HORIZONTAL);
+        holder.recyclerView.setLayoutManager(manager);
+        TodayTempCardAdapter adapter = new TodayTempCardAdapter(tempValues);
+        holder.recyclerView.setAdapter(adapter);
+    }
+
+    class TodayTempCardAdapter extends RecyclerView.Adapter<TodayTempCardAdapter.SingleValueHolder> {
+        List<DashBoardDataClasses.TemperatureData.TempValue> tempValues;
+
+        TodayTempCardAdapter(List<DashBoardDataClasses.TemperatureData.TempValue> tempValues) {
+            this.tempValues = tempValues;
+        }
+
+        @NonNull
+        @Override
+        public SingleValueHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+            View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.soil_moisture_time_value, parent, false);
+            return new SingleValueHolder(view);
+        }
+
+        @Override
+        public void onBindViewHolder(@NonNull SingleValueHolder holder, int position) {
+            DashBoardDataClasses.TemperatureData.TempValue value = tempValues.get(position);
+            holder.time.setText(value.date);
+            holder.value.setText(value.value1);
+        }
+
+        @Override
+        public int getItemCount() {
+            return tempValues.size();
+        }
+
+        class SingleValueHolder extends RecyclerView.ViewHolder {
+            TextView time, value;
+
+            SingleValueHolder(View view) {
+                super(view);
+                time = view.findViewById(R.id.time);
+                value = view.findViewById(R.id.value);
+            }
+        }
+
     }
 
     @Override
@@ -359,8 +408,10 @@ public class TemperatureActivityAdapter extends RecyclerView.Adapter<RecyclerVie
 
     class SoilTempHolder extends RecyclerView.ViewHolder {
 
+        RecyclerView recyclerView;
         SoilTempHolder(View view) {
             super(view);
+            recyclerView = view.findViewById(R.id.recyclerview);
 
         }
     }

@@ -144,7 +144,7 @@ public class DashBoardActivity extends AppCompatActivity {
 
     private List<DashBoardClass> getDetails() {
         DashBoardClass chat = new DashBoardClass("Chat", "Cerebro", "", R.drawable.cerebro_iocn);
-        DashBoardClass workFlow = new DashBoardClass("WorkFlow", "WorkFLow", "", R.drawable.workflow_icon);
+        DashBoardClass workFlow = new DashBoardClass("WorkFlow", "WorkFlow", "", R.drawable.workflow_icon);
         DashBoardClass soilPh = new DashBoardClass("SoilpH", "Soil pH", "", R.drawable.ph_icon);
         DashBoardClass humidity = new DashBoardClass("Humidity", "Humidity", "", R.drawable.humidity_icon);
         DashBoardClass temperature = new DashBoardClass("Temperature", "Soil Temp", "", R.drawable.temperature_icon);
@@ -154,6 +154,7 @@ public class DashBoardActivity extends AppCompatActivity {
         DashBoardClass farms = new DashBoardClass("Farm", "Farms", "", R.drawable.farms_icon);
         DashBoardClass marketPlace = new DashBoardClass("MarketPlace", "Market Place", "", R.drawable.market_icon);
 
+        DashBoardClass agriNews = new DashBoardClass("News", "News", "", R.drawable.market_icon);
 
         List<DashBoardClass> dashBoardClasses = new ArrayList<>();
         dashBoardClasses.add(chat);
@@ -166,6 +167,7 @@ public class DashBoardActivity extends AppCompatActivity {
         dashBoardClasses.add(soilMoisture);
         dashBoardClasses.add(farms);
         dashBoardClasses.add(marketPlace);
+        dashBoardClasses.add(agriNews);
         return dashBoardClasses;
 
     }
@@ -183,9 +185,8 @@ public class DashBoardActivity extends AppCompatActivity {
         LinearLayoutManager manager = new GridLayoutManager(getApplicationContext(), 2);
         RecyclerView recyclerView = findViewById(R.id.recyclerview);
         recyclerView.setLayoutManager(manager);
-        AppDashBoardAdapter adapter = new AppDashBoardAdapter(getApplicationContext(), getDetails());
+        AppDashBoardAdapter adapter = new AppDashBoardAdapter(this, getDetails());
         recyclerView.setAdapter(adapter);
-
     }
 
     private void logErrorMessage(String logErrorMessage) {
@@ -201,11 +202,12 @@ public class DashBoardActivity extends AppCompatActivity {
             List<Fruit> names = new ArrayList<>();
             try {
                 doc = Jsoup.connect("https://www.livechennai.com/Vegetable_price_chennai.asp").get();
-                Element table = doc.select("table").get(1);
+                Element table = doc.select("table").get(0);
                 Elements rows = table.select("tr");
                 long timestamp = System.currentTimeMillis() / 1000;
                 for (int i = 1; i < rows.size(); i++) {
                     try {
+                        logMessage("vegetable");
                         Elements columns = rows.get(i).select("td");
                         String nameWithValue = columns.get(1).text();
                         String[] array = nameWithValue.split("\\(");
@@ -244,7 +246,7 @@ public class DashBoardActivity extends AppCompatActivity {
                 Elements rows = table.select("tr");
                 long timestamp = System.currentTimeMillis() / 1000;
                 for (int i = 1; i < rows.size(); i++) {
-
+                    logMessage("Fruit");
                     try {
                         Elements columns = rows.get(i).select("td");
                         String nameWithValue = columns.get(1).text();

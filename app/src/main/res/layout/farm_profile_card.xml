@@ -28,6 +28,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Farm1"
+                android:id="@+id/farm_name"
                 android:textStyle="bold" />
 
         </LinearLayout>
@@ -61,6 +62,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="Banana"
+                        android:id="@+id/crop_name"
                         android:textSize="12sp"
                         android:textStyle="bold" />
 
@@ -87,6 +89,7 @@
                         android:layout_height="wrap_content"
                         android:text="Flowering"
                         android:textSize="12sp"
+                        android:id="@+id/crop_status"
                         android:textStyle="bold" />
 
 
@@ -110,6 +113,7 @@
                         android:layout_height="wrap_content"
                         android:text="1000"
                         android:textSize="12sp"
+                        android:id="@+id/crop_yield"
                         android:textStyle="bold" />
 
 
@@ -122,6 +126,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_weight="7"
+                android:id="@+id/crop_icon"
                 android:src="@drawable/lux_icon" />
         </LinearLayout>
     </LinearLayout>

@@ -5,8 +5,6 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
-import android.text.format.DateFormat;
-import android.view.Menu;
 import android.view.MenuItem;
 
 import com.veeville.farm.R;
@@ -87,64 +85,30 @@ public class SoilMoistureActivity extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
-    @Override
-    public boolean onPrepareOptionsMenu(Menu menu) {
-        if (menu.size() == 0) {
-            menu.add("Farm1");
-            menu.add("Farm2");
-            menu.add("Farm3");
-            menu.add("Farm4");
-            menu.add("Farm5");
-        }
-        return true;
-    }
+
 
     private List<Object> formData() {
 
         List<DashBoardDataClasses.SoilMoistureData.SoilMoistureValues> soilMoistureValues1 = new ArrayList<>();
         List<Object> soilMoistureDatas = new ArrayList<>();
-        List<String> months = new ArrayList<>();
         Calendar calendar = Calendar.getInstance();
+        int hour = calendar.get(Calendar.HOUR_OF_DAY);
+        String time;
+        Random random = new Random();
+        for (int i = 0; i < hour; i++) {
+            if (i < 10) {
+                time = "0" + i;
+            } else {
+                time = "" + i;
+            }
 
-        months.add(DateFormat.format("MMMM", calendar.getTime()).toString());
-        calendar.add(Calendar.MONTH, -1);
-        months.add(DateFormat.format("MMMM", calendar.getTime()).toString());
-        calendar.add(Calendar.MONTH, -1);
-        months.add(DateFormat.format("MMMM", calendar.getTime()).toString());
-        calendar.add(Calendar.MONTH, -1);
-        months.add(DateFormat.format("MMMM", calendar.getTime()).toString());
-        calendar.add(Calendar.MONTH, -1);
-        months.add(DateFormat.format("MMMM", calendar.getTime()).toString());
-        for (int j = 1; j < 2; j++) {
-            String value;
-            value = "0" + j;
-            Random r = new Random();
-            int i1 = r.nextInt(47 - 44) + 44;
-            int i2 = i1 + 20;
-            DashBoardDataClasses.SoilMoistureData.SoilMoistureValues values = new DashBoardDataClasses.SoilMoistureData.SoilMoistureValues(value, "" + i1, "" + i2);
+            int value1 = random.nextInt(100 - 10);
+            int value2 = random.nextInt(100 - 10);
+            DashBoardDataClasses.SoilMoistureData.SoilMoistureValues values = new DashBoardDataClasses.SoilMoistureData.SoilMoistureValues(time, "" + value1, "" + value2);
             soilMoistureValues1.add(values);
         }
-        DashBoardDataClasses.SoilMoistureData soilMoistureData = new DashBoardDataClasses.SoilMoistureData(months.get(0), "Bengaluru", soilMoistureValues1);
-        logMessage(soilMoistureData + "");
-        //soilMoistureDatas.add(soilMoistureData);
-        for (int i = 0; i < 1; i++) {
-            List<DashBoardDataClasses.SoilMoistureData.SoilMoistureValues> soilMoistureValues2 = new ArrayList<>();
-            for (int j = 1; j < 31; j++) {
-                String value;
-                if (j < 10) {
-                    value = "0" + j;
-                } else {
-                    value = j + "";
-                }
-                Random r = new Random();
-                int i1 = r.nextInt(47 - 44) + 44;
-                int i2 = i1 + 20;
-                DashBoardDataClasses.SoilMoistureData.SoilMoistureValues values = new DashBoardDataClasses.SoilMoistureData.SoilMoistureValues(value, "" + i1, "" + i2);
-                soilMoistureValues2.add(values);
-            }
-            DashBoardDataClasses.SoilMoistureData soilMoistureData1 = new DashBoardDataClasses.SoilMoistureData(months.get(i), "Bengaluru", soilMoistureValues2);
-            soilMoistureDatas.add(soilMoistureData1);
-        }
+        DashBoardDataClasses.SoilMoistureData data = new DashBoardDataClasses.SoilMoistureData("", "", soilMoistureValues1);
+        soilMoistureDatas.add(data);
         soilMoistureDatas.add(new DashBoardDataClasses.SensorGraph("1D", 0));
         return soilMoistureDatas;
     }

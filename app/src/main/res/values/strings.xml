@@ -44,7 +44,7 @@
     <string name="_73">73%</string>
     <string name="g_m3">g/m3</string>
     <string name="absolute">Absolute</string>
-    <string name="percentage">%</string>
+    <string name="percentage">lux</string>
     <string name="relative">Relative</string>
     <string name="todo">TODO</string>
     <string name="your_string_here"><u>ph Scale</u>.</string>
@@ -88,9 +88,9 @@
     <string name="_28">28</string>
     <string name="cancel">Cancel</string>
     <string name="send">Send</string>
-    <string name="precipitation_104">Precipitation-104</string>
-    <string name="humidity_72">Humidity-72%</string>
-    <string name="wind_speed_25kmph">Wind Speed-25kmph</string>
+    <string name="precipitation_104">Precipitation</string>
+    <string name="humidity_72">Humidity</string>
+    <string name="wind_speed_25kmph">Wind Speed(kmph)</string>
     <string name="time">Time</string>
     <string name="t_x2103">T ℃</string>
     <string name="weather">Weather</string>
@@ -99,7 +99,7 @@
     <string name="things_to_do">things to do</string>
     <string name="hi_this_isexplanation_about_work_pending_isexplanation_about_work_pending_isexplanation_about_work_pending_isexplanation_about_work_pending">hi this isexplanation about work pending isexplanation about work pending isexplanation about work pending isexplanation about work pending</string>
     <string name="_03_jul_2018">03 jul 2018</string>
-    <string name="h">h</string>
+    <string name="h">H</string>
     <string name="bar">bar</string>
     <string name="name">Name</string>
     <string name="price_u20b9">Price ₹</string>

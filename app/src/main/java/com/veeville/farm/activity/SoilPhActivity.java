@@ -5,7 +5,6 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
-import android.view.Menu;
 import android.view.MenuItem;
 
 import com.veeville.farm.R;
@@ -84,17 +83,6 @@ public class SoilPhActivity extends AppCompatActivity {
 
     }
 
-    @Override
-    public boolean onPrepareOptionsMenu(Menu menu) {
-        if (menu.size() == 0) {
-            menu.add("Farm1");
-            menu.add("Farm2");
-            menu.add("Farm3");
-            menu.add("Farm4");
-            menu.add("Farm5");
-        }
-        return true;
-    }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {

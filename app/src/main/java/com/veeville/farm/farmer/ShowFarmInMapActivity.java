@@ -172,7 +172,6 @@ public class ShowFarmInMapActivity extends AppCompatActivity implements OnMapRea
         return super.onPrepareOptionsMenu(menu);
     }
 
-
     public LatLng getCentroid(List<LatLng> points) {
         double[] centroid = {0.0, 0.0};
         for (int i = 0; i < points.size(); i++) {

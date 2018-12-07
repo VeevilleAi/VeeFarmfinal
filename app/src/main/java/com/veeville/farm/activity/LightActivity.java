@@ -5,7 +5,6 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
-import android.view.Menu;
 import android.view.MenuItem;
 
 import com.veeville.farm.R;
@@ -13,11 +12,9 @@ import com.veeville.farm.adapter.LightActivityAdapter;
 import com.veeville.farm.helper.AppSingletonClass;
 import com.veeville.farm.helper.DashBoardDataClasses;
 
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
-import java.util.Locale;
 import java.util.Objects;
 import java.util.Random;
 
@@ -82,17 +79,6 @@ public class LightActivity extends AppCompatActivity {
 
     }
 
-    @Override
-    public boolean onPrepareOptionsMenu(Menu menu) {
-        if (menu.size() == 0) {
-            menu.add("Farm1");
-            menu.add("Farm2");
-            menu.add("Farm3");
-            menu.add("Farm4");
-            menu.add("Farm5");
-        }
-        return true;
-    }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
@@ -104,53 +90,25 @@ public class LightActivity extends AppCompatActivity {
     private List<Object> formData() {
 
         List<Object> soilMoistureDatas = new ArrayList<>();
-        List<String> months = new ArrayList<>();
-        months.add("Today");
-        months.add("Yesterday");
-        months.add(getDate(-2));
-        months.add(getDate(-3));
-        months.add(getDate(-4));
-        for (int j = 5; j < 15; j++) {
-            String value;
-            if (j < 10) {
-                value = "0" + j;
+        List<DashBoardDataClasses.LightData.LightValues> values = new ArrayList<>();
+
+        Calendar calendar = Calendar.getInstance();
+        int hour = calendar.get(Calendar.HOUR_OF_DAY);
+        Random random = new Random();
+        String time;
+        for (int i = 0; i <= hour; i++) {
+            int light = random.nextInt(1000 - 100);
+            if (i < 10) {
+                time = "0" + i;
             } else {
-                value = j + "";
+                time = "" + i;
             }
-            Random r = new Random();
-            int i1 = r.nextInt(1075 - 1000) + 1000;
-            DashBoardDataClasses.LightData.LightValues values = new DashBoardDataClasses.LightData.LightValues(value, "" + i1);
-            logMessage(values + "");
+            DashBoardDataClasses.LightData.LightValues values1 = new DashBoardDataClasses.LightData.LightValues(time, light + "");
+            values.add(values1);
         }
-        for (int i = 0; i < 1; i++) {
-            List<DashBoardDataClasses.LightData.LightValues> soilMoistureValues2 = new ArrayList<>();
-            for (int j = 5; j < 20; j++) {
-                Random r = new Random();
-                int i1 = r.nextInt(1075 - 1000) + 1000;
-                String value;
-                if (j < 10) {
-                    value = "0" + j;
-                } else {
-                    value = j + "";
-                }
-                DashBoardDataClasses.LightData.LightValues values = new DashBoardDataClasses.LightData.LightValues(value, "" + i1);
-                soilMoistureValues2.add(values);
-            }
-            DashBoardDataClasses.LightData soilMoistureData1 = new DashBoardDataClasses.LightData(months.get(i), "Bengaluru", soilMoistureValues2);
-            soilMoistureDatas.add(soilMoistureData1);
-        }
+        soilMoistureDatas.add(new DashBoardDataClasses.LightData("", "", values));
         soilMoistureDatas.add(new DashBoardDataClasses.SensorGraph("1D", 0));
         return soilMoistureDatas;
-    }
-
-    private String getDate(int days) {
-
-        String format = "dd MMM yyyy";
-        SimpleDateFormat dateFormat = new SimpleDateFormat(format, Locale.getDefault());
-        Calendar calendar = Calendar.getInstance();
-        calendar.add(Calendar.DAY_OF_MONTH, days);
-        return dateFormat.format(calendar.getTime());
-
     }
 
     private void logMessage(String logMessage) {

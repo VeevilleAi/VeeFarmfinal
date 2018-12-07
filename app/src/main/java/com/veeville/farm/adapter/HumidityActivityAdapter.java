@@ -84,6 +84,7 @@ public class HumidityActivityAdapter extends RecyclerView.Adapter<RecyclerView.V
     public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int position) {
         switch (holder.getItemViewType()) {
             case 0:
+                handleHumidityTodaysCard((HumidityCardHolder) holder, position);
                 break;
             case 1:
                 setUpgraphData((HumidityGraphCardHolder) holder, position);
@@ -91,6 +92,59 @@ public class HumidityActivityAdapter extends RecyclerView.Adapter<RecyclerView.V
         }
     }
 
+    private void handleHumidityTodaysCard(HumidityCardHolder holder, int position) {
+
+        DashBoardDataClasses.HumidityData data = (DashBoardDataClasses.HumidityData) humidityDataList.get(position);
+
+        List<DashBoardDataClasses.HumidityData.HumidityDataValues> dataValues = data.humidityDataValues;
+        LinearLayoutManager manager = new LinearLayoutManager(context);
+        manager.setOrientation(LinearLayoutManager.HORIZONTAL);
+        holder.recyclerView.setLayoutManager(manager);
+        TodaysHumidityAdapter adapter = new TodaysHumidityAdapter(dataValues);
+        holder.recyclerView.setAdapter(adapter);
+        holder.recyclerView.scrollToPosition(dataValues.size() - 1);
+    }
+
+    class TodaysHumidityAdapter extends RecyclerView.Adapter<TodaysHumidityAdapter.HourBasedHolder> {
+        List<DashBoardDataClasses.HumidityData.HumidityDataValues> values;
+
+        TodaysHumidityAdapter(List<DashBoardDataClasses.HumidityData.HumidityDataValues> values) {
+            this.values = values;
+        }
+
+        @NonNull
+        @Override
+        public HourBasedHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+            View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.humidity_value_card_with_time, parent, false);
+            return new HourBasedHolder(view);
+        }
+
+        @Override
+        public void onBindViewHolder(@NonNull HourBasedHolder holder, int position) {
+            DashBoardDataClasses.HumidityData.HumidityDataValues value = values.get(position);
+            holder.time.setText(value.hour);
+            holder.absolute.setText(value.hAbsulute);
+            holder.relative.setText(value.hRelative);
+        }
+
+        @Override
+        public int getItemCount() {
+            return values.size();
+        }
+
+        class HourBasedHolder extends RecyclerView.ViewHolder {
+            TextView time, relative, absolute;
+
+            HourBasedHolder(View view) {
+                super(view);
+                time = view.findViewById(R.id.time_humidity);
+                relative = view.findViewById(R.id.h_relative);
+                absolute = view.findViewById(R.id.h_absolute);
+            }
+        }
+
+
+    }
 
     @Override
     public int getItemCount() {
@@ -358,9 +412,10 @@ public class HumidityActivityAdapter extends RecyclerView.Adapter<RecyclerView.V
 
     class HumidityCardHolder extends RecyclerView.ViewHolder {
 
+        RecyclerView recyclerView;
         HumidityCardHolder(View view) {
             super(view);
-
+            recyclerView = view.findViewById(R.id.recyclerview);
         }
     }
 

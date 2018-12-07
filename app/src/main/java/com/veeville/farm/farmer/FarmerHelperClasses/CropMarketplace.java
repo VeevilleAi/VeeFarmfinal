@@ -7,7 +7,7 @@ import java.util.List;
  */
 public class CropMarketplace {
     public static class CropMarketPlaceCropDesc {
-        public String cropName, cropQuantity, harvestDate;
+        String cropName, cropQuantity, harvestDate;
 
         public CropMarketPlaceCropDesc(String cropName, String cropQuantity, String harvestDate) {
             this.cropName = cropName;

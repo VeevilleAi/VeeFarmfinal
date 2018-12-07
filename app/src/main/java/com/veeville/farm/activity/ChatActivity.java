@@ -9,6 +9,7 @@ import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
+import android.media.MediaRecorder;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -20,7 +21,6 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.CardView;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SwitchCompat;
@@ -28,6 +28,7 @@ import android.support.v7.widget.Toolbar;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Base64;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -37,7 +38,6 @@ import android.widget.Button;
 import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.ImageView;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import com.android.volley.Request;
@@ -53,6 +53,8 @@ import com.veeville.farm.helper.ChatBotDatabase;
 import com.veeville.farm.helper.ChatMessagesHelperFunctions;
 import com.veeville.farm.helper.ChatmessageDataClasses;
 import com.veeville.farm.helper.InputImageClass;
+import com.veeville.farm.helper.LanguageTransResult;
+import com.veeville.farm.helper.LanguageTranslater;
 import com.veeville.farm.tensorflow.ClassifierActivity;
 
 import org.json.JSONArray;
@@ -61,6 +63,7 @@ import org.json.JSONObject;
 
 import java.io.ByteArrayOutputStream;
 import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -80,17 +83,17 @@ public class ChatActivity extends AppCompatActivity implements QuickReplyAdapter
     private FloatingActionButton actionButton;
     private EditText inputtextmessage;
     private BotAdapter adapter;
-    private final int REQ_CODE_SPEECH_INPUT = 10;
+    private static final int REQ_CODE_SPEECH_INPUT = 10;
     private List<Object> chatMessages = new ArrayList<>();
     private final String TAG = ChatActivity.class.getSimpleName();
     private Toolbar toolbar;
     private FloatingActionButton captureImage;
     private static final int CAMERA_REQUEST = 1888;
-    private String selectedlanguage_id_mic = "en-US", selectedLanguage = "English", inputLanguageId = "en";
-    private final int REQUESTCODE_FOR_LOCATION = 100, REQUESTCODE_FOR_AUDIORECORD = 200;
+    private final static int REQUESTCODE_FOR_LOCATION = 100, REQUESTCODE_FOR_AUDIORECORD = 200;
+    private static final String ACCESS_TOKEN = "c47e8cf9778f45f9a7ca89742d8e9311";
     private Uri filePathImage = null;
     private static final int REQUEST_IMAGE_CAPTURE = 1;
-    private final String ACCESS_TOKEN = "c47e8cf9778f45f9a7ca89742d8e9311";
+    MediaRecorder mRecorder;
     private AIDataService aiDataService;
     boolean isvQnaEnabled = false;
     private SwitchCompat aSwitch;
@@ -98,6 +101,32 @@ public class ChatActivity extends AppCompatActivity implements QuickReplyAdapter
     boolean tookPicture = false;
     private int SELECT_PICTURE = 101;
     private int countMessageForRegistarationPurpose = 0;
+    String mFileName;
+    private String selectedlanguage_id_mic = "en-US", inputLanguageId = "en";
+
+    private void startRecording() {
+        mRecorder = new MediaRecorder();
+        mRecorder.setAudioSource(MediaRecorder.AudioSource.MIC);
+        mRecorder.setOutputFormat(MediaRecorder.OutputFormat.THREE_GPP);
+        mRecorder.setOutputFile(mFileName);
+        mRecorder.setAudioEncoder(MediaRecorder.AudioEncoder.AMR_NB);
+
+        try {
+            mRecorder.prepare();
+        } catch (IOException e) {
+            Log.e(TAG, "prepare() failed");
+        }
+
+        mRecorder.start();
+        Toast.makeText(this, "started recording", Toast.LENGTH_SHORT).show();
+    }
+
+    private void stopRecording() {
+        mRecorder.stop();
+        mRecorder.release();
+        mRecorder = null;
+        Toast.makeText(this, "stopeed recording", Toast.LENGTH_SHORT).show();
+    }
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
@@ -211,7 +240,7 @@ public class ChatActivity extends AppCompatActivity implements QuickReplyAdapter
         toolbar.setTitle("Cerebro");
         toolbar.setTitleTextColor(Color.WHITE);
         toolbar.setSubtitleTextColor(Color.WHITE);
-        toolbar.setSubtitle(selectedLanguage);
+        toolbar.setSubtitle("English");
         setSupportActionBar(toolbar);
         Objects.requireNonNull(getSupportActionBar()).setDisplayHomeAsUpEnabled(true);
     }
@@ -254,6 +283,8 @@ public class ChatActivity extends AppCompatActivity implements QuickReplyAdapter
                 String message = inputtextmessage.getText().toString();
                 if (message.equals("")) {
                     if (checkPermissionRECORD_AUDIO()) {
+
+                        //startRecording();
                         promptSpeechInput();
                     } else {
                         askPermissionRECORD_AUDIO();
@@ -273,34 +304,16 @@ public class ChatActivity extends AppCompatActivity implements QuickReplyAdapter
     }
 
 
-    private void showHintForRegistration(String message, boolean showCard) {
-
-        ChatBotDatabase database = new ChatBotDatabase(getApplicationContext());
-        CardView hintCard = findViewById(R.id.hint_card);
-        if (database.isUserRegistered()) {
-            hintCard.setVisibility(View.GONE);
-            adapter.changeDatasetMessage(true);
-        } else {
-            hintCard.setVisibility(View.VISIBLE);
-            if (showCard) {
-                hintCard.setVisibility(View.VISIBLE);
-            } else {
-                hintCard.setVisibility(View.GONE);
-            }
-            TextView hintText = findViewById(R.id.hint);
-            hintText.setText(message);
-        }
-    }
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        mFileName = getExternalCacheDir().getAbsolutePath();
+        mFileName += "/audiorecordtest.3gp";
         AppSingletonClass.mFirebaseAuth = FirebaseAuth.getInstance();
         setUpToolbar();
         setUpRecyclerview();
         loadAllMessages();
-        showHintForRegistration("We're trying to get your attention!\nPlease tell which country you are in & we will set this straight. \uD83D\uDE01", true);
         handleSendindTextMesage();
         captureImage = findViewById(R.id.camera_fab);
         captureImage.setOnClickListener(new View.OnClickListener() {
@@ -404,7 +417,16 @@ public class ChatActivity extends AppCompatActivity implements QuickReplyAdapter
         chatMessages.remove(chatMessages.size() - 1);
         adapter.notifyItemRemoved(chatMessages.size() - 1);
         insertTextMessage(message, true);
-        requestToDialogFlow(message);
+        LanguageTranslater translater = new LanguageTranslater();
+        List<String> messages = new ArrayList<>();
+        messages.add(message);
+        translater.translateText(messages, "en", new LanguageTransResult() {
+            @Override
+            public void languageTranResult(List<String> results) {
+                requestToDialogFlow(results.get(0));
+            }
+        });
+
     }
 
     @Override
@@ -488,7 +510,6 @@ public class ChatActivity extends AppCompatActivity implements QuickReplyAdapter
         AppSingletonClass.getInstance().addToRequestQueue(request);
     }
 
-
     @Override
     public void result(List list) {
 
@@ -523,7 +544,6 @@ public class ChatActivity extends AppCompatActivity implements QuickReplyAdapter
 
     @Override
     public void updateMessageForRegistrayion(String message, boolean showCard) {
-        showHintForRegistration(message, showCard);
     }
 
     @Override
@@ -532,41 +552,18 @@ public class ChatActivity extends AppCompatActivity implements QuickReplyAdapter
     }
 
     private void translateTextToInputLanguage(String translatingText, String targetLanguage) {
-        String url = "https://translation.googleapis.com/language/translate/v2?key=AIzaSyAeN43km6hD8UHAUaFEZ8j9iCYFk8puvuE";
-        JSONObject jsonObject = new JSONObject();
-        try {
-            jsonObject.put("q", translatingText);
-            jsonObject.put("target", targetLanguage);
-        } catch (Exception e) {
-            logMesage("cought " + e.toString() + " while forming body for translating text ");
-        }
 
-        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.POST, url, jsonObject, new Response.Listener<JSONObject>() {
-            @Override
-            public void onResponse(JSONObject response) {
-                logMesage("response from google translater :" + response.toString());
-                try {
-                    JSONObject resObject = response.getJSONObject("data");
-                    JSONArray jsonArray = resObject.getJSONArray("translations");
-                    JSONObject translatedObject = jsonArray.getJSONObject(0);
-                    String translatedText = translatedObject.getString("translatedText");
-                    logMesage("translated text by google :" + translatedText);
-                    insertTextMessage(translatedText, false);
-                } catch (JSONException e) {
-                    logErrormeesage("cought " + e.toString() + " while processing json data");
-                }
-            }
-        }, new Response.ErrorListener() {
-            @Override
-            public void onErrorResponse(VolleyError error) {
-                logErrormeesage("got error for google translate " + error.toString());
+        LanguageTranslater translater = new LanguageTranslater();
+        List<String> translatingTexts = new ArrayList<>();
+        translatingTexts.add(translatingText);
 
+        translater.translateText(translatingTexts, targetLanguage, new LanguageTransResult() {
+            @Override
+            public void languageTranResult(List<String> results) {
+                insertTextMessage(results.get(0), false);
             }
         });
-        AppSingletonClass.getInstance().addToRequestQueue(jsonObjectRequest);
-
     }
-
 
     private void processResult(Result result) {
 
@@ -622,7 +619,7 @@ public class ChatActivity extends AppCompatActivity implements QuickReplyAdapter
                         InputMethodManager inputMethodManager = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
                         assert inputMethodManager != null;
                         boolean result = inputMethodManager.showSoftInput(query, InputMethodManager.SHOW_IMPLICIT);
-                        logErrormeesage(result+"");
+                        logErrormeesage(result + "");
                     }
                 });
             }
@@ -707,6 +704,7 @@ public class ChatActivity extends AppCompatActivity implements QuickReplyAdapter
             case 10:
                 if (resultCode == RESULT_OK && null != data) {
                     ArrayList<String> result = data.getStringArrayListExtra(RecognizerIntent.EXTRA_RESULTS);
+                    //stopRecording();
                     inputtextmessage.setText(result.get(0));
                 }
                 break;
@@ -733,42 +731,16 @@ public class ChatActivity extends AppCompatActivity implements QuickReplyAdapter
     private void translateText(String translatingText) {
 
         String targetLanguage = "en";
-
-        logMesage("translating input text to english :" + translatingText);
-        String url = "https://translation.googleapis.com/language/translate/v2?key=AIzaSyAeN43km6hD8UHAUaFEZ8j9iCYFk8puvuE";
-
-        JSONObject jsonObject = new JSONObject();
-        try {
-            jsonObject.put("q", translatingText);
-            jsonObject.put("target", targetLanguage);
-        } catch (Exception e) {
-            logErrormeesage("cought " + e.toString() + " while forming json body");
-        }
-
-        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.POST, url, jsonObject, new Response.Listener<JSONObject>() {
+        LanguageTranslater translater = new LanguageTranslater();
+        List<String> translatingTextArray = new ArrayList<>();
+        translatingTextArray.add(translatingText);
+        translater.translateText(translatingTextArray, targetLanguage, new LanguageTransResult() {
             @Override
-            public void onResponse(JSONObject response) {
-                logMesage("response from google translater :" + response.toString());
-                try {
-                    JSONObject resObject = response.getJSONObject("data");
-                    JSONArray jsonArray = resObject.getJSONArray("translations");
-                    JSONObject translatedObject = jsonArray.getJSONObject(0);
-                    String translatedText = translatedObject.getString("translatedText");
-                    logMesage("translated text by google :" + translatedText);
-                    requestToDialogFlow(translatedText);
-
-                } catch (JSONException e) {
-                    logErrormeesage("cought " + e.toString() + " while processing json data");
-                }
-            }
-        }, new Response.ErrorListener() {
-            @Override
-            public void onErrorResponse(VolleyError error) {
-                logErrormeesage("got error for google translate " + error.toString());
-
+            public void languageTranResult(List<String> results) {
+                logMesage("query for dialogflow:" + results.get(0));
+                requestToDialogFlow(results.get(0));
             }
         });
-        AppSingletonClass.getInstance().addToRequestQueue(jsonObjectRequest);
     }
 
 
@@ -925,7 +897,6 @@ public class ChatActivity extends AppCompatActivity implements QuickReplyAdapter
             helperFunctions.insertResponseTextMessage(textMessage);
         }
     }
-
 
 
     private class MyAsyncTask extends AsyncTask<AIRequest, Void, AIResponse> {

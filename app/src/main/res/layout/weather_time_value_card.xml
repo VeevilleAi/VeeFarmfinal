@@ -16,6 +16,7 @@
         android:gravity="center"
         android:id="@+id/time"
         android:padding="10dp"
+        android:layout_gravity="center"
 
         />
     <TextView
@@ -25,6 +26,7 @@
         android:layout_weight="1"
         android:padding="10dp"
         android:gravity="center"
+        android:layout_gravity="center"
         android:id="@+id/temperature"
         />
 </LinearLayout>

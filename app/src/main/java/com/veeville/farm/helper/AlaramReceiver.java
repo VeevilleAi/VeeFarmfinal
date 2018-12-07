@@ -9,6 +9,7 @@ import android.content.Intent;
 import android.widget.Toast;
 
 import com.veeville.farm.R;
+import com.veeville.farm.activity.CropWorkFlow;
 
 import static android.content.Context.NOTIFICATION_SERVICE;
 
@@ -31,7 +32,7 @@ public class AlaramReceiver extends BroadcastReceiver {
 
     private void showNotification(String title, String body) {
 
-        Intent intent = new Intent("veeville.veevillefarm");
+        Intent intent = new Intent(context, CropWorkFlow.class);
         PendingIntent pIntent = PendingIntent.getActivity(context, (int) System.currentTimeMillis(), intent, 0);
         Notification noti = new Notification.Builder(context)
                 .setContentTitle(title)

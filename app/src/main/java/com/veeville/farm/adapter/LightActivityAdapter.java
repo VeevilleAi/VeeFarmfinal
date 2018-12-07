@@ -85,6 +85,7 @@ public class LightActivityAdapter extends RecyclerView.Adapter<RecyclerView.View
 
         switch (holder.getItemViewType()) {
             case 0:
+                handleTodayLightCard((LightCardHolder) holder, position);
                 break;
             case 1:
                 setUpgraphData((LightValueGraphHolder) holder, position);
@@ -92,7 +93,55 @@ public class LightActivityAdapter extends RecyclerView.Adapter<RecyclerView.View
         }
     }
 
+    private void handleTodayLightCard(LightCardHolder holder, int position) {
 
+        DashBoardDataClasses.LightData data = (DashBoardDataClasses.LightData) lightDataList.get(position);
+        List<DashBoardDataClasses.LightData.LightValues> lightValues = data.LightValues;
+        LinearLayoutManager manager = new LinearLayoutManager(context);
+        manager.setOrientation(LinearLayoutManager.HORIZONTAL);
+        holder.recyclerView.setLayoutManager(manager);
+        TodayLightCardAdapter adapter = new TodayLightCardAdapter(lightValues);
+        holder.recyclerView.setAdapter(adapter);
+        holder.recyclerView.scrollToPosition(lightValues.size() - 1);
+    }
+
+    class TodayLightCardAdapter extends RecyclerView.Adapter<TodayLightCardAdapter.SingleValueHolder> {
+        List<DashBoardDataClasses.LightData.LightValues> lightValues;
+
+        TodayLightCardAdapter(List<DashBoardDataClasses.LightData.LightValues> tempValues) {
+            this.lightValues = tempValues;
+        }
+
+        @NonNull
+        @Override
+        public SingleValueHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+            View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.soil_moisture_time_value, parent, false);
+            return new SingleValueHolder(view);
+        }
+
+        @Override
+        public void onBindViewHolder(@NonNull SingleValueHolder holder, int position) {
+            DashBoardDataClasses.LightData.LightValues value = lightValues.get(position);
+            holder.time.setText(value.date);
+            holder.value.setText(value.value1);
+        }
+
+        @Override
+        public int getItemCount() {
+            return lightValues.size();
+        }
+
+        class SingleValueHolder extends RecyclerView.ViewHolder {
+            TextView time, value;
+
+            SingleValueHolder(View view) {
+                super(view);
+                time = view.findViewById(R.id.time);
+                value = view.findViewById(R.id.value);
+            }
+        }
+
+    }
     @Override
     public int getItemCount() {
         logMessage("size:" + lightDataList.size());
@@ -358,11 +407,12 @@ public class LightActivityAdapter extends RecyclerView.Adapter<RecyclerView.View
 
     class LightCardHolder extends RecyclerView.ViewHolder {
         TextView date, place, value;
-
+        RecyclerView recyclerView;
         LightCardHolder(View view) {
             super(view);
             date = view.findViewById(R.id.date);
             place = view.findViewById(R.id.place);
+            recyclerView = view.findViewById(R.id.recyclerview);
             value = view.findViewById(R.id.value);
         }
     }

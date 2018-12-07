@@ -51,7 +51,7 @@ public class BotAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
     private Context context;
     private final String TAG = BotAdapter.class.getSimpleName();
     private QuickReplyAdapter.QuickReplyOption option;
-    private boolean showNormal = false;
+    private boolean showNormal = true;
 
     public BotAdapter(List<Object> textmessagelist, Context context, QuickReplyAdapter.QuickReplyOption quickReplyOption) {
         this.messagelist = textmessagelist;
@@ -109,8 +109,9 @@ public class BotAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
         return dateFormat.format(calendar.getTime());
     }
 
+    @NonNull
     @Override
-    public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+    public RecyclerView.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         RecyclerView.ViewHolder viewHolder = null;
         switch (viewType) {
             case 0:
@@ -310,9 +311,9 @@ public class BotAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
         holder.temp.setText(weather);
         holder.date.setText(weatherData.date);
         holder.place.setText(weatherData.place);
-        String humidity = "Humidty(%): " + weatherData.humidity;
-        String windSpeed = "WindSpeed(kmph): " + weatherData.wind;
-        String precipitation = "Precipitation: " + weatherData.precipitation;
+        String humidity = ":" + weatherData.humidity;
+        String windSpeed = ":" + weatherData.wind;
+        String precipitation = ":" + weatherData.precipitation;
         holder.humidity.setText(humidity);
         holder.windSpeed.setText(windSpeed);
         holder.prec.setText(precipitation);

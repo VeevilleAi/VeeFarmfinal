@@ -88,25 +88,25 @@ public class FarmerProfileActivity extends AppCompatActivity {
         logMessage(logMessage);
         LinearLayoutManager manager = new LinearLayoutManager(getApplicationContext());
         manager.setOrientation(LinearLayoutManager.VERTICAL);
-        FarmProfilesAdapter adapter = new FarmProfilesAdapter(getFarmerProfile());
+        FarmProfilesAdapter adapter = new FarmProfilesAdapter(getApplicationContext(), getFarmerProfile());
         RecyclerView recyclerView = findViewById(R.id.recyclerview);
         recyclerView.setLayoutManager(manager);
         recyclerView.setAdapter(adapter);
 
     }
 
-    private List<Object> getFarmerProfile() {
+    private List<FarmProfile> getFarmerProfile() {
 
         String logMessage = "getting Farmer profile details";
         logMessage(logMessage);
-        List<Object> objects = new ArrayList<>();
+        List<FarmProfile> objects = new ArrayList<>();
         //objects.add(new FarmerProfile("Prashant Chikkalaki","www.google.com","9878945634","India","prashantchikkalaki108@gmail.com","savalasang from Bijapur"));
-        objects.add(new FarmProfile("Farm1", "fdfdf", "2", "Banana", "beginning", "4.5 quintol"));
-        objects.add(new FarmProfile("Farm2", "", "4.5 acre", "Onion", "harvest", "405 kg"));
-        objects.add(new FarmProfile("Farm3", "", "5 acre", "Potato", "Beginning", "100kg"));
-        objects.add(new FarmProfile("Farm4", "", "6.5 acre", "Tomato", "Beginning", "600kg"));
-        objects.add(new FarmProfile("Farm5", "", "7.8 acre", "Orange", "harvest", "1000kg"));
-        objects.add(new FarmProfile("Farm6", "", "10 acre", "Mosambi", "harvest", "750 kg"));
+        objects.add(new FarmProfile("Farm1", "https://image.shutterstock.com/image-photo/bunch-bananas-isolated-on-white-260nw-96162077.jpg", "2", "Banana", "beginning", "4.5 quintol"));
+        objects.add(new FarmProfile("Farm2", "https://5.imimg.com/data5/TF/US/MY-28264228/red-onion-500x500.jpg", "4.5 acre", "Onion", "harvest", "405 kg"));
+        objects.add(new FarmProfile("Farm3", "https://5.imimg.com/data5/TF/US/MY-28264228/red-onion-500x500.jpg", "5 acre", "Potato", "Beginning", "100kg"));
+        objects.add(new FarmProfile("Farm4", "https://image.shutterstock.com/image-photo/bunch-bananas-isolated-on-white-260nw-96162077.jpg", "6.5 acre", "Tomato", "Beginning", "600kg"));
+        objects.add(new FarmProfile("Farm5", "https://5.imimg.com/data5/TF/US/MY-28264228/red-onion-500x500.jpg", "7.8 acre", "Orange", "harvest", "1000kg"));
+        objects.add(new FarmProfile("Farm6", "https://5.imimg.com/data5/TF/US/MY-28264228/red-onion-500x500.jpg", "10 acre", "Mosambi", "harvest", "750 kg"));
         return objects;
     }
 

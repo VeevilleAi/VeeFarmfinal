@@ -4,41 +4,40 @@
     android:layout_height="wrap_content"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_margin="10dp"
-    android:padding="15dp"
-    app:cardBackgroundColor="@color/white">
+    app:cardBackgroundColor="@color/white"
+    app:cardCornerRadius="5dp">
+
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical"
-        android:padding="15dp"
-
-        >
+        android:padding="10dp">
 
         <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:orientation="vertical"
-            >
+            android:orientation="vertical">
 
             <TextView
+                android:id="@+id/date"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/todo"
-                android:textSize="20sp"
-                android:id="@+id/date"
-                android:fontFamily="@font/bitstream_utura_md_md_medium"
+                android:fontFamily="@font/raleway_bold"
+                android:text="TODAY"
                 android:textColor="@color/black"
+                android:textSize="20sp"
                 android:textStyle="bold"
 
                 />
+
             <TextView
+                android:id="@+id/place"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:fontFamily="@font/raleway_medium"
                 android:text="@string/bengaluru_friday_1_00_pm"
                 android:textColor="@color/black"
                 android:textSize="12sp"
-                android:id="@+id/place"
-                android:fontFamily="@font/bitstream_utura_md_md_medium"
 
                 />
 
@@ -47,78 +46,42 @@
         <View
             android:layout_width="match_parent"
             android:layout_height="1dp"
-            android:background="@color/gray"
-            android:layout_marginTop="5dp"
             android:layout_marginBottom="1dp"
-            />
+            android:layout_marginTop="5dp"
+            android:background="@color/gray" />
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="100dp"
-            android:orientation="horizontal"
-            android:padding="10dp"
+            android:layout_height="wrap_content"
             android:background="@color/yellow"
-            android:baselineAligned="false">
+            android:baselineAligned="false"
+            android:orientation="horizontal"
+            android:padding="10dp">
+
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:orientation="vertical"
-                android:layout_weight="1"
-                android:layout_gravity="center"
-                android:gravity="center"
-                android:visibility="gone"
-
-                >
-
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="@string/_32"
-                    android:gravity="center"
-                    android:textStyle="bold"
-                    android:textColor="@color/white"
-                    android:textSize="40sp"
-                    />
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="@string/g_m3"
-                    android:textColor="@color/white"
-                    android:textSize="12sp"
-                    android:layout_marginBottom="20dp"
-                    />
-            </LinearLayout>
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:orientation="vertical"
                 android:layout_weight="1"
                 android:gravity="center"
-                >
+                android:orientation="vertical">
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:fontFamily="@font/raleway_medium"
                     android:text="@string/last_recorded_temperature"
                     android:textColor="@color/white"
-                    android:textSize="12sp"
-                    />
+                    android:textSize="12sp" />
+
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="@string/_27_x2103"
                     android:gravity="center"
-                    android:textStyle="bold"
+                    android:text="@string/_27_x2103"
                     android:textColor="@color/white"
                     android:textSize="40sp"
-                    />
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:textColor="@color/white"
-                    android:textSize="12sp"
-                    />
+                    android:textStyle="bold" />
+
             </LinearLayout>
 
         </LinearLayout>
@@ -126,43 +89,42 @@
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:weightSum="5"
+            android:layout_height="wrap_content"
             android:orientation="horizontal"
-            >
+            android:weightSum="5">
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:weightSum="2"
-                android:orientation="vertical"
                 android:layout_weight="4"
-                >
+                android:orientation="vertical"
+                android:weightSum="2">
 
                 <LinearLayout
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent"
-                    android:orientation="horizontal"
                     android:layout_weight="1"
-                    android:visibility="invisible"
-                    >
+                    android:orientation="horizontal"
+                    android:visibility="invisible">
+
                     <RelativeLayout
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content">
+
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="@string/ph"
-                            android:textSize="20sp"
                             android:layout_centerInParent="true"
-                            />
+                            android:text="@string/ph"
+                            android:textSize="20sp" />
 
                     </RelativeLayout>
+
                     <LinearLayout
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:orientation="vertical"
-                        >
+                        android:orientation="vertical">
+
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
@@ -170,75 +132,44 @@
                             android:textSize="12sp"
 
                             />
+
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="@string/absolute"
-                            android:textSize="12sp"
-                            />
+                            android:textSize="12sp" />
 
                     </LinearLayout>
 
                 </LinearLayout>
 
-                <LinearLayout
-                    android:layout_width="wrap_content"
+                <RelativeLayout
+                    android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:orientation="horizontal"
-                    >
-                    <RelativeLayout
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content">
-                        <TextView
+                    android:layout_gravity="center_vertical"
+                    android:layout_weight="1"
+                    android:orientation="horizontal">
+
+
+                    <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="@string/temp"
-                            android:textSize="20sp"
-                            android:fontFamily="@font/bitstream_utura_md_md_medium"
                             android:layout_centerInParent="true"
-                            />
+                        android:textSize="20sp" />
 
-                    </RelativeLayout>
-                    <LinearLayout
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:orientation="vertical"
-                        >
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="@string/bar"
 
-                            android:fontFamily="@font/bitstream_utura_md_md_medium"
-                            android:textSize="12sp"
-                            android:layout_marginStart="5dp"
-                            android:layout_marginTop="5dp"
-                            android:visibility="invisible"
-
-                            />
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="@string/bar"
-                            android:visibility="gone"
-                            android:textSize="12sp"
-                            android:fontFamily="@font/bitstream_utura_md_md_medium"
-                            />
-
-                    </LinearLayout>
-
-                </LinearLayout>
+                </RelativeLayout>
 
             </LinearLayout>
+
             <android.support.v7.widget.RecyclerView
+                android:id="@+id/recyclerview"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:layout_weight="1"
-                android:id="@+id/recyclerview_values"
-                >
-            </android.support.v7.widget.RecyclerView>
-        </LinearLayout>
+                android:layout_weight="1" />
 
+        </LinearLayout>
 
 
     </LinearLayout>

@@ -29,6 +29,8 @@ import com.veeville.farm.helper.ChatmessageDataClasses;
 import com.veeville.farm.helper.Countries;
 import com.veeville.farm.helper.DatabaseCredentials;
 import com.veeville.farm.helper.Fruit;
+import com.veeville.farm.helper.LanguageTransResult;
+import com.veeville.farm.helper.LanguageTranslater;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -39,6 +41,7 @@ import java.sql.DriverManager;
 import java.sql.Statement;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.HashMap;
 import java.util.List;
@@ -199,10 +202,15 @@ public class ProcessBotResponse {
                 addHealthCardReport();
                 addMessagesToRecyclerview();
                 break;
+            case "smalltalk.agent.acquaintance":
+                addSpeechToMessage(speech);
+                addMessagesToRecyclerview();
+
+                break;
             default:
                 addSpeechToMessage(speech);
                 getPayload();
-                addMessagesToRecyclerview();
+
         }
     }
 
@@ -330,7 +338,7 @@ public class ProcessBotResponse {
         } else {
             StringBuilder buffer = new StringBuilder();
             for (Fruit fruit : price) {
-                buffer.append(fruit.name).append(fruit.pieceOrKg).append("  ").append(fruit.price).append("\n");
+                buffer.append(fruit.name).append(fruit.pieceOrKg).append("  ").append("₹  " + fruit.price).append("\n");
             }
             title = "Price(\u20b9)  of " + name + " today in Chennai  is ";
             desc = buffer.toString();
@@ -365,8 +373,8 @@ public class ProcessBotResponse {
     }
 
     private void getPayload() {
-        long timestamp = System.currentTimeMillis();
-        List<String> selectableMenu = new ArrayList<>();
+        final long timestamp = System.currentTimeMillis();
+        final List<String> selectableMenu = new ArrayList<>();
         List<ResponseMessage> responseMessages = result.getFulfillment().getMessages();
         for (ResponseMessage message : responseMessages) {
             if (message instanceof ResponseMessage.ResponsePayload) {
@@ -378,6 +386,7 @@ public class ProcessBotResponse {
                         JsonArray jsonElements = jsonObject.getAsJsonArray("options");
                         for (int i = 0; i < jsonElements.size(); i++) {
                             selectableMenu.add(jsonElements.get(i).getAsString());
+
                         }
                     } else if (jsonObject.has("images")) {
                         List<String> images = new ArrayList<>();
@@ -396,6 +405,7 @@ public class ProcessBotResponse {
                         }
                         ChatmessageDataClasses.ResponseImages image = new ChatmessageDataClasses.ResponseImages(images, dataOfImages, diseaseNames, timestamp);
                         messages.add(image);
+                        addMessagesToRecyclerview();
                     }
                 } catch (Exception e) {
                     logErrorMessage(e.toString());
@@ -403,8 +413,19 @@ public class ProcessBotResponse {
             }
         }
         if (selectableMenu.size() > 0) {
-            ChatmessageDataClasses.OptionMenu optionMenu = new ChatmessageDataClasses.OptionMenu(selectableMenu, timestamp);
-            messages.add(optionMenu);
+
+            LanguageTranslater translater = new LanguageTranslater();
+            logMessage(Arrays.toString(selectableMenu.toArray()));
+            translater.translateText(selectableMenu, this.selectedLanguage, new LanguageTransResult() {
+                @Override
+                public void languageTranResult(List<String> results) {
+                    logMesage(Arrays.toString(results.toArray()));
+                    ChatmessageDataClasses.OptionMenu optionMenu = new ChatmessageDataClasses.OptionMenu(results, timestamp);
+                    messages.add(optionMenu);
+                    addMessagesToRecyclerview();
+                }
+            });
+
         }
     }
 
@@ -539,38 +560,17 @@ public class ProcessBotResponse {
     }
 
     private void translateTextToSelectedLanguage(String translatingText) {
-        logMesage("trnaslating to given Language :" + translatingText);
-        String url = "https://translation.googleapis.com/language/translate/v2?key=AIzaSyAeN43km6hD8UHAUaFEZ8j9iCYFk8puvuE";
+        String targetLanguage = this.selectedLanguage;
 
-        JSONObject jsonObject = new JSONObject();
-        try {
-            jsonObject.put("q", translatingText);
-            jsonObject.put("target", this.selectedLanguage);
-        } catch (Exception e) {
-            logErrormeesage("cought " + e.toString() + "  while forming request body for google translate");
-        }
-        logMessage("translateTextToSelectedLanguage:" + jsonObject.toString());
-        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.POST, url, jsonObject, new Response.Listener<JSONObject>() {
+        LanguageTranslater translater = new LanguageTranslater();
+        List<String> translatingTextArray = new ArrayList<>();
+        translatingTextArray.add(translatingText);
+        translater.translateText(translatingTextArray, targetLanguage, new LanguageTransResult() {
             @Override
-            public void onResponse(JSONObject response) {
-                try {
-                    JSONObject resObject = response.getJSONObject("data");
-                    JSONArray jsonArray = resObject.getJSONArray("translations");
-                    JSONObject translatedObject = jsonArray.getJSONObject(0);
-                    String translatedText = translatedObject.getString("translatedText");
-                    logMesage("trnaslated  to given Language :" + translatedText);
-                    translate(translatedText);
-                } catch (JSONException e) {
-                    logErrormeesage("cought " + e.toString() + "  while processing json sent by google translate");
-                }
-            }
-        }, new Response.ErrorListener() {
-            @Override
-            public void onErrorResponse(VolleyError error) {
-                logErrormeesage("error message sent by google transate is  " + error.toString());
+            public void languageTranResult(List<String> results) {
+                translate(results.get(0));
             }
         });
-        AppSingletonClass.getInstance().addToRequestQueue(jsonObjectRequest);
     }
 
 
@@ -669,43 +669,25 @@ public class ProcessBotResponse {
 
     //translating text to english for MS QnA
     private void translateTextToSelectedLanguageForQnaMaker(String translatingText) {
-        logMesage("trnaslating to given Language :" + translatingText);
-        String url = "https://translation.googleapis.com/language/translate/v2?key=AIzaSyAeN43km6hD8UHAUaFEZ8j9iCYFk8puvuE";
-        JSONObject jsonObject = new JSONObject();
-        try {
-            jsonObject.put("q", translatingText);
-            jsonObject.put("target", this.selectedLanguage);
-        } catch (Exception e) {
-            logErrormeesage("cought " + e.toString() + "  while forming request body for google translate");
-        }
-        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.POST, url, jsonObject, new Response.Listener<JSONObject>() {
+        String targetLanguage, textTotranslate;
+        targetLanguage = this.selectedLanguage;
+        textTotranslate = translatingText;
+        LanguageTranslater translater = new LanguageTranslater();
+        List<String> translatingTexts = new ArrayList<>();
+        translatingTexts.add(textTotranslate);
+        translater.translateText(translatingTexts, targetLanguage, new LanguageTransResult() {
             @Override
-            public void onResponse(JSONObject response) {
-                try {
-                    JSONObject resObject = response.getJSONObject("data");
-                    JSONArray jsonArray = resObject.getJSONArray("translations");
-                    JSONObject translatedObject = jsonArray.getJSONObject(0);
-                    String translatedText = translatedObject.getString("translatedText");
-                    logMesage("trnaslated  to given Language :" + translatedText);
-                    long timestamp = System.currentTimeMillis();
-                    ChatmessageDataClasses.ResponseTextMessage message = new ChatmessageDataClasses.ResponseTextMessage(translatedText, timestamp);
-                    messages.add(message);
-                    processedResult.result(messages);
-                    ChatBotDatabase database = new ChatBotDatabase(context);
-                    database.insertChats("responsetext", translatedText);
-                } catch (JSONException e) {
-                    logErrormeesage("cought " + e.toString() + "  while processing json sent by google translate");
-                }
-            }
-        }, new Response.ErrorListener() {
-            @Override
-            public void onErrorResponse(VolleyError error) {
-                logErrormeesage("error message sent by google transate is  " + error.toString());
+            public void languageTranResult(List<String> results) {
+                String translatedText = results.get(0);
+                long timestamp = System.currentTimeMillis();
+                ChatmessageDataClasses.ResponseTextMessage message = new ChatmessageDataClasses.ResponseTextMessage(translatedText, timestamp);
+                messages.add(message);
+                processedResult.result(messages);
+                ChatBotDatabase database = new ChatBotDatabase(context);
+                database.insertChats("responsetext", translatedText);
             }
         });
-        AppSingletonClass.getInstance().addToRequestQueue(jsonObjectRequest);
     }
-
 
     //authonticating User Mobile number
     private void authonticateMobileNumber(String mobileNumber) {

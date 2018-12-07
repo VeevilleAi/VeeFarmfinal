@@ -18,11 +18,6 @@ public class DashBoardDataClasses {
         }
 
 
-        public static class HumidityToday {
-
-        }
-
-
         public static class HumidityDataValues {
             public String hour, hAbsulute, hRelative;
 
@@ -76,12 +71,12 @@ public class DashBoardDataClasses {
 
     public static class LightData {
         public String month, place;
-        public List<LightValues> soilMoistureValues;
+        public List<LightValues> LightValues;
 
-        public LightData(String month, String place, List<LightValues> soilMoistureValues) {
+        public LightData(String month, String place, List<LightValues> LightValues) {
             this.month = month;
             this.place = place;
-            this.soilMoistureValues = soilMoistureValues;
+            this.LightValues = LightValues;
         }
 
         public static class LightFirstMonthGraphData {

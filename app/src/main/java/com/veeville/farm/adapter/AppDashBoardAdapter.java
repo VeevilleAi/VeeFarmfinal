@@ -12,8 +12,9 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.veeville.farm.R;
-import com.veeville.farm.activity.ChatActivity;
+import com.veeville.farm.activity.ChatSectorActivity;
 import com.veeville.farm.activity.CropWorkFlow;
+import com.veeville.farm.activity.GovernmentSchemesActivity;
 import com.veeville.farm.activity.HumidityActivity;
 import com.veeville.farm.activity.LightActivity;
 import com.veeville.farm.activity.SoilMoistureActivity;
@@ -66,7 +67,8 @@ public class AppDashBoardAdapter extends RecyclerView.Adapter<AppDashBoardAdapte
         Intent intent = null;
         switch (type) {
             case "Chat":
-                intent = new Intent(context, ChatActivity.class);
+//                intent = new Intent(context, ChatActivity.class);
+                intent = new Intent(context, ChatSectorActivity.class);
                 break;
             case "WorkFlow":
                 intent = new Intent(context, CropWorkFlow.class);
@@ -94,6 +96,9 @@ public class AppDashBoardAdapter extends RecyclerView.Adapter<AppDashBoardAdapte
                 break;
             case "MarketPlace":
                 intent = new Intent(context, MarketPlaceActivity.class);
+                break;
+            case "News":
+                intent = new Intent(context, GovernmentSchemesActivity.class);
                 break;
 
         }

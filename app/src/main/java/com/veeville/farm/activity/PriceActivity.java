@@ -9,6 +9,7 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 
@@ -152,9 +153,6 @@ public class PriceActivity extends AppCompatActivity {
     private void updateDataBase(List<Fruit> fruits) {
         ChatBotDatabase database = new ChatBotDatabase(PriceActivity.this);
         database.updatePriceOfFruitAndVeg(fruits);
-        for (Fruit fruit : fruits) {
-
-        }
         updateRecyclerview();
     }
 
@@ -183,6 +181,7 @@ public class PriceActivity extends AppCompatActivity {
                         names.add(fruit);
 
                     } catch (Exception e) {
+                        Log.e(TAG, "doInBackground: " + e.toString());
                     }
                 }
             } catch (IOException e) {

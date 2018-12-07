@@ -86,7 +86,7 @@
         android:layout_height="wrap_content"
         android:layout_below="@+id/profile_card"
         android:layout_margin="10dp"
-        android:background="@color/white"></android.support.v7.widget.RecyclerView>
+        android:background="@color/white" />
 
 
 </RelativeLayout>

@@ -5,7 +5,6 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
-import android.view.Menu;
 import android.view.MenuItem;
 
 import com.veeville.farm.R;
@@ -14,8 +13,10 @@ import com.veeville.farm.helper.AppSingletonClass;
 import com.veeville.farm.helper.DashBoardDataClasses;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
 import java.util.Objects;
+import java.util.Random;
 
 public class HumidityActivity extends AppCompatActivity {
 
@@ -66,20 +67,8 @@ public class HumidityActivity extends AppCompatActivity {
         toolbar.setTitle("Humidity-Farm1");
         setSupportActionBar(toolbar);
         Objects.requireNonNull(getSupportActionBar()).setDisplayHomeAsUpEnabled(true);
-        AppSingletonClass.logDebugMessage(TAG, "toolbar setup done");
     }
 
-    @Override
-    public boolean onPrepareOptionsMenu(Menu menu) {
-        if (menu.size() == 0) {
-            menu.add("Farm1");
-            menu.add("Farm2");
-            menu.add("Farm3");
-            menu.add("Farm4");
-            menu.add("Farm5");
-        }
-        return true;
-    }
 
     private void setUpHumidityRecyclerview() {
 
@@ -87,7 +76,7 @@ public class HumidityActivity extends AppCompatActivity {
         LinearLayoutManager manager = new LinearLayoutManager(getApplicationContext());
         humidityRecyclerview.setLayoutManager(manager);
         List<Object> lists = new ArrayList<>();
-        lists.add(new DashBoardDataClasses.HumidityData(null, null, null));
+        lists.add(new DashBoardDataClasses.HumidityData("", "", getTodayValuesTillNow()));
         lists.add(new DashBoardDataClasses.SensorGraph("1D", 0));
         HumidityActivityAdapter temp = new HumidityActivityAdapter(getApplicationContext(), lists);
         humidityRecyclerview.setAdapter(temp);
@@ -100,7 +89,35 @@ public class HumidityActivity extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
+    private List<DashBoardDataClasses.HumidityData.HumidityDataValues> getTodayValuesTillNow() {
+
+
+        List<DashBoardDataClasses.HumidityData.HumidityDataValues> humidityDataValues = new ArrayList<>();
+
+        Random random = new Random();
+
+        Calendar calendar = Calendar.getInstance();
+        int hour = calendar.get(Calendar.HOUR_OF_DAY);
+        String time;
+
+        for (int i = 0; i <= hour; i++) {
+            if (i < 10) {
+                time = "0" + i;
+            } else {
+                time = "" + i;
+            }
+            int absolute = random.nextInt(100 - 20);
+            int relative = random.nextInt(70 - 10);
+            DashBoardDataClasses.HumidityData.HumidityDataValues value = new DashBoardDataClasses.HumidityData.HumidityDataValues(time, absolute + "", "" + relative);
+            humidityDataValues.add(value);
+        }
+        return humidityDataValues;
+
+    }
+
     private void logMessage(String logMessage) {
         AppSingletonClass.logDebugMessage(TAG, logMessage);
     }
+
+
 }
