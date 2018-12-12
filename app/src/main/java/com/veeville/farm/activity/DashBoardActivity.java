@@ -195,7 +195,6 @@ public class DashBoardActivity extends AppCompatActivity {
 
     class AsyncTaskVegPrice extends AsyncTask<Void, Void, List<Fruit>> {
 
-
         @Override
         protected List<Fruit> doInBackground(Void... voids) {
             Document doc;

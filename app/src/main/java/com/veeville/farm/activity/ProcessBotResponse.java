@@ -69,7 +69,7 @@ public class ProcessBotResponse {
     private ProcessedResult processedResult;
     private UpdateMessageForRegistration updateMessageForRegistration;
 
-    ProcessBotResponse(Result result, Context context, ProcessedResult processedResult, String selectedLanguage, UpdateMessageForRegistration updateMessageForRegistration) {
+    public ProcessBotResponse(Result result, Context context, ProcessedResult processedResult, String selectedLanguage, UpdateMessageForRegistration updateMessageForRegistration) {
         this.result = result;
         this.context = context;
         this.processedResult = processedResult;
@@ -99,7 +99,7 @@ public class ProcessBotResponse {
 
     }
 
-    void getResultBack() {
+    public void getResultBack() {
         String speech = result.getFulfillment().getSpeech();
         translateTextToSelectedLanguage(speech);
     }
@@ -555,7 +555,7 @@ public class ProcessBotResponse {
 
     }
 
-    interface ProcessedResult {
+    public interface ProcessedResult {
         void result(List list);
     }
 
@@ -803,7 +803,7 @@ public class ProcessBotResponse {
         AppSingletonClass.logDebugMessage(TAG, logMessage);
     }
 
-    interface UpdateMessageForRegistration {
+    public interface UpdateMessageForRegistration {
         void updateMessageForRegistrayion(String message, boolean showCard);
 
         void makeMessagesNormal(boolean showNormal);

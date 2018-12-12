@@ -16,7 +16,11 @@ import com.google.android.gms.common.SignInButton;
 import com.google.android.gms.common.api.ApiException;
 import com.google.android.gms.tasks.Task;
 import com.veeville.farm.R;
+import com.veeville.farm.helper.AddContactToServerService;
 import com.veeville.farm.helper.AppSingletonClass;
+import com.veeville.farm.helper.ChatMessageDatabase;
+
+import java.util.Objects;
 
 public class SignActivity extends AppCompatActivity implements View.OnClickListener {
 
@@ -119,8 +123,11 @@ public class SignActivity extends AppCompatActivity implements View.OnClickListe
             assert account != null;
             logMessage(account.getDisplayName());
             String email = account.getEmail();
+            String photoUrl = Objects.requireNonNull(account.getPhotoUrl().toString());
+            uploadContactToServer(account.getDisplayName(),email,photoUrl);
             logMessage(email);
-
+            ChatMessageDatabase database = new ChatMessageDatabase(getApplicationContext());
+            database.insertuserCredentials(email);
             Intent intent = new Intent(getApplicationContext(), DashBoardActivity.class);
             startActivity(intent);
             finish();
@@ -137,4 +144,13 @@ public class SignActivity extends AppCompatActivity implements View.OnClickListe
     private void logErrorMessage(String logErrorMessage) {
         AppSingletonClass.logErrorMessage(TAG, logErrorMessage);
     }
+
+    private void uploadContactToServer(String name,String email,String photoUrl){
+        Intent intent = new Intent(getApplicationContext(), AddContactToServerService.class);
+        intent.putExtra("name",name);
+        intent.putExtra("email",email);
+        intent.putExtra("photoUrl",photoUrl);
+        startService(intent);
+    }
+
 }

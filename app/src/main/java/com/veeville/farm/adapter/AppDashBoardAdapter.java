@@ -107,7 +107,6 @@ public class AppDashBoardAdapter extends RecyclerView.Adapter<AppDashBoardAdapte
 
     @Override
     public int getItemCount() {
-        logMessage("size:" + dashBoardClasses.size());
         return dashBoardClasses.size();
     }
 

@@ -1,5 +1,6 @@
 package com.veeville.farm.activity;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
@@ -13,6 +14,9 @@ import com.veeville.farm.R;
 import com.veeville.farm.adapter.ViewPagerAdapter;
 import com.veeville.farm.fragment.CerebroFragment;
 import com.veeville.farm.fragment.FriendFragment;
+import com.veeville.farm.helper.ChatMessageDatabase;
+import com.veeville.farm.helper.SyncContactsService;
+import com.veeville.farm.helper.SyncMessagesService;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -39,6 +43,19 @@ public class ChatSectorActivity extends AppCompatActivity {
 
     }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+        ChatMessageDatabase database = new ChatMessageDatabase(getApplicationContext());
+        String fromAddress =database.getUserEmailAsFromAddress() ;
+        Intent intent = new Intent(getApplicationContext(), SyncMessagesService.class);
+        intent.putExtra("fromAddress",fromAddress);
+        //startService(intent);
+
+        Intent intent1 = new Intent(getApplicationContext(), SyncContactsService.class);
+        startService(intent1);
+    }
+
     private List<Fragment> getTabs() {
         List<Fragment> fragments = new ArrayList<>();
         fragments.add(new CerebroFragment());
@@ -60,4 +77,6 @@ public class ChatSectorActivity extends AppCompatActivity {
             onBackPressed();
         return true;
     }
+
+
 }

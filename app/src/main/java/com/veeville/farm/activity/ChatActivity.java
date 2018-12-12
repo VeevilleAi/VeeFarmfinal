@@ -88,12 +88,12 @@ public class ChatActivity extends AppCompatActivity implements QuickReplyAdapter
     private final String TAG = ChatActivity.class.getSimpleName();
     private Toolbar toolbar;
     private FloatingActionButton captureImage;
+
     private static final int CAMERA_REQUEST = 1888;
     private final static int REQUESTCODE_FOR_LOCATION = 100, REQUESTCODE_FOR_AUDIORECORD = 200;
     private static final String ACCESS_TOKEN = "c47e8cf9778f45f9a7ca89742d8e9311";
     private Uri filePathImage = null;
     private static final int REQUEST_IMAGE_CAPTURE = 1;
-    MediaRecorder mRecorder;
     private AIDataService aiDataService;
     boolean isvQnaEnabled = false;
     private SwitchCompat aSwitch;
@@ -104,29 +104,7 @@ public class ChatActivity extends AppCompatActivity implements QuickReplyAdapter
     String mFileName;
     private String selectedlanguage_id_mic = "en-US", inputLanguageId = "en";
 
-    private void startRecording() {
-        mRecorder = new MediaRecorder();
-        mRecorder.setAudioSource(MediaRecorder.AudioSource.MIC);
-        mRecorder.setOutputFormat(MediaRecorder.OutputFormat.THREE_GPP);
-        mRecorder.setOutputFile(mFileName);
-        mRecorder.setAudioEncoder(MediaRecorder.AudioEncoder.AMR_NB);
 
-        try {
-            mRecorder.prepare();
-        } catch (IOException e) {
-            Log.e(TAG, "prepare() failed");
-        }
-
-        mRecorder.start();
-        Toast.makeText(this, "started recording", Toast.LENGTH_SHORT).show();
-    }
-
-    private void stopRecording() {
-        mRecorder.stop();
-        mRecorder.release();
-        mRecorder = null;
-        Toast.makeText(this, "stopeed recording", Toast.LENGTH_SHORT).show();
-    }
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();

@@ -14,8 +14,8 @@ import android.widget.TextView;
 import com.squareup.picasso.Picasso;
 import com.veeville.farm.R;
 import com.veeville.farm.activity.OneToOneChatActivity;
+import com.veeville.farm.helper.ChatContact;
 import com.veeville.farm.helper.CircleTransform;
-import com.veeville.farm.helper.FarmerContact;
 
 import java.util.List;
 
@@ -24,12 +24,13 @@ import java.util.List;
  */
 public class FriendsListAdapter extends RecyclerView.Adapter<FriendsListAdapter.SingleContactHolder> {
 
-    private List<FarmerContact> farmerContacts;
+    private List<ChatContact> farmerContacts;
     private Context context;
-
-    public FriendsListAdapter(List<FarmerContact> farmerContacts, Context context) {
+    private String fromAddress;
+    public FriendsListAdapter(List<ChatContact> farmerContacts, Context context,String fromAddress) {
         this.farmerContacts = farmerContacts;
         this.context = context;
+        this.fromAddress =fromAddress;
     }
 
     @NonNull
@@ -39,7 +40,7 @@ public class FriendsListAdapter extends RecyclerView.Adapter<FriendsListAdapter.
         return new SingleContactHolder(view);
     }
 
-    public void updateContacts(List<FarmerContact> farmerContacts) {
+    public void updateContacts(List<ChatContact> farmerContacts) {
         this.farmerContacts = farmerContacts;
         notifyDataSetChanged();
     }
@@ -47,18 +48,22 @@ public class FriendsListAdapter extends RecyclerView.Adapter<FriendsListAdapter.
     @Override
     public void onBindViewHolder(@NonNull SingleContactHolder holder, int position) {
 
-        final FarmerContact contact = farmerContacts.get(position);
+        final ChatContact contact = farmerContacts.get(position);
         holder.name.setText(contact.name);
-        Picasso.with(context).load(contact.profilePic).resize(500, 500).centerCrop().transform(new CircleTransform()).into(holder.profilePic);
-
+        Picasso.with(context).load(contact.picUrl).resize(500, 500).centerCrop().transform(new CircleTransform()).into(holder.profilePic);
+        holder.mostRecentMessage.setText("");
         holder.contactCard.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 Intent intent = new Intent(context, OneToOneChatActivity.class);
                 intent.putExtra("name", contact.name);
+                intent.putExtra("to",contact.email);
+                intent.putExtra("from",fromAddress);
                 context.startActivity(intent);
             }
         });
+        holder.mostRecentMessage.setText(contact.recentMessage);
+
     }
 
     @Override
@@ -67,7 +72,7 @@ public class FriendsListAdapter extends RecyclerView.Adapter<FriendsListAdapter.
     }
 
     class SingleContactHolder extends RecyclerView.ViewHolder {
-        TextView name;
+        TextView name,mostRecentMessage;
         CardView contactCard;
         ImageView profilePic;
 
@@ -76,6 +81,7 @@ public class FriendsListAdapter extends RecyclerView.Adapter<FriendsListAdapter.
             name = view.findViewById(R.id.name);
             profilePic = view.findViewById(R.id.profile_picture);
             contactCard = view.findViewById(R.id.contact_card);
+            mostRecentMessage = view.findViewById(R.id.most_recent_message);
         }
     }
 }

@@ -134,7 +134,18 @@
             android:screenOrientation="portrait" />
         <activity android:name=".activity.GovernmentSchemesActivity" />
         <activity android:name=".activity.ChatSectorActivity" />
-        <activity android:name=".activity.OneToOneChatActivity"></activity>
+        <activity android:name=".activity.OneToOneChatActivity" />
+
+        <service android:name=".helper.InsertMessageToDatabase" />
+        <service android:name=".helper.SyncMessagesService" />
+        <service
+            android:name=".helper.SyncContactsService"
+            android:enabled="true"
+            android:exported="true" />
+        <service
+            android:name=".helper.AddContactToServerService"
+            android:enabled="true"
+            android:exported="true"></service>
     </application>
 
 </manifest>
