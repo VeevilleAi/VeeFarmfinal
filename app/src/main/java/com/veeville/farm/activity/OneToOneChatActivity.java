@@ -3,13 +3,17 @@ package com.veeville.farm.activity;
 import android.Manifest;
 import android.app.Activity;
 import android.content.ActivityNotFoundException;
+import android.content.ComponentName;
+import android.content.Context;
 import android.content.Intent;
+import android.content.ServiceConnection;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.IBinder;
 import android.speech.RecognizerIntent;
 import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
@@ -21,10 +25,12 @@ import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.text.format.DateFormat;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.Toast;
 
@@ -32,18 +38,21 @@ import com.veeville.farm.R;
 import com.veeville.farm.adapter.OneToOneChatAdapter;
 import com.veeville.farm.helper.ChatMessage;
 import com.veeville.farm.helper.ChatMessageDatabase;
-import com.veeville.farm.helper.ChatMessagesHelperFunctions;
 import com.veeville.farm.helper.ChatmessageDataClasses;
 import com.veeville.farm.helper.InputImageClass;
 import com.veeville.farm.helper.InsertMessageToDatabase;
+import com.veeville.farm.helper.UploadImageService;
 
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
+import java.util.Locale;
 import java.util.Objects;
 
 public class OneToOneChatActivity extends AppCompatActivity {
 
+    private int currentImagePosition;
     private final String TAG = OneToOneChatActivity.class.getSimpleName();
     private List<Object> messages = new ArrayList<>();
     private OneToOneChatAdapter adapter;
@@ -56,6 +65,8 @@ public class OneToOneChatActivity extends AppCompatActivity {
     private String selectedlanguage_id_mic = "en-US", inputLanguageId = "en";
     private Toolbar toolbar;
     private EditText inputtextmessage;
+    private int SELECT_PICTURE = 101;
+
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
@@ -129,6 +140,21 @@ public class OneToOneChatActivity extends AppCompatActivity {
         handleSendindTextMesage();
     }
 
+    private boolean checkCameraPermission() {
+
+        int permissionlocation = ContextCompat.checkSelfPermission(OneToOneChatActivity.this, Manifest.permission.CAMERA);
+        int permissionFileStorage = ContextCompat.checkSelfPermission(OneToOneChatActivity.this, Manifest.permission.WRITE_EXTERNAL_STORAGE);
+        return permissionlocation == PackageManager.PERMISSION_GRANTED && permissionFileStorage == PackageManager.PERMISSION_GRANTED;
+    }
+
+    private void askCameraPermission() {
+        String[] permissionarray = new String[]{Manifest.permission.CAMERA, Manifest.permission.WRITE_EXTERNAL_STORAGE};
+        if (ActivityCompat.shouldShowRequestPermissionRationale(OneToOneChatActivity.this, Manifest.permission.CAMERA)) {
+            Toast.makeText(OneToOneChatActivity.this, "Enable Camera in App Settings", Toast.LENGTH_SHORT).show();
+        } else {
+            ActivityCompat.requestPermissions(OneToOneChatActivity.this, permissionarray, CAMERA_REQUEST);
+        }
+    }
     Runnable runnable = new Runnable() {
         @Override
         public void run() {
@@ -141,7 +167,28 @@ public class OneToOneChatActivity extends AppCompatActivity {
             });
         }
     };
+    void getImageFromGallery() {
+
+        Intent intent = new Intent();
+        intent.setType("image/*");
+        intent.setAction(Intent.ACTION_GET_CONTENT);
+        startActivityForResult(Intent.createChooser(intent, "Select Picture"), SELECT_PICTURE);
+    }
     void handleSendindTextMesage() {
+
+        FloatingActionButton camera_fab = findViewById(R.id.camera_fab);
+        camera_fab.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (checkCameraPermission()) {
+                    if(isImageUploadSuccess())
+                    getImageFromGallery();
+                    else Toast.makeText(getApplicationContext(), "wait still image uploading", Toast.LENGTH_SHORT).show();
+                } else {
+                    askCameraPermission();
+                }
+            }
+        });
 
         inputtextmessage = findViewById(R.id.input_text_field);
         final FloatingActionButton actionButton = findViewById(R.id.action_button);
@@ -239,6 +286,7 @@ public class OneToOneChatActivity extends AppCompatActivity {
                 break;
             case CAMERA_REQUEST:
                 if (grantResults[0] == PackageManager.PERMISSION_GRANTED && grantResults[1] == PackageManager.PERMISSION_GRANTED) {
+                    getImageFromGallery();
                 }
 
             default:
@@ -283,11 +331,35 @@ public class OneToOneChatActivity extends AppCompatActivity {
         insertmessageToServerDatabase(message,from,to,timestamp);
     }
 
+
+
+    private long getDateToTimestamp(long date) {
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTimeInMillis(date);
+        calendar.set(Calendar.HOUR, 0);
+        calendar.set(Calendar.MINUTE, 0);
+        calendar.set(Calendar.SECOND, 0);
+        calendar.set(Calendar.MILLISECOND, 0);
+        return calendar.getTime().getTime();
+    }
+
     private List<Object> fetchAllMessages(){
         ChatMessageDatabase database = new ChatMessageDatabase(getApplicationContext());
         List<ChatMessage> chatMessages = database.getChatMessages(fromAddress,toAddress);
         List<Object> messages = new ArrayList<>();
+        long timestamp = 0;
+        if(chatMessages.size()>0)
+        timestamp = chatMessages.get(0).timestamp;
+        ChatmessageDataClasses.DateInMessage dateInMessage =new ChatmessageDataClasses.DateInMessage(getDate(timestamp));
+        messages.add(dateInMessage);
         for (ChatMessage message:chatMessages) {
+
+
+            if(timestamp-getDateToTimestamp(message.timestamp)>(24*60*60*1000)){
+                timestamp = message.timestamp;
+                messages.add(new ChatmessageDataClasses.DateInMessage(getDate(timestamp)));
+            }
+
             if(message.from.equals(fromAddress)){
                 ChatmessageDataClasses.InputTextMessage textMessage = new ChatmessageDataClasses.InputTextMessage(message.message,0);
                 messages.add(textMessage);
@@ -301,6 +373,17 @@ public class OneToOneChatActivity extends AppCompatActivity {
         return messages;
     }
 
+    private String getDate(long time) {
+
+        Calendar cal = Calendar.getInstance(Locale.ENGLISH);
+        cal.setTimeInMillis(time);
+        Calendar calendar = Calendar.getInstance();
+        if (calendar.get(Calendar.DAY_OF_MONTH) == cal.get(Calendar.DAY_OF_MONTH)) {
+            return "Today";
+        } else {
+            return DateFormat.format("dd-MMM-yyyy", cal).toString();
+        }
+    }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -343,28 +426,87 @@ public class OneToOneChatActivity extends AppCompatActivity {
 //            helperFunctions.insertInputImage(imageString);
 //
 //        }
-//        if (resultCode == Activity.RESULT_OK && requestCode == SELECT_PICTURE) {
-//            Uri selectedImageUri = data.getData();
-//            try {
-//                assert selectedImageUri != null;
-//                Bitmap bm = BitmapFactory.decodeStream(getContentResolver().openInputStream(selectedImageUri));
-//                String stringImage = getStringImage(bm);
-//                alertDialogForImageWithText(stringImage);
-//                tookPicture = true;
-//            } catch (FileNotFoundException e) {
-//                e.printStackTrace();
-//            }
-//        }
+        if (resultCode == Activity.RESULT_OK && requestCode == SELECT_PICTURE) {
+            Uri selectedImageUri = data.getData();
+            try {
+                assert selectedImageUri != null;
+                Bitmap bm = BitmapFactory.decodeStream(getContentResolver().openInputStream(selectedImageUri));
+                insertInputImage(bm,selectedImageUri);
+
+            } catch (FileNotFoundException e) {
+                e.printStackTrace();
+            }
+        }
         switch (requestCode) {
             case 10:
                 if (resultCode == RESULT_OK && null != data) {
                     ArrayList<String> result = data.getStringArrayListExtra(RecognizerIntent.EXTRA_RESULTS);
                     //stopRecording();
                     inputtextmessage.setText(result.get(0));
+                    Handler handler = new Handler();
+                    handler.postDelayed(new Runnable() {
+                        @Override
+                        public void run() {
+                            runOnUiThread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    InputMethodManager inputMethodManager = (InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE);
+                                    assert inputMethodManager != null;
+                                    boolean result = inputMethodManager.showSoftInput(inputtextmessage, InputMethodManager.SHOW_IMPLICIT);
+                                    Log.d(TAG, "onResume: result:"+result);
+                                }
+                            });
+                        }
+                    },200);
                 }
                 break;
         }
 
     }
 
+    private UploadImageService uploadImageServiceTemp;
+    private boolean isServiceConnected = false;
+
+    private void insertInputImage(Bitmap bitmap,Uri selectedImageUri){
+
+        ChatmessageDataClasses.InputBitMapImage bitMapImage = new ChatmessageDataClasses.InputBitMapImage(bitmap,false);
+        messages.add(bitMapImage);
+        currentImagePosition = messages.size()-1;
+        adapter.notifyItemInserted(messages.size()-1);
+        chatMessageRecyclerview.scrollToPosition(messages.size()-1);
+        final Intent uploadImageService = new Intent(getApplicationContext(), UploadImageService.class);
+        uploadImageService.putExtra("imageUri",selectedImageUri.toString());
+        startService(uploadImageService);
+        bindService = new Intent(getApplicationContext(),UploadImageService.class);
+        bindService(bindService,serviceConnection,Context.BIND_AUTO_CREATE);
+
+    }
+
+    Intent bindService;
+    private Boolean isImageUploadSuccess(){
+        if(isServiceConnected){
+            boolean success = uploadImageServiceTemp.isImageUploadSuccess();
+            if(success) {
+                unbindService(serviceConnection);
+                return true;
+            }else {
+                return false;
+            }
+        }else {
+            return true;
+        }
+    }
+    ServiceConnection serviceConnection = new ServiceConnection() {
+        @Override
+        public void onServiceConnected(ComponentName componentName, IBinder iBinder) {
+            isServiceConnected = true;
+            UploadImageService.MyBinder binder = (UploadImageService.MyBinder) iBinder;
+            uploadImageServiceTemp = binder.getService();
+        }
+
+        @Override
+        public void onServiceDisconnected(ComponentName componentName) {
+            isServiceConnected =  false;
+        }
+    };
 }

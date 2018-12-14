@@ -140,12 +140,11 @@
         <service android:name=".helper.SyncMessagesService" />
         <service
             android:name=".helper.SyncContactsService"
-            android:enabled="true"
-            android:exported="true" />
+            android:exported="false" />
         <service
             android:name=".helper.AddContactToServerService"
-            android:enabled="true"
-            android:exported="true"></service>
+            android:exported="false"/>
+        <service android:name=".helper.UploadImageService"/>
     </application>
 
 </manifest>

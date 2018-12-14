@@ -1,6 +1,10 @@
 package com.veeville.farm.activity;
 
+import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.HandlerThread;
+import android.os.Message;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -79,13 +83,14 @@ public class LightActivity extends AppCompatActivity {
 
     }
 
-
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
 
         onBackPressed();
         return super.onOptionsItemSelected(item);
     }
+
+
 
     private List<Object> formData() {
 
@@ -114,4 +119,5 @@ public class LightActivity extends AppCompatActivity {
     private void logMessage(String logMessage) {
         AppSingletonClass.logDebugMessage(TAG, logMessage);
     }
+
 }

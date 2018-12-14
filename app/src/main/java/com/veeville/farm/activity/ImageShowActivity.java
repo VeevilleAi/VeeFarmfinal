@@ -38,7 +38,6 @@ public class ImageShowActivity extends AppCompatActivity {
             Picasso.with(getApplicationContext()).load(url).into(imageView);
         }
         logMessage("onCreate called");
-
     }
 
     @Override

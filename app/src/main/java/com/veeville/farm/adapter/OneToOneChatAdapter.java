@@ -5,6 +5,8 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.veeville.farm.R;
@@ -28,10 +30,15 @@ public class OneToOneChatAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
             return 0;
         }else if(messages.get(position) instanceof ChatmessageDataClasses.ResponseTextMessage){
             return 1;
+        }else if(messages.get(position) instanceof ChatmessageDataClasses.DateInMessage) {
+            return 2;
+        }else if(messages.get(position) instanceof ChatmessageDataClasses.InputBitMapImage) {
+            return 3;
         }else {
             return -1;
         }
     }
+
 
     @NonNull
     @Override
@@ -46,6 +53,14 @@ public class OneToOneChatAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
             case 1:
                 view = LayoutInflater.from(parent.getContext()).inflate(R.layout.simpletextresponse, parent, false);
                 viewHolder = new ResponseTextMessageHolder(view);
+                break;
+            case 2:
+                view = LayoutInflater.from(parent.getContext()).inflate(R.layout.dateview_card, parent, false);
+                viewHolder = new DateInMessageHolder(view);
+                break;
+            case 3:
+                view = LayoutInflater.from(parent.getContext()).inflate(R.layout.inputimagecard, parent, false);
+                viewHolder = new InputImageHolder(view);
                 break;
             default:
                 view = LayoutInflater.from(parent.getContext()).inflate(R.layout.simpletextresponse, parent, false);
@@ -67,12 +82,31 @@ public class OneToOneChatAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
             case 1:
                 handleOverviewOutPutData((ResponseTextMessageHolder) holder,position);
                 break;
+            case 2:
+                handleDateInMessage((DateInMessageHolder) holder,position);
+                break;
+            case 3:
+                handleInputImage((InputImageHolder) holder,position);
+                break;
+
         }
+    }
+
+    private void handleInputImage(InputImageHolder holder,int position){
+        ChatmessageDataClasses.InputBitMapImage bitMapImage = (ChatmessageDataClasses.InputBitMapImage) messages.get(position);
+        holder.input_imageview.setImageBitmap(bitMapImage.bitmap);
     }
 
     @Override
     public int getItemCount() {
         return messages.size();
+    }
+
+    private void handleDateInMessage(DateInMessageHolder holder,int position){
+
+        ChatmessageDataClasses.DateInMessage date = (ChatmessageDataClasses.DateInMessage) messages.get(position);
+        holder.textView.setText(date.date);
+
     }
 
     private void handleInputTextMessage(final InputTextMessageHolder myholderInput, int position) {
@@ -107,5 +141,24 @@ public class OneToOneChatAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
     }
 
 
+    class DateInMessageHolder extends RecyclerView.ViewHolder {
+        TextView textView;
 
+        DateInMessageHolder(View view) {
+            super(view);
+            textView = view.findViewById(R.id.date);
+        }
+    }
+    class InputImageHolder extends RecyclerView.ViewHolder {
+        ImageView input_imageview;
+        ProgressBar imageUploadProgressbar;
+        TextView time;
+
+        InputImageHolder(View view) {
+            super(view);
+            input_imageview = view.findViewById(R.id.imageinput);
+            imageUploadProgressbar = view.findViewById(R.id.image_upload_progressbar);
+            time = view.findViewById(R.id.time);
+        }
+    }
 }

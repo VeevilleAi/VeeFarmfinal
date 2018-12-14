@@ -159,13 +159,14 @@ public class ChatMessageDatabase extends SQLiteOpenHelper{
                 String fromAddress = cursor.getString(1);
                 String toAddress = cursor.getString(2);
                 String message = cursor.getString(3);
-                long timestamp = cursor.getLong(4);
+                long timestamp = cursor.getLong(4)*1000;
                 ChatMessage chatMessage = new ChatMessage(messageId, fromAddress, toAddress, message, timestamp);
                 chatMessages.add(chatMessage);
                 cursor.moveToNext();
             }
 
         }
+        cursor.close();
         return chatMessages;
 
     }
@@ -178,7 +179,7 @@ public class ChatMessageDatabase extends SQLiteOpenHelper{
         if(cursor.moveToFirst()){
              message = cursor.getString(0);
         }
-
+        cursor.close();
         return message;
     }
 

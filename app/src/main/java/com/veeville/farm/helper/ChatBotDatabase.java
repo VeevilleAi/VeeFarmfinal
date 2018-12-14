@@ -162,8 +162,6 @@ public class ChatBotDatabase extends SQLiteOpenHelper {
         calendar.set(Calendar.MINUTE, 0);
         calendar.set(Calendar.SECOND, 0);
         calendar.set(Calendar.MILLISECOND, 0);
-        SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MMM-yyyy", Locale.ENGLISH);
-        String s = dateFormat.format(calendar.getTime());
         return calendar.getTime().getTime();
     }
 

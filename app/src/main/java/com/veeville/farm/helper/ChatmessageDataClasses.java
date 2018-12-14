@@ -1,5 +1,7 @@
 package com.veeville.farm.helper;
 
+import android.graphics.Bitmap;
+
 import java.util.List;
 
 /**
@@ -26,6 +28,15 @@ public class ChatmessageDataClasses {
         }
     }
 
+    public static class InputBitMapImage{
+        public Bitmap bitmap;
+        public boolean isUploaded;
+        public InputBitMapImage(Bitmap bitmap,boolean isUploaded){
+            this.bitmap = bitmap;
+            this.isUploaded = isUploaded;
+        }
+    }
+
     public static class VegFruitPrice {
         public String title, description, imageLink;
         public long timestamp;
@@ -42,7 +53,7 @@ public class ChatmessageDataClasses {
 
         public String date;
 
-        protected DateInMessage(String date) {
+        public DateInMessage(String date) {
             this.date = date;
         }
 

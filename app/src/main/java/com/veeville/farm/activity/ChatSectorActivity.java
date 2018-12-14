@@ -13,6 +13,7 @@ import android.view.MenuItem;
 import com.veeville.farm.R;
 import com.veeville.farm.adapter.ViewPagerAdapter;
 import com.veeville.farm.fragment.CerebroFragment;
+import com.veeville.farm.fragment.ChatGroupsFragment;
 import com.veeville.farm.fragment.FriendFragment;
 import com.veeville.farm.helper.ChatMessageDatabase;
 import com.veeville.farm.helper.SyncContactsService;
@@ -32,6 +33,7 @@ public class ChatSectorActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_chat_sector);
         Toolbar toolbar = findViewById(R.id.toolbar);
+        toolbar.setTitle("Cerebro");
         setSupportActionBar(toolbar);
         Objects.requireNonNull(getSupportActionBar()).setDisplayHomeAsUpEnabled(true);
         ViewPager viewPager = findViewById(R.id.viewpager);
@@ -53,6 +55,7 @@ public class ChatSectorActivity extends AppCompatActivity {
         //startService(intent);
 
         Intent intent1 = new Intent(getApplicationContext(), SyncContactsService.class);
+        intent1.putExtra("fromAddress","Dummy");
         startService(intent1);
     }
 
@@ -60,6 +63,7 @@ public class ChatSectorActivity extends AppCompatActivity {
         List<Fragment> fragments = new ArrayList<>();
         fragments.add(new CerebroFragment());
         fragments.add(new FriendFragment());
+        fragments.add(new ChatGroupsFragment());
         return fragments;
     }
 
@@ -67,13 +71,14 @@ public class ChatSectorActivity extends AppCompatActivity {
         List<String> titles = new ArrayList<>();
         titles.add("Cerebro");
         titles.add("Friends");
+        titles.add("Groups");
         return titles;
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         Log.d(TAG, "onOptionsItemSelected: " + item.getTitle());
-        if (item.getTitle() == null)
+        if (item.getTitle() == "Cerebro")
             onBackPressed();
         return true;
     }

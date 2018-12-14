@@ -38,7 +38,6 @@ public class SyncMessagesService extends Service {
         while (true) {
             try {
 
-                long serverLatestMessageTimestamp=0;
                 ChatMessageDatabase database = new ChatMessageDatabase(getApplicationContext());
 
 
@@ -52,8 +51,6 @@ public class SyncMessagesService extends Service {
                     String from = resultSet.getString("from_address");
                     String to = resultSet.getString("to_address");
                     String message = resultSet.getString("chat_message");
-                    Date date = resultSet.getDate("chat_timestamp");
-                    serverLatestMessageTimestamp  = date.getTime()/1000;
                     long messageId = resultSet.getLong("chat_message_id");
                     if(timestamp<messageId) {
                         ChatMessage chatMessage = new ChatMessage("", from, to, message, messageId);
