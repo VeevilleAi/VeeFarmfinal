@@ -34,16 +34,18 @@ import java.util.Random;
 
 /**
  * Created by Prashant C on 04/07/18.
+ * adapter for farm temperature with text and graph
+ * graph will shows the variation of temperature over different period of time
  */
 
 public class TemperatureActivityAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
-
     private Context context;
     private List<Object> temperatureDataList;
     private final String TAG = TemperatureActivityAdapter.class.getSimpleName();
 
     public TemperatureActivityAdapter(Context context, List<Object> temperatureDataList) {
         this.context = context;
+
         this.temperatureDataList = temperatureDataList;
     }
 
@@ -409,6 +411,7 @@ public class TemperatureActivityAdapter extends RecyclerView.Adapter<RecyclerVie
     class SoilTempHolder extends RecyclerView.ViewHolder {
 
         RecyclerView recyclerView;
+
         SoilTempHolder(View view) {
             super(view);
             recyclerView = view.findViewById(R.id.recyclerview);

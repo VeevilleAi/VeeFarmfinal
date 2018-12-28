@@ -16,6 +16,9 @@ import java.util.Locale;
 
 /**
  * Created by user on 17-07-2017.
+ *
+ * dtabase for Cerebro example message storing video link storing text message storing ...........
+ * storing user mobile number
  */
 
 public class ChatBotDatabase extends SQLiteOpenHelper {

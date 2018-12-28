@@ -13,6 +13,9 @@ import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 
+/*
+* this Service used to Sync contacts and storeing in Local Database
+* */
 public class SyncContactsService extends Service {
     private final String TAG = SyncContactsService.class.getSimpleName();
     public SyncContactsService() {

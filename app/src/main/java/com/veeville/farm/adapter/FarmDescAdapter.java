@@ -37,6 +37,7 @@ import java.util.List;
 
 /**
  * Created by Prashant C on 22/10/18.
+ * adapter for FarmDescriptions like farm image ,crop short desc,soil test results....
  */
 public class FarmDescAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 

@@ -10,6 +10,7 @@ import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.sql.Statement;
 
+/*this service to add contact to Server database*/
 public class AddContactToServerService extends Service {
     private final String TAG = AddContactToServerService.class.getSimpleName();
     public AddContactToServerService() {
@@ -40,9 +41,7 @@ public class AddContactToServerService extends Service {
             stmt.close();
             connection.close();
 
-        } catch (ClassNotFoundException e) {
-            e.printStackTrace();
-        } catch (SQLException e) {
+        }catch (Exception e) {
             e.printStackTrace();
         }
         stopSelf();

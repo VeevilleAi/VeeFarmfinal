@@ -14,6 +14,7 @@ import java.util.List;
 
 /**
  * Created by Prashant C on 29/11/18.
+ * this helper used to convert from one language to another like english to kannada and Vice Versa
  */
 public class LanguageTranslater {
 

@@ -23,10 +23,21 @@ public class ImageShowActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_image_show);
+        logMessage("onCreate called");
+        setUpToolbar();
+        showSelectedImageFully();
+    }
+
+    private void setUpToolbar() {
         Toolbar toolbar = findViewById(R.id.my_toolbar);
         toolbar.setTitle("Image");
         setSupportActionBar(toolbar);
         Objects.requireNonNull(getSupportActionBar()).setDisplayHomeAsUpEnabled(true);
+    }
+
+
+    //get the image and show with full screen
+    private void showSelectedImageFully() {
         ImageView imageView = findViewById(R.id.imageview);
         if (getIntent().hasExtra("image_data")) {
             String imagedata = getIntent().getStringExtra("image_data");
@@ -37,7 +48,6 @@ public class ImageShowActivity extends AppCompatActivity {
             String url = getIntent().getStringExtra("image_url");
             Picasso.with(getApplicationContext()).load(url).into(imageView);
         }
-        logMessage("onCreate called");
     }
 
     @Override
@@ -70,12 +80,14 @@ public class ImageShowActivity extends AppCompatActivity {
         logMessage("onDestroy called");
     }
 
+    //perform action when option menu item selected
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         onBackPressed();
         return super.onOptionsItemSelected(item);
     }
 
+    //always use this method to log debugg message
     private void logMessage(String logMessage) {
         AppSingletonClass.logDebugMessage(TAG, logMessage);
     }

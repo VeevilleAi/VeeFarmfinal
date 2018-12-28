@@ -15,6 +15,12 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
+
+/*
+ * show farmer related schemes by governments and any private sectors
+ * as of now creating manualy
+ * find an api and replace it
+ */
 public class GovernmentSchemesActivity extends AppCompatActivity {
 
     @Override
@@ -25,6 +31,7 @@ public class GovernmentSchemesActivity extends AppCompatActivity {
         setUpRecyclerview();
     }
 
+    //setup custom toolbar
     private void setUpToolbar() {
         Toolbar toolbar = findViewById(R.id.my_toolbar);
         toolbar.setTitle("News");
@@ -33,6 +40,7 @@ public class GovernmentSchemesActivity extends AppCompatActivity {
 
     }
 
+    //setup news article recyclerview
     private void setUpRecyclerview() {
         LinearLayoutManager manager = new LinearLayoutManager(this);
         RecyclerView recyclerView = findViewById(R.id.recyclerview);
@@ -43,6 +51,7 @@ public class GovernmentSchemesActivity extends AppCompatActivity {
 
     }
 
+    //genarating news cards
     private List<News> getNewsCards() {
         List<News> newsList = new ArrayList<>();
         newsList.add(new News("Integrated Scheme for Agricultural Marketing(ISAM) (effective since 01.04.2014)", "https://previews.123rf.com/images/elwynn/elwynn0908/elwynn090800185/5378333-there-is-a-farmer-working-in-the-farm-.jpg", ""));
@@ -52,6 +61,7 @@ public class GovernmentSchemesActivity extends AppCompatActivity {
         return newsList;
     }
 
+    //perform action when optionmenu item selected
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         onBackPressed();

@@ -21,6 +21,7 @@ import com.veeville.farm.helper.AppSingletonClass;
 import java.util.List;
 import java.util.Objects;
 
+/*showing farmer farms in google map with filled different color*/
 public class ShowFarmInMapActivity extends AppCompatActivity implements OnMapReadyCallback {
 
     private GoogleMap mMap;
@@ -33,8 +34,6 @@ public class ShowFarmInMapActivity extends AppCompatActivity implements OnMapRea
         setUpToolbar();
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
-        String logMessage = "onCreate Called";
-        logMessage(logMessage);
     }
 
     @Override
@@ -77,6 +76,7 @@ public class ShowFarmInMapActivity extends AppCompatActivity implements OnMapRea
         addAllFarmsToMap();
     }
 
+    //when option menu item selected
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
 
@@ -86,6 +86,7 @@ public class ShowFarmInMapActivity extends AppCompatActivity implements OnMapRea
         return super.onOptionsItemSelected(item);
     }
 
+    // setting MapActivty custom toolbar
     void setUpToolbar() {
         Toolbar toolbar = findViewById(R.id.my_toolbar);
         farmName = getIntent().getStringExtra("FarmName");
@@ -98,6 +99,7 @@ public class ShowFarmInMapActivity extends AppCompatActivity implements OnMapRea
         logMessage(logMessage);
     }
 
+    //getting farmer farm location(Lat and Lng list) later it should come from Server
     private void addAllFarmsToMap() {
 
         PolygonOptions polygonOptions = new PolygonOptions();
@@ -156,9 +158,9 @@ public class ShowFarmInMapActivity extends AppCompatActivity implements OnMapRea
 
         String logMessage = "added all Farms to Map";
         logMessage(logMessage);
-
     }
 
+    //adding farmer farms to to option menu
     @Override
     public boolean onPrepareOptionsMenu(Menu menu) {
         if (menu.size() == 0) {
@@ -172,6 +174,7 @@ public class ShowFarmInMapActivity extends AppCompatActivity implements OnMapRea
         return super.onPrepareOptionsMenu(menu);
     }
 
+    //finding centroid of Farm using farm locations
     public LatLng getCentroid(List<LatLng> points) {
         double[] centroid = {0.0, 0.0};
         for (int i = 0; i < points.size(); i++) {
@@ -184,6 +187,7 @@ public class ShowFarmInMapActivity extends AppCompatActivity implements OnMapRea
         return new LatLng(centroid[0], centroid[1]);
     }
 
+    //use this function  to log Debugg Message
     private void logMessage(String logMessage) {
         AppSingletonClass.logDebugMessage(TAG, logMessage);
     }

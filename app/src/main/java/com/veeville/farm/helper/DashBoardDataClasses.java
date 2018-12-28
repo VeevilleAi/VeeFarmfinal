@@ -4,8 +4,10 @@ import java.util.List;
 
 /**
  * Created by Prashant C on 04/07/18.
+ * //DashBoardActivty data classes like weather, soil moisture etc...
  */
 public class DashBoardDataClasses {
+
 
     public static class HumidityData {
         public String date, place;

@@ -18,6 +18,12 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Random;
 
+
+/*
+* this activity shows Temperature of a particular farm
+* as of now data are generating randomly for soil temperature
+* later data should come from Server
+ */
 public class TemperatureActivity extends AppCompatActivity {
     private final String TAG = TemperatureActivity.class.getSimpleName();
 
@@ -29,6 +35,22 @@ public class TemperatureActivity extends AppCompatActivity {
         setUpHumidityRecyclerview();
     }
 
+    //setting up custom toolbar
+    private void setUpToolbar() {
+        Toolbar toolbar = findViewById(R.id.my_toolbar);
+        toolbar.setTitle("Temperature-Farm1");
+        setSupportActionBar(toolbar);
+        Objects.requireNonNull(getSupportActionBar()).setDisplayHomeAsUpEnabled(true);
+    }
+
+    //settingup soil temperature recyclerview
+    void setUpHumidityRecyclerview() {
+        RecyclerView temperatureRecyclerview = findViewById(R.id.temperature_recyclerview);
+        LinearLayoutManager manager = new LinearLayoutManager(getApplicationContext());
+        temperatureRecyclerview.setLayoutManager(manager);
+        TemperatureActivityAdapter adapter = new TemperatureActivityAdapter(getApplicationContext(), formData());
+        temperatureRecyclerview.setAdapter(adapter);
+    }
     @Override
     protected void onStart() {
         super.onStart();
@@ -59,22 +81,7 @@ public class TemperatureActivity extends AppCompatActivity {
         logMessage("onDestroy called");
     }
 
-    private void setUpToolbar() {
-        Toolbar toolbar = findViewById(R.id.my_toolbar);
-        toolbar.setTitle("Temperature-Farm1");
-        setSupportActionBar(toolbar);
-        Objects.requireNonNull(getSupportActionBar()).setDisplayHomeAsUpEnabled(true);
-    }
-
-    void setUpHumidityRecyclerview() {
-        RecyclerView temperatureRecyclerview = findViewById(R.id.temperature_recyclerview);
-        LinearLayoutManager manager = new LinearLayoutManager(getApplicationContext());
-        temperatureRecyclerview.setLayoutManager(manager);
-        TemperatureActivityAdapter adapter = new TemperatureActivityAdapter(getApplicationContext(), formData());
-        temperatureRecyclerview.setAdapter(adapter);
-    }
-
-
+    //onBackPressed return to previous activity
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         String title = item.getTitle().toString();
@@ -83,6 +90,7 @@ public class TemperatureActivity extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
+    //randomly generating todays temp value
     private List<DashBoardDataClasses.TemperatureData.TempValue> getTodayTempValueTillNow() {
         List<DashBoardDataClasses.TemperatureData.TempValue> soilMoistureValues1 = new ArrayList<>();
         Calendar calendar = Calendar.getInstance();
@@ -99,10 +107,10 @@ public class TemperatureActivity extends AppCompatActivity {
             DashBoardDataClasses.TemperatureData.TempValue value = new DashBoardDataClasses.TemperatureData.TempValue(time, temp + "");
             soilMoistureValues1.add(value);
         }
-
         return soilMoistureValues1;
     }
 
+    //forming random soil temperature locally as of now later it should come Server
     private List<Object> formData() {
         List<Object> soilMoistureDatas = new ArrayList<>();
         DashBoardDataClasses.TemperatureData data = new DashBoardDataClasses.TemperatureData("", "", getTodayTempValueTillNow());
@@ -112,6 +120,7 @@ public class TemperatureActivity extends AppCompatActivity {
     }
 
 
+    //always use this method o log debugg message
     private void logMessage(String logMessage) {
         AppSingletonClass.logDebugMessage(TAG, logMessage);
     }

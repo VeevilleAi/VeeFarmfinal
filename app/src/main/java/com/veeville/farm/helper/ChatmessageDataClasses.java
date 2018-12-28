@@ -1,11 +1,13 @@
 package com.veeville.farm.helper;
 
 import android.graphics.Bitmap;
+import android.net.Uri;
 
 import java.util.List;
 
 /**
  * Created by Prashant C on 18/07/18.
+ * these helper classes used in Chat Message data classes like InputTextMessage,ResponseTextMessage, etc.
  */
 public class ChatmessageDataClasses {
     public static class InputTextMessage {
@@ -30,13 +32,25 @@ public class ChatmessageDataClasses {
 
     public static class InputBitMapImage{
         public Bitmap bitmap;
+        Uri uri;
         public boolean isUploaded;
-        public InputBitMapImage(Bitmap bitmap,boolean isUploaded){
+        public InputBitMapImage(Bitmap bitmap,boolean isUploaded,Uri uri){
             this.bitmap = bitmap;
+            this.uri = uri;
             this.isUploaded = isUploaded;
         }
     }
 
+    public static class ResponseBitMapImage{
+        public Bitmap bitmap;
+        Uri uri;
+        public boolean isUploaded;
+        public ResponseBitMapImage(Bitmap bitmap,boolean isUploaded,Uri uri){
+            this.bitmap = bitmap;
+            this.uri = uri;
+            this.isUploaded = isUploaded;
+        }
+    }
     public static class VegFruitPrice {
         public String title, description, imageLink;
         public long timestamp;

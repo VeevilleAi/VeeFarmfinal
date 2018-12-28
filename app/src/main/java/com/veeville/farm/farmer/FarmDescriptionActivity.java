@@ -19,6 +19,8 @@ import com.veeville.farm.helper.AppSingletonClass;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+/*
+* in this activity we will show full description of farm like current crop,farm location in google map ....... */
 
 public class FarmDescriptionActivity extends AppCompatActivity {
 
@@ -29,10 +31,34 @@ public class FarmDescriptionActivity extends AppCompatActivity {
         setContentView(R.layout.activity_farmers_farm);
         setUpToolbar();
         setUpRecyclerview();
-        String logMessage = "onCreate Method Called";
+    }
+
+    //setting up custom toolbar for activity
+    private void setUpToolbar() {
+        String farmName = getIntent().getStringExtra("farmName");
+        String cropName = getIntent().getStringExtra("cropName");
+        Toolbar toolbar = findViewById(R.id.my_toolbar);
+        String title = farmName + "-" + cropName;
+        toolbar.setTitle(title);
+        toolbar.setTitleTextColor(Color.WHITE);
+        toolbar.setSubtitleTextColor(Color.WHITE);
+        setSupportActionBar(toolbar);
+        Objects.requireNonNull(getSupportActionBar()).setDisplayHomeAsUpEnabled(true);
+        String logMessage = "Setting toolbar";
         logMessage(logMessage);
     }
 
+    //setting up crop desc recyclerview
+    private void setUpRecyclerview() {
+        String logMessage = "Farm Desc recyclerview  Called";
+        logMessage(logMessage);
+        LinearLayoutManager manager = new LinearLayoutManager(getApplicationContext());
+        RecyclerView recyclerView = findViewById(R.id.recyclerview);
+        String farmName = getIntent().getStringExtra("farmName");
+        FarmDescAdapter adapter = new FarmDescAdapter(getApplicationContext(), getfarmDescriptions(), farmName);
+        recyclerView.setLayoutManager(manager);
+        recyclerView.setAdapter(adapter);
+    }
 
     @Override
     protected void onStart() {
@@ -63,37 +89,18 @@ public class FarmDescriptionActivity extends AppCompatActivity {
         super.onDestroy();
         logMessage("onDestroy called");
     }
-    private void setUpToolbar() {
-        String farmName = getIntent().getStringExtra("farmName");
-        String cropName = getIntent().getStringExtra("cropName");
-        Toolbar toolbar = findViewById(R.id.my_toolbar);
-        String title = farmName + "-" + cropName;
-        toolbar.setTitle(title);
-        toolbar.setTitleTextColor(Color.WHITE);
-        toolbar.setSubtitleTextColor(Color.WHITE);
-        setSupportActionBar(toolbar);
-        Objects.requireNonNull(getSupportActionBar()).setDisplayHomeAsUpEnabled(true);
-        String logMessage = "Setting toolbar";
-        logMessage(logMessage);
-    }
 
+
+    // when user click option menu back button
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         onBackPressed();
         return super.onOptionsItemSelected(item);
     }
 
-    private void setUpRecyclerview() {
-        String logMessage = "Farm Desc recyclerview  Called";
-        logMessage(logMessage);
-        LinearLayoutManager manager = new LinearLayoutManager(getApplicationContext());
-        RecyclerView recyclerView = findViewById(R.id.recyclerview);
-        String farmName = getIntent().getStringExtra("farmName");
-        FarmDescAdapter adapter = new FarmDescAdapter(getApplicationContext(), getfarmDescriptions(), farmName);
-        recyclerView.setLayoutManager(manager);
-        recyclerView.setAdapter(adapter);
-    }
 
+
+    //getting farm desc from server as of now generating locally
     private List<Object> getfarmDescriptions() {
         String logMessage = "getting Farm description";
         logMessage(logMessage);
@@ -104,15 +111,16 @@ public class FarmDescriptionActivity extends AppCompatActivity {
         objects.add(data.insertSoilPh());
         objects.add(data.insertSoilTemperature());
         objects.add(data.insertLight());
-        //objects.add(getSoilTestResults());
         objects.add(new SoilTestResult.SoilTestGraph());
         return objects;
     }
 
+    //use this function to log debugg message
     private void logMessage(String logMessage) {
         AppSingletonClass.logDebugMessage(TAG, logMessage);
     }
 
+    //use this function to log begugg error messages
     private void logErrorMessage(String logErrorMessage) {
         AppSingletonClass.logErrorMessage(TAG, logErrorMessage);
     }

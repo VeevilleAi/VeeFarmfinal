@@ -1,10 +1,6 @@
 package com.veeville.farm.activity;
 
-import android.content.Intent;
 import android.os.Bundle;
-import android.os.Handler;
-import android.os.HandlerThread;
-import android.os.Message;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -22,6 +18,12 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Random;
 
+
+/*
+ * getting light value of particular farm and show with numbers and graphs
+ * as of now generating randomly and added to recyclerview
+ * handle all activity life cycle methods
+ */
 public class LightActivity extends AppCompatActivity {
 
     private final String TAG = LightActivity.class.getSimpleName();
@@ -32,6 +34,23 @@ public class LightActivity extends AppCompatActivity {
         setContentView(R.layout.activity_light);
         setUpToolbar();
         setUpSoilMoistureRecyclerview();
+    }
+
+    //setting up custom toolbar
+    private void setUpToolbar() {
+        Toolbar toolbar = findViewById(R.id.my_toolbar);
+        toolbar.setTitle("Light-Farm1");
+        setSupportActionBar(toolbar);
+        Objects.requireNonNull(getSupportActionBar()).setDisplayHomeAsUpEnabled(true);
+    }
+
+    //settingup recyclerview for light values
+    private void setUpSoilMoistureRecyclerview() {
+        LinearLayoutManager manager = new LinearLayoutManager(getApplicationContext());
+        RecyclerView lightRecyclerview = findViewById(R.id.soil_ph_recyclerview);
+        lightRecyclerview.setLayoutManager(manager);
+        LightActivityAdapter adapter = new LightActivityAdapter(getApplicationContext(), formData());
+        lightRecyclerview.setAdapter(adapter);
     }
 
     @Override
@@ -64,34 +83,15 @@ public class LightActivity extends AppCompatActivity {
         logMessage("onDestroy called");
     }
 
-    private void setUpToolbar() {
-
-        Toolbar toolbar = findViewById(R.id.my_toolbar);
-        toolbar.setTitle("Light-Farm1");
-        setSupportActionBar(toolbar);
-        Objects.requireNonNull(getSupportActionBar()).setDisplayHomeAsUpEnabled(true);
-
-    }
-
-    private void setUpSoilMoistureRecyclerview() {
-
-        LinearLayoutManager manager = new LinearLayoutManager(getApplicationContext());
-        RecyclerView lightRecyclerview = findViewById(R.id.soil_ph_recyclerview);
-        lightRecyclerview.setLayoutManager(manager);
-        LightActivityAdapter adapter = new LightActivityAdapter(getApplicationContext(), formData());
-        lightRecyclerview.setAdapter(adapter);
-
-    }
-
+    //perform action when option menu item selected
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-
         onBackPressed();
         return super.onOptionsItemSelected(item);
     }
 
 
-
+    //generate light values randomly and add to recyclerview but later it should come fom server
     private List<Object> formData() {
 
         List<Object> soilMoistureDatas = new ArrayList<>();
@@ -116,6 +116,7 @@ public class LightActivity extends AppCompatActivity {
         return soilMoistureDatas;
     }
 
+    //use this method to log debugg message everywhere
     private void logMessage(String logMessage) {
         AppSingletonClass.logDebugMessage(TAG, logMessage);
     }

@@ -18,6 +18,8 @@ import java.util.List;
 
 /**
  * Created by Prashant C on 04/09/18.
+ * adapter for vegetable and fruit price
+ * and handling its listeners like different mandi sorting ,searching
  */
 public class VegPriceAdapter extends RecyclerView.Adapter<VegPriceAdapter.PriceHolder> {
 

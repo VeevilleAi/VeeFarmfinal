@@ -35,6 +35,9 @@ import java.util.Random;
 
 /**
  * Created by Prashant C on 04/07/18.
+ *
+ * this adapter is used to handle Soil ph Activity with numbers and graphs
+ * which will explain the variation of data weekly monthly quartly
  */
 public class SoilPHActivityAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 

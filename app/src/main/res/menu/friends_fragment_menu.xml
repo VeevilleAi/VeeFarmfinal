@@ -1,0 +1,30 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:context="info.androidhive.recyclerviewsearch.MainActivity">
+    <item
+        android:id="@+id/action_search"
+        android:icon="@drawable/mic_control"
+        android:orderInCategory="100"
+        android:title="Search"
+        app:actionViewClass="android.support.v7.widget.SearchView"
+        app:showAsAction="always" />
+
+    <item
+        android:id="@+id/suggested_friends"
+        android:title="Suggest friends"
+        />
+    <item
+        android:id="@+id/near_by_friends"
+        android:title="Near By"
+        />
+
+    <item
+        android:id="@+id/same_crop_growing_friend"
+        android:title="Growing Same Crop"
+        />
+    <item
+        android:id="@+id/all_friends"
+        android:title="All"
+        />
+</menu>

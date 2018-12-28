@@ -9,23 +9,25 @@ import android.widget.TextView;
 
 import com.veeville.farm.R;
 import com.veeville.farm.farmer.FarmerHelperClasses.Yield;
-import com.veeville.farm.helper.AppSingletonClass;
 
 import java.util.List;
 
 /**
  * Created by Prashant C on 18/10/18.
+ * adding previous year yields required while adding new farms
+ * so this is adapter to add previous year yield
  */
 public class AddFarmYieldAdapter extends RecyclerView.Adapter<AddFarmYieldAdapter.AddSingleYearYieldHolder> {
 
 
-    private final String TAG = AddFarmYieldAdapter.class.getSimpleName();
     private List<Yield> yields;
 
+    //initlizing items
     public AddFarmYieldAdapter(List<Yield> yields) {
         this.yields = yields;
     }
 
+    //creating views
     @NonNull
     @Override
     public AddSingleYearYieldHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
@@ -33,6 +35,7 @@ public class AddFarmYieldAdapter extends RecyclerView.Adapter<AddFarmYieldAdapte
         return new AddSingleYearYieldHolder(view);
     }
 
+    // setting data to views
     @Override
     public void onBindViewHolder(@NonNull AddSingleYearYieldHolder holder, int position) {
         Yield yield = yields.get(position);
@@ -41,12 +44,14 @@ public class AddFarmYieldAdapter extends RecyclerView.Adapter<AddFarmYieldAdapte
         holder.name.setText(yield.name);
     }
 
+    //getting size of items
     @Override
     public int getItemCount() {
-        logMessage("count:" + yields.size());
         return yields.size();
     }
 
+
+    // item view holder for each element
     class AddSingleYearYieldHolder extends RecyclerView.ViewHolder {
         TextView year, name, quantity;
 
@@ -56,9 +61,5 @@ public class AddFarmYieldAdapter extends RecyclerView.Adapter<AddFarmYieldAdapte
             name = view.findViewById(R.id.name);
             quantity = view.findViewById(R.id.quantity);
         }
-    }
-
-    private void logMessage(String logMessage) {
-        AppSingletonClass.logDebugMessage(TAG, logMessage);
     }
 }

@@ -4,6 +4,7 @@ import android.content.Context;
 
 /**
  * Created by Prashant C on 25/09/18.
+ * these functions used in ChatDatabse operation functions
  */
 public class ChatMessagesHelperFunctions {
 

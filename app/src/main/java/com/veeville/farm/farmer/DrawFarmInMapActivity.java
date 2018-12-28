@@ -50,6 +50,11 @@ import java.util.List;
 
 import static android.Manifest.permission.ACCESS_FINE_LOCATION;
 
+
+/*
+ * this activity used to draw farmer farm in google map
+ * and calculating area of farm using google map
+ */
 public class DrawFarmInMapActivity extends AppCompatActivity implements OnMapReadyCallback {
 
     private final int PERMISSION_REQUEST_CODE = 101, REQUEST_CHECK_SETTINGS = 102;
@@ -59,6 +64,7 @@ public class DrawFarmInMapActivity extends AppCompatActivity implements OnMapRea
     private DrawFarmInMapActivity view;
     private Polygon polygon;
 
+    //
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -68,8 +74,6 @@ public class DrawFarmInMapActivity extends AppCompatActivity implements OnMapRea
         setUpToolbar();
         displayLocationSettingsRequest(getApplicationContext());
         setUpLocationManager();
-        String logMessage = "onCreate Method Called";
-        logMessage(logMessage);
     }
 
     @Override
@@ -101,6 +105,8 @@ public class DrawFarmInMapActivity extends AppCompatActivity implements OnMapRea
         super.onDestroy();
         logMessage("onDestroy called");
     }
+
+    //settingup custom toolbar
     private void setUpToolbar() {
         String logMessage = "settingup toolbar";
         logMessage(logMessage);
@@ -111,6 +117,7 @@ public class DrawFarmInMapActivity extends AppCompatActivity implements OnMapRea
         setSupportActionBar(toolbar);
     }
 
+    //when google map loaded fully move the camera to current location
     @Override
     public void onMapReady(GoogleMap googleMap) {
         setUpLocationManager();
@@ -152,6 +159,7 @@ public class DrawFarmInMapActivity extends AppCompatActivity implements OnMapRea
         });
     }
 
+    //when user selects menu item done then calucalte area in acre and gunta and return it previous activity
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         if (item.getTitle().toString().equals("add")) {
@@ -180,6 +188,7 @@ public class DrawFarmInMapActivity extends AppCompatActivity implements OnMapRea
         return super.onOptionsItemSelected(item);
     }
 
+    //when user clicks on maps get selected point location and add it to list and draw polygon
     private void drawPolylines() {
         if (polygon != null) {
             polygon.remove();
@@ -192,21 +201,23 @@ public class DrawFarmInMapActivity extends AppCompatActivity implements OnMapRea
         options.addAll(latLngs);
         options.color(Color.YELLOW);
         options.width(5);
-        //map.addPolyline(options);
         polygon = map.addPolygon(polygonOptions);
     }
 
+    //check weather user granted location permission
     private boolean checkPermission() {
         int result = ContextCompat.checkSelfPermission(getApplicationContext(), ACCESS_FINE_LOCATION);
         return result == PackageManager.PERMISSION_GRANTED;
     }
 
+    //request location permission
     private void requestPermission() {
         view = this;
         ActivityCompat.requestPermissions(this, new String[]{ACCESS_FINE_LOCATION}, PERMISSION_REQUEST_CODE);
 
     }
 
+    //handle the results like location
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String permissions[], @NonNull int[] grantResults) {
         switch (requestCode) {
@@ -247,6 +258,7 @@ public class DrawFarmInMapActivity extends AppCompatActivity implements OnMapRea
         }
     }
 
+    //this is dialog to get current location when user click deny permission
     private void showMessageOKCancel(DialogInterface.OnClickListener okListener) {
         String message = "You need to allow access the permission";
         new AlertDialog.Builder(DrawFarmInMapActivity.this)
@@ -264,14 +276,19 @@ public class DrawFarmInMapActivity extends AppCompatActivity implements OnMapRea
                 .show();
     }
 
+
+    //this is used to create option menu
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.add_farm_menu, menu);
         return super.onCreateOptionsMenu(menu);
     }
 
+    //setting up user current location which will help to  draw farm on his current location
     private void setUpLocationManager() {
         android.location.LocationListener listener1 = new android.location.LocationListener() {
+
+            //whenever location change move map to his current location
             @Override
             public void onLocationChanged(Location location) {
                 LatLng latLng = new LatLng(location.getLatitude(), location.getLongitude());
@@ -300,6 +317,7 @@ public class DrawFarmInMapActivity extends AppCompatActivity implements OnMapRea
 
     }
 
+    //moving user to location setting to enable location for this application
     private void displayLocationSettingsRequest(Context context) {
         GoogleApiClient googleApiClient = new GoogleApiClient.Builder(context)
                 .addApi(LocationServices.API).build();
@@ -339,10 +357,12 @@ public class DrawFarmInMapActivity extends AppCompatActivity implements OnMapRea
         });
     }
 
+    //use this function to log debugg messages
     private void logMessage(String logMessage) {
         AppSingletonClass.logDebugMessage(TAG, logMessage);
     }
 
+    //use to log debugg error messages
     private void logErrorMessage(String logErrorMessage) {
         AppSingletonClass.logErrorMessage(TAG, logErrorMessage);
     }

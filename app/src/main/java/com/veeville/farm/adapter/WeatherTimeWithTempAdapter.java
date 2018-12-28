@@ -15,6 +15,7 @@ import java.util.List;
 
 /**
  * Created by Prashant C on 21/11/18.
+ * adapter for Weather cards
  */
 class WeatherTimeWithTempAdapter extends RecyclerView.Adapter<WeatherTimeWithTempAdapter.ThreeHourHolder> {
     private final String TAG = WeatherTimeWithTempAdapter.class.getSimpleName();

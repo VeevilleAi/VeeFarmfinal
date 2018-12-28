@@ -13,9 +13,14 @@ import com.veeville.farm.helper.AppSingletonClass;
 
 import java.util.Objects;
 
+
+/*
+* this activity is used to play youtube video with api key
+* we need youtube player which is loaded in lib folder
+ */
+
 public class YouTubePlayerVersion2 extends AppCompatActivity {
     private static final String YOUTUBE_API_KEY = "AIzaSyDZj76GPBWBAP3m78M-kbYH6wMsuDB5rsw";
-
     private final String TAG = YouTubePlayerVersion2.class.getSimpleName();
 
     @Override
@@ -30,11 +35,14 @@ public class YouTubePlayerVersion2 extends AppCompatActivity {
         YouTubePlayerSupportFragment youTubePlayerFragment = (YouTubePlayerSupportFragment) getSupportFragmentManager().findFragmentById(R.id.youtube_fragment);
         youTubePlayerFragment.initialize(YOUTUBE_API_KEY, new YouTubePlayer.OnInitializedListener() {
             @Override
+
+            //when youtube player initilize success
             public void onInitializationSuccess(YouTubePlayer.Provider provider, YouTubePlayer youTubePlayer, boolean b) {
                 youTubePlayer.loadVideo(videoKey);
                 youTubePlayer.play();
             }
 
+            //when intilize failed youtube player
             @Override
             public void onInitializationFailure(YouTubePlayer.Provider provider, YouTubeInitializationResult youTubeInitializationResult) {
                 logErrorMessage("failed to initialize");
@@ -74,16 +82,19 @@ public class YouTubePlayerVersion2 extends AppCompatActivity {
     }
 
 
+    //when user clicks back button
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         onBackPressed();
         return super.onOptionsItemSelected(item);
     }
 
+    //log user debugg message
     private void logMessage(String logMessage) {
         AppSingletonClass.logDebugMessage(TAG, logMessage);
     }
 
+    // use this method to  debugg error message
     private void logErrorMessage(String logErrorMessage) {
         AppSingletonClass.logErrorMessage(TAG, logErrorMessage);
     }

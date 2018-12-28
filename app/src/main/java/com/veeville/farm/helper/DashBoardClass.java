@@ -2,6 +2,7 @@ package com.veeville.farm.helper;
 
 /**
  * Created by Prashant C on 25/10/18.
+ * this class contain App DashBoard data which are used in DashBoardActivty
  */
 public class DashBoardClass {
     public String title, subTitle, cardType;

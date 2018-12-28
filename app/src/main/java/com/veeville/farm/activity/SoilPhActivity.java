@@ -19,6 +19,12 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Objects;
 
+
+/*
+ * this is same like soil moisture
+ * here we are randomly generating Soil ph values and showing in this activity
+ * data is showing in graph farm and with numbers and visuals
+ */
 public class SoilPhActivity extends AppCompatActivity {
 
     private final String TAG = SoilPhActivity.class.getSimpleName();
@@ -31,7 +37,23 @@ public class SoilPhActivity extends AppCompatActivity {
         setUpToolbar();
         setUpSoilPhRecyclerview();
         logMessage("onCreate called");
+    }
 
+    //settingup custom toolbar
+    private void setUpToolbar() {
+        Toolbar toolbar = findViewById(R.id.my_toolbar);
+        toolbar.setTitle("Soil pH - Farm1");
+        setSupportActionBar(toolbar);
+        Objects.requireNonNull(getSupportActionBar()).setDisplayHomeAsUpEnabled(true);
+    }
+
+    //setting soil pH Values recyclerview
+    void setUpSoilPhRecyclerview() {
+        RecyclerView soilPHRecyclerview = findViewById(R.id.soil_ph_recyclerview);
+        LinearLayoutManager manager = new LinearLayoutManager(getApplicationContext());
+        soilPHRecyclerview.setLayoutManager(manager);
+        SoilPHActivityAdapter adapter = new SoilPHActivityAdapter(formData(), SoilPhActivity.this);
+        soilPHRecyclerview.setAdapter(adapter);
     }
 
     @Override
@@ -64,26 +86,6 @@ public class SoilPhActivity extends AppCompatActivity {
         logMessage("onDestroy called");
     }
 
-
-    private void setUpToolbar() {
-
-        Toolbar toolbar = findViewById(R.id.my_toolbar);
-        toolbar.setTitle("Soil pH - Farm1");
-        setSupportActionBar(toolbar);
-        Objects.requireNonNull(getSupportActionBar()).setDisplayHomeAsUpEnabled(true);
-    }
-
-    void setUpSoilPhRecyclerview() {
-
-        RecyclerView soilPHRecyclerview = findViewById(R.id.soil_ph_recyclerview);
-        LinearLayoutManager manager = new LinearLayoutManager(getApplicationContext());
-        soilPHRecyclerview.setLayoutManager(manager);
-        SoilPHActivityAdapter adapter = new SoilPHActivityAdapter(formData(), SoilPhActivity.this);
-        soilPHRecyclerview.setAdapter(adapter);
-
-    }
-
-
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
 
@@ -92,8 +94,8 @@ public class SoilPhActivity extends AppCompatActivity {
 
     }
 
+    //farming soil ph values randomly with given range
     List<Object> formData() {
-
         List<Object> soilPHList = new ArrayList<>();
         List<String> months = new ArrayList<>();
 
@@ -107,7 +109,6 @@ public class SoilPhActivity extends AppCompatActivity {
         }
         soilPHList.add(new DashBoardDataClasses.SensorGraph("1D", 0));
         return soilPHList;
-
     }
 
     String getDate(int days) {
@@ -119,10 +120,12 @@ public class SoilPhActivity extends AppCompatActivity {
         return dateFormat.format(calendar.getTime());
     }
 
+    //must use this method to log debugg messages
     private void logMessage(String logMessage) {
         AppSingletonClass.logDebugMessage(TAG, logMessage);
     }
 
+    //must use this method to log error messages
     private void logErrorMessage(String logErrorMessage) {
         AppSingletonClass.logErrorMessage(TAG, logErrorMessage);
     }

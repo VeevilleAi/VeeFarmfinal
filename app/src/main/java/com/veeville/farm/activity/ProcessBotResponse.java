@@ -59,6 +59,8 @@ import static com.veeville.farm.helper.AppSingletonClass.verifixationIdMain;
 
 /**
  * Created by Prashant C on 18/07/18.
+ * this contains code to process Bot response from dialogflow and update in UI
+ * with handling all the conditions
  */
 public class ProcessBotResponse {
     private Result result;
@@ -99,6 +101,7 @@ public class ProcessBotResponse {
 
     }
 
+    //translate english to selected language like kannada or hindi.....
     public void getResultBack() {
         String speech = result.getFulfillment().getSpeech();
         translateTextToSelectedLanguage(speech);
@@ -114,6 +117,7 @@ public class ProcessBotResponse {
         return elements;
     }
 
+    //adding health card of farm which contains Temperature, soil moisture, Humidity.......
     private void addHealthCardReport() {
         List<ChatmessageDataClasses.HealthCard.SingleElementHealth> singleElementHealths = new ArrayList<>();
         List<String> elements = getFarmElements();
@@ -214,6 +218,7 @@ public class ProcessBotResponse {
         }
     }
 
+    //handling mobile number authontication process here
     private void handleMobileNumberAuthontication(String speech) {
 
         if (!AppSingletonClass.isOTPsent) {
@@ -284,6 +289,7 @@ public class ProcessBotResponse {
         } else mobileRegistration();
     }
 
+    //get the price of seleted fruit of veg price from local database which will be updated periodically
     private void getPriceOfFruitANdVegetable() {
         if (isUserRegisteredByNumber()) {
             HashMap<String, JsonElement> map = result.getParameters();
@@ -303,6 +309,8 @@ public class ProcessBotResponse {
         }
     }
 
+
+    //checking weather user has registered his mobile or not
     private boolean isUserRegisteredByNumber() {
 
         ChatBotDatabase database = new ChatBotDatabase(context);
@@ -310,6 +318,7 @@ public class ProcessBotResponse {
 
     }
 
+    //add message to chat if user not yet registered his mobile number
     private void mobileRegistration() {
         long timestamp = System.currentTimeMillis();
         String message = "Please tell me in which country you live ? so I can give you relevent information.";
@@ -321,6 +330,7 @@ public class ProcessBotResponse {
 
     }
 
+    //getting fruit price from local database
     private ChatmessageDataClasses.VegFruitPrice getFruitPrice(String name) {
         long timestamp = System.currentTimeMillis();
         ChatBotDatabase database = new ChatBotDatabase(context);
@@ -338,7 +348,7 @@ public class ProcessBotResponse {
         } else {
             StringBuilder buffer = new StringBuilder();
             for (Fruit fruit : price) {
-                buffer.append(fruit.name).append(fruit.pieceOrKg).append("  ").append("₹  " + fruit.price).append("\n");
+                buffer.append(fruit.name).append(fruit.pieceOrKg).append("  ").append("₹  ").append(fruit.price).append("\n");
             }
             title = "Price(\u20b9)  of " + name + " today in Chennai  is ";
             desc = buffer.toString();
@@ -351,6 +361,7 @@ public class ProcessBotResponse {
         return vegFruitPrice;
     }
 
+    //handle video intent
     private void handleVideoIntents() {
         StringBuilder buffer = new StringBuilder();
         buffer.append("how to grow ");
@@ -372,6 +383,7 @@ public class ProcessBotResponse {
         logMessage("Youtube Query:" + buffer.toString());
     }
 
+    //getting payload from Dialogflow response
     private void getPayload() {
         final long timestamp = System.currentTimeMillis();
         final List<String> selectableMenu = new ArrayList<>();
@@ -429,6 +441,7 @@ public class ProcessBotResponse {
         }
     }
 
+    //request weather with date and city default city will be bangalroe and default date will be Today
     private void weatherApidata(String date, final String city) {
 
         String url = "http://api.worldweatheronline.com/premium/v1/weather.ashx?key=4098d598f45746aca4c94017181311&q=" + city + "&format=json&num_of_days=10&date=" + date;
@@ -448,6 +461,8 @@ public class ProcessBotResponse {
         AppSingletonClass.getInstance().addToRequestQueue(request);
     }
 
+
+    //parse weather response from worldweatheronline and update that to UI
     private void performWeatherData(JSONObject jsonObject, String city) {
         logMessage("JSON weather response:" + jsonObject.toString());
         try {
@@ -503,6 +518,7 @@ public class ProcessBotResponse {
     }
 
 
+    //load youtube video data for video query by user
     private void loadyoutubeVideo(String title) {
         String url = "https://www.googleapis.com/youtube/v3/search?part=snippet&q=" + title + "&type=video&key=AIzaSyDZj76GPBWBAP3m78M-kbYH6wMsuDB5rsw";
         JSONObject object = new JSONObject();
@@ -559,6 +575,7 @@ public class ProcessBotResponse {
         void result(List list);
     }
 
+    // translating english to user selected language
     private void translateTextToSelectedLanguage(String translatingText) {
         String targetLanguage = this.selectedLanguage;
 
@@ -694,6 +711,7 @@ public class ProcessBotResponse {
 
         PhoneAuthProvider.OnVerificationStateChangedCallbacks mCallbacks = new PhoneAuthProvider.OnVerificationStateChangedCallbacks() {
 
+            //when verification success without OTP
             @Override
             public void onVerificationCompleted(PhoneAuthCredential credential) {
                 String message = "Neat!\n" + "We have confirmed your number. No more topsy turvy for you anymore.";
@@ -704,6 +722,7 @@ public class ProcessBotResponse {
                 signInWithPhoneAuthCredential(credential, message);
             }
 
+            //when verification failed like invalid mobile number or toomany messages for a single number at a time
             @Override
             public void onVerificationFailed(FirebaseException e) {
                 logErrormeesage(e.toString());
@@ -729,6 +748,7 @@ public class ProcessBotResponse {
 
             }
 
+            //when OTP code sent to Mobile Number
             @Override
             public void onCodeSent(String verificationId, PhoneAuthProvider.ForceResendingToken token) {
                 ChatMessagesHelperFunctions helperFunctions = new ChatMessagesHelperFunctions(context);
@@ -757,7 +777,7 @@ public class ProcessBotResponse {
     }
 
 
-    //signing in the user after OTP
+    //authonticating the details for login with Mobile NUmber with OTP
     private void signInWithPhoneAuthCredential(PhoneAuthCredential credential, final String message) {
         mFirebaseAuth.signInWithCredential(credential)
                 .addOnCompleteListener((Activity) context, new OnCompleteListener<AuthResult>() {
@@ -799,6 +819,8 @@ public class ProcessBotResponse {
         processedResult.result(messages);
     }
 
+
+    //use this method to log debugg message everywhere
     private void logMessage(String logMessage) {
         AppSingletonClass.logDebugMessage(TAG, logMessage);
     }

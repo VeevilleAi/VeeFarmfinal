@@ -2,6 +2,7 @@ package com.veeville.farm.helper;
 
 /**
  * Created by Prashant C on 11/12/18.
+ * helper class for FriendsFragment
  */
 public class ChatContact {
     public String name,email,picUrl,recentMessage;

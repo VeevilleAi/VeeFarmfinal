@@ -17,32 +17,18 @@ import com.veeville.farm.helper.AppSingletonClass;
 
 import io.fabric.sdk.android.Fabric;
 
+
+/*
+ * splash screen time is 3.5 seconds
+ * check for is user logged in
+ * if no move to login page otherwise dashboard page
+ */
 public class SplashActivity extends AppCompatActivity {
 
     private String TAG = SplashActivity.class.getSimpleName();
     private int SPLASH_SCREEN_TIMEOUT;
     private Handler handler;
-    private Runnable runnable = new Runnable() {
-        @Override
-        public void run() {
-            GoogleSignInAccount account = GoogleSignIn.getLastSignedInAccount(SplashActivity.this);
-            // user islogged in
-            if (account != null) {
-                logMessage("user already logged in");
-                Intent intent = new Intent(getApplicationContext(), DashBoardActivity.class);
-                startActivity(intent);
-                finish();
-            }
-            //user not logged in
-            else {
-                logMessage("user not yet logged in");
-                Intent intent = new Intent(getApplicationContext(), SignActivity.class);
-                startActivity(intent);
-                finish();
-            }
-            AppSingletonClass.logDebugMessage(TAG, "SplashActivity finished");
-        }
-    };
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -71,6 +57,28 @@ public class SplashActivity extends AppCompatActivity {
         logMessage("onResume called ");
     }
 
+    private Runnable runnable = new Runnable() {
+        @Override
+        public void run() {
+            GoogleSignInAccount account = GoogleSignIn.getLastSignedInAccount(SplashActivity.this);
+            // user islogged in
+            if (account != null) {
+                logMessage("user already logged in");
+                Intent intent = new Intent(getApplicationContext(), DashBoardActivity.class);
+                startActivity(intent);
+                finish();
+            }
+            //user not logged in
+            else {
+                logMessage("user not yet logged in");
+                Intent intent = new Intent(getApplicationContext(), SignActivity.class);
+                startActivity(intent);
+                finish();
+            }
+            AppSingletonClass.logDebugMessage(TAG, "SplashActivity finished");
+        }
+    };
+
     @Override
     protected void onStop() {
         super.onStop();
@@ -82,6 +90,7 @@ public class SplashActivity extends AppCompatActivity {
         handler.postDelayed(runnable, SPLASH_SCREEN_TIMEOUT);
     }
 
+    //when user clicks back button emove all call backs
     @Override
     protected void onDestroy() {
         super.onDestroy();
@@ -90,16 +99,19 @@ public class SplashActivity extends AppCompatActivity {
 
     }
 
+    //method used to log messages
     private void logMessage(String logMessage) {
         AppSingletonClass.logDebugMessage(TAG, logMessage);
     }
 
+    //making activity full screen
     private void makeActivityFullScreen() {
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
 
     }
 
+    //intialize spash_screen_time in milli seconds and intilize crash analytics
     private void initializeVariables() {
         SPLASH_SCREEN_TIMEOUT = 3500;//milliseconds;
         //firebase crashanalytics to report crash

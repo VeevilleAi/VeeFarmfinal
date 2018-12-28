@@ -34,6 +34,7 @@ import java.util.Random;
 
 /**
  * Created by Prashant C on 29/06/18.
+ * adapter for humidty activity with graph and numbers
  */
 public class HumidityActivityAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
@@ -413,6 +414,7 @@ public class HumidityActivityAdapter extends RecyclerView.Adapter<RecyclerView.V
     class HumidityCardHolder extends RecyclerView.ViewHolder {
 
         RecyclerView recyclerView;
+
         HumidityCardHolder(View view) {
             super(view);
             recyclerView = view.findViewById(R.id.recyclerview);

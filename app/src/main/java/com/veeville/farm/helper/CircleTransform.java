@@ -9,6 +9,8 @@ import com.squareup.picasso.Transformation;
 
 /**
  * Created by Prashant C on 03/10/18.
+ * this class used to convert given image into Circular Image
+ * this class used in Farmer profile and COntact List
  */
 public class CircleTransform implements Transformation {
     @Override

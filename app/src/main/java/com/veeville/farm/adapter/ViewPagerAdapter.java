@@ -8,6 +8,7 @@ import java.util.List;
 
 /**
  * Created by Prashant C on 07/12/18.
+ * this adapter is for fragments (FriendsFragment,CerebroFragment,GroupChatFragment)
  */
 public class ViewPagerAdapter extends FragmentPagerAdapter {
 

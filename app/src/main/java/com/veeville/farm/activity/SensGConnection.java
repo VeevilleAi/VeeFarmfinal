@@ -21,6 +21,14 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+
+/*
+ *steps to connect to SENSg
+ * we need IP address of SENSg device
+ * to get IP by SENSg we should farm hotstop with SSID - NSE_OPEN  andpassword - hotspot_nse and then start SENSg
+ * after above steps check device connected to given NSE_OPEn network and one will be SENSg and get ip of that it wil be like 192.168.1.70
+ * use that ip in the below code to Connect to SENSg and get data from it
+ */
 class SensGConnection {
 
     private Handler handler = new Handler();
@@ -44,6 +52,7 @@ class SensGConnection {
         handler.postDelayed(runnable, 2000);
     }
 
+    //make request to SENSg for sensor data
     private void sendRequest() {
         String url = "http://" + IP + "/sensorStream";
         final String refer = "http://" + IP + "/index.html";
@@ -86,6 +95,7 @@ class SensGConnection {
         AppSingletonClass.getInstance().addToRequestQueue(request);
     }
 
+    //process response came from SENSg and get data like temp,humidty which is shown below
     private void handleSensorData(String response) throws UnsupportedEncodingException {
         byte[] byteArray = response.getBytes("ISO-8859-1");
 
@@ -221,6 +231,7 @@ class SensGConnection {
         return new ChatmessageDataClasses.Humidity("Bengaluru", "Today", valuesList);
     }
 
+    //when user request temperature
     ChatmessageDataClasses.SoilTemperature getTemperature() {
 
         List<ChatmessageDataClasses.SoilTemperature.TempValue> valuesList = new ArrayList<>();
@@ -232,6 +243,8 @@ class SensGConnection {
         return new ChatmessageDataClasses.SoilTemperature("Today", "Bengaluru", valuesList, timestamp);
     }
 
+
+    //when user wants light(lux) values
     ChatmessageDataClasses.Light getLight() {
 
         int mitures = 1;
@@ -262,10 +275,13 @@ class SensGConnection {
         return hour + "";
     }
 
+    //use this method to log debugg message
     private void logMessage(String logMessage) {
         AppSingletonClass.logDebugMessage(TAG, logMessage);
     }
 
+
+    //use this methodto  debugg  error message
     private void logErrorMessage(String logErrorMessage) {
         AppSingletonClass.logErrorMessage(TAG, logErrorMessage);
     }

@@ -42,23 +42,27 @@ import java.util.Locale;
 
 /**
  * Created by user on 10-07-2017.
+ * adapter for cerebro messages
+ * like text image audio , video ....
  */
 
-public class BotAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
+public class CerebroAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
 
 {
     private List<Object> messagelist;
     private Context context;
-    private final String TAG = BotAdapter.class.getSimpleName();
+    private final String TAG = CerebroAdapter.class.getSimpleName();
     private QuickReplyAdapter.QuickReplyOption option;
     private boolean showNormal = true;
 
-    public BotAdapter(List<Object> textmessagelist, Context context, QuickReplyAdapter.QuickReplyOption quickReplyOption) {
+    //intilizing items like messages context, inteface context
+    public CerebroAdapter(List<Object> textmessagelist, Context context, QuickReplyAdapter.QuickReplyOption quickReplyOption) {
         this.messagelist = textmessagelist;
         this.context = context;
         this.option = quickReplyOption;
     }
 
+    //returning view item type based on Object present in messagelist
     @Override
     public int getItemViewType(int position) {
         if (messagelist.get(position) instanceof ChatmessageDataClasses.InputTextMessage) {
@@ -102,6 +106,7 @@ public class BotAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
         }
     }
 
+    //getting hh:mm a by taking timestamp
     private String getTime(long timestamp) {
         Calendar calendar = Calendar.getInstance(Locale.ENGLISH);
         calendar.setTimeInMillis(timestamp);
@@ -109,6 +114,8 @@ public class BotAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
         return dateFormat.format(calendar.getTime());
     }
 
+
+    //creating holder for each item and setting views based item type
     @NonNull
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
@@ -128,7 +135,7 @@ public class BotAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
                 break;
             case 3:
                 view = LayoutInflater.from(parent.getContext()).inflate(R.layout.single_movieresultcard, parent, false);
-                viewHolder = new SingleMovieHolder(view);
+                viewHolder = new SingleImageHolder(view);
                 break;
             case 4:
                 view = LayoutInflater.from(parent.getContext()).inflate(R.layout.quickreplieslayout, parent, false);
@@ -199,14 +206,14 @@ public class BotAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
         return viewHolder;
     }
 
-
+    //remove inverted message make it to normal
     public void changeDatasetMessage(boolean showNormal) {
-
         this.showNormal = showNormal;
         notifyDataSetChanged();
-
     }
 
+
+    //setting data to each view based on position
     @Override
     public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int position) {
         switch (holder.getItemViewType()) {
@@ -217,7 +224,7 @@ public class BotAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
                 handleOverviewOutPutData((ResponseTextMessageHolder) holder, position);
                 break;
             case 3:
-                handleSingleMovie((SingleMovieHolder) holder, position);
+                handleSingleImage((SingleImageHolder) holder, position);
                 break;
             case 4:
                 handleQuickReplies((QuickReplyHolder) holder, position);
@@ -267,6 +274,7 @@ public class BotAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
         }
     }
 
+    //getting no of messages like 10,20.....
     @Override
     public int getItemCount() {
         logMessage("size:" + messagelist.size());
@@ -274,8 +282,8 @@ public class BotAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
     }
 
 
+    //handling famrer healt card
     private void handleFarmHealthCard(HealthCardHolder holder, int position) {
-
         LinearLayoutManager manager = new LinearLayoutManager(context);
         holder.recyclerView.setLayoutManager(manager);
         ChatmessageDataClasses.HealthCard healthCard = (ChatmessageDataClasses.HealthCard) messagelist.get(position);
@@ -283,8 +291,8 @@ public class BotAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
         holder.recyclerView.setAdapter(adapter);
     }
 
+    // handling veg and fruit price cards
     private void handleVegFruitPrice(VegFruitPriceCardHolder holder, int position) {
-
         ChatmessageDataClasses.VegFruitPrice vegFruitPrice = (ChatmessageDataClasses.VegFruitPrice) messagelist.get(position);
         holder.time.setText(getTime(vegFruitPrice.timestamp));
         holder.description.setText(vegFruitPrice.description);
@@ -298,13 +306,13 @@ public class BotAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
         });
     }
 
+    // handling date in messages in between
     private void handleDate(DateInMessageHolder holder, int position) {
-
         ChatmessageDataClasses.DateInMessage dateInMessage = (ChatmessageDataClasses.DateInMessage) messagelist.get(position);
         holder.textView.setText(dateInMessage.date);
-
     }
 
+    // handling weather card in message list
     private void handleWeatherCardData(WeatherCardHolder holder, int position) {
         final ChatmessageDataClasses.WeatherData weatherData = (ChatmessageDataClasses.WeatherData) messagelist.get(position);
         String weather = weatherData.temp + "\u00b0";
@@ -333,8 +341,8 @@ public class BotAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
         });
     }
 
+    //setting light card details and handling light card
     private void handleLightCard(LightHolder holder, int position) {
-
         ChatmessageDataClasses.Light light = (ChatmessageDataClasses.Light) messagelist.get(position);
         holder.place.setText(light.place);
         holder.date.setText(light.month);
@@ -353,8 +361,8 @@ public class BotAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
         });
     }
 
+    // setting data to soil moisture card and handling it actions
     private void handleSoilMoisture(SoilMoistureHolder holder, int position) {
-
         ChatmessageDataClasses.SoilMoisture soilMoisture = (ChatmessageDataClasses.SoilMoisture) messagelist.get(position);
         holder.date.setText(soilMoisture.month);
         holder.place.setText(soilMoisture.place);
@@ -371,9 +379,9 @@ public class BotAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
                 context.startActivity(intent);
             }
         });
-
     }
 
+    //setting data to soil temperature card and handling its listeners
     private void handleSoilTmeprature(SoilTemperatureHolder holder, int position) {
         ChatmessageDataClasses.SoilTemperature soilTemperature = (ChatmessageDataClasses.SoilTemperature) messagelist.get(position);
         LinearLayoutManager manager = new LinearLayoutManager(context);
@@ -392,6 +400,8 @@ public class BotAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
         });
     }
 
+
+    //setting data to soil ph card and handling its listeners
     private void handleSoilPhCard(SoilPhHolder holder, int position) {
         ChatmessageDataClasses.SoilPH soilPH = (ChatmessageDataClasses.SoilPH) messagelist.get(position);
         holder.date.setText(soilPH.date);
@@ -406,6 +416,8 @@ public class BotAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
         });
     }
 
+
+    //setting data to humidity card and handling its listeners
     private void handleHumidityCard(HumidityCardHolder holder, int position) {
         ChatmessageDataClasses.Humidity humidity = (ChatmessageDataClasses.Humidity) messagelist.get(position);
         holder.date.setText(humidity.date);
@@ -422,9 +434,10 @@ public class BotAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
         holder.valuesRecyclerview.setLayoutManager(manager);
         HumidityValuesAdapter adapter = new HumidityValuesAdapter(humidity.humidityDataValues);
         holder.valuesRecyclerview.setAdapter(adapter);
-
     }
 
+
+    //setting data to visual qna section
     private void handleVisualQna(VisualQnAHolder holder, int position) {
         ChatmessageDataClasses.VisualQnA qnA = (ChatmessageDataClasses.VisualQnA) messagelist.get(position);
         LinearLayoutManager manager = new LinearLayoutManager(context);
@@ -434,11 +447,10 @@ public class BotAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
         holder.visualQna.setAdapter(adapter);
         holder.visualQna.scrollToPosition(qnA.elements.size() - 1);
         holder.visualQna.setNestedScrollingEnabled(true);
-
     }
 
+    //setting reposnse image to reccerview and handling its listeners
     private void handleResponseImagesHolder(ResponseImagesHolder holder, int position) {
-
         LinearLayoutManager manager = new LinearLayoutManager(context);
         manager.setOrientation(LinearLayoutManager.HORIZONTAL);
         holder.recyclerView.setLayoutManager(manager);
@@ -447,18 +459,17 @@ public class BotAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
         holder.recyclerView.setAdapter(adapter);
     }
 
+    //handling  option menu and handling its listeners
     private void handleMainOptionMenu(AvailableOPtionHolder holder, int position) {
-
         LinearLayoutManager manager = new LinearLayoutManager(context);
         manager.setOrientation(LinearLayoutManager.HORIZONTAL);
         holder.recyclerView.setLayoutManager(manager);
         OptionMenuItems menuItems = (OptionMenuItems) messagelist.get(position);
         MainOptionMenuAdapter adapter = new MainOptionMenuAdapter(menuItems.titles);
         holder.recyclerView.setAdapter(adapter);
-
-
     }
 
+    //settng input image to holder and handling its listeners
     private void handleInputImageCard(InputImageHolder holder, int position) {
         final InputImageClass inputImageClass = (InputImageClass) messagelist.get(position);
         byte[] decodedString = Base64.decode(inputImageClass.imagebytes, Base64.DEFAULT);
@@ -481,6 +492,8 @@ public class BotAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
         });
     }
 
+
+    //setting datato video card and handling its listeners
     private void handleVideoCard(ResponseVideoMessageHolder videoHolder, int position) {
         LinearLayoutManager manager = new LinearLayoutManager(context);
         manager.setOrientation(LinearLayoutManager.HORIZONTAL);
@@ -490,8 +503,8 @@ public class BotAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
         videoHolder.recyclerView.setAdapter(adapter);
     }
 
+    //handling quick replies from selectable menu items
     private void handleQuickReplies(QuickReplyHolder holder, int position) {
-
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(context);
         linearLayoutManager.setOrientation(LinearLayoutManager.HORIZONTAL);
         holder.quickreplyrecyclerview.setLayoutManager(linearLayoutManager);
@@ -499,8 +512,8 @@ public class BotAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
         holder.quickreplyrecyclerview.setAdapter(quickReplyAdapter);
     }
 
+    //setting response message to holder and handling its listeners
     private void handleOverviewOutPutData(ResponseTextMessageHolder myholderOutput, int position) {
-
         ChatmessageDataClasses.ResponseTextMessage responseData = (ChatmessageDataClasses.ResponseTextMessage) messagelist.get(position);
         myholderOutput.singlemesssage.setText(responseData.responseTextMessage);
         myholderOutput.time.setText(getTime(responseData.timestamp));
@@ -511,16 +524,16 @@ public class BotAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
         }
     }
 
+    //setting input message to holder and handling its listeners
     private void handleInputTextMessage(final InputTextMessageHolder myholderInput, int position) {
-
         ChatmessageDataClasses.InputTextMessage inputData = (ChatmessageDataClasses.InputTextMessage) messagelist.get(position);
         myholderInput.singlemesssage.setText(inputData.inputTextMessage);
         myholderInput.time.setText(getTime(inputData.timestamp));
     }
 
 
-    private void handleSingleMovie(SingleMovieHolder holder, int position) {
-
+    //setting and handling single image holder
+    private void handleSingleImage(SingleImageHolder holder, int position) {
         final ChatmessageDataClasses.InputImageMessage movieClass = (ChatmessageDataClasses.InputImageMessage) messagelist.get(position);
         holder.time.setText(getTime(movieClass.timestamp));
         Picasso.with(context).load(movieClass.imageLink).into(holder.movieposter);
@@ -536,6 +549,7 @@ public class BotAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
 
     }
 
+    //holder for SoilMoisture
     class SoilMoistureHolder extends RecyclerView.ViewHolder {
         RecyclerView valuesRecyclerview;
         TextView date, place;
@@ -551,10 +565,12 @@ public class BotAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
         }
     }
 
+    // used to log debugg message
     private void logMessage(String logMessage) {
         AppSingletonClass.logDebugMessage(TAG, logMessage);
     }
 
+    //Holder for date in Messages in Chat Section
     class DateInMessageHolder extends RecyclerView.ViewHolder {
         TextView textView;
 
@@ -564,6 +580,7 @@ public class BotAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
         }
     }
 
+    //Holder for Weather card
     class WeatherCardHolder extends RecyclerView.ViewHolder {
         TextView date, place, temp, prec, humidity, windSpeed;
         CardView weahter_card;
@@ -584,8 +601,8 @@ public class BotAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
         }
     }
 
+    //holder for Vegetable and friuit card
     class VegFruitPriceCardHolder extends RecyclerView.ViewHolder {
-
         TextView description, time;
         CardView cardView;
         ImageView imageView;
@@ -597,9 +614,11 @@ public class BotAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
             imageView = view.findViewById(R.id.imageview);
             time = view.findViewById(R.id.time);
         }
-
     }
 
+
+
+    //holder for LightCard and settng views
     class LightHolder extends RecyclerView.ViewHolder {
         RecyclerView valuesRecyclerview;
         TextView date, place;
@@ -611,10 +630,10 @@ public class BotAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
             date = view.findViewById(R.id.date);
             place = view.findViewById(R.id.place);
             light_card = view.findViewById(R.id.light_card);
-
         }
     }
 
+    //Holder for SoilPhCard
     class SoilPhHolder extends RecyclerView.ViewHolder {
         TextView date, place, value;
         CardView soilPhCard;
@@ -628,6 +647,8 @@ public class BotAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
         }
     }
 
+
+    //holder for Soil Temperature
     private class SoilTemperatureHolder extends RecyclerView.ViewHolder {
         RecyclerView valuesRecyclerview;
         TextView date, place;
@@ -642,6 +663,8 @@ public class BotAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
         }
     }
 
+
+    //holder for Humidity card
     class HumidityCardHolder extends RecyclerView.ViewHolder {
         RecyclerView valuesRecyclerview;
         TextView date, place;
@@ -657,6 +680,7 @@ public class BotAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
     }
 
 
+    //holder input Image Message Card
     class InputImageHolder extends RecyclerView.ViewHolder {
         ImageView input_imageview;
         ProgressBar imageUploadProgressbar;
@@ -670,8 +694,8 @@ public class BotAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
         }
     }
 
+    //holder for input Text Message Card
     class InputTextMessageHolder extends RecyclerView.ViewHolder {
-
         private TextView singlemesssage, time;
 
         InputTextMessageHolder(View view) {
@@ -681,6 +705,7 @@ public class BotAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
         }
     }
 
+    //holder for Repsonse Video Message Card
     class ResponseVideoMessageHolder extends RecyclerView.ViewHolder {
         RecyclerView recyclerView;
 
@@ -690,8 +715,9 @@ public class BotAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
         }
     }
 
-    class ResponseTextMessageHolder extends RecyclerView.ViewHolder {
 
+    //holder for Response text Message card
+    class ResponseTextMessageHolder extends RecyclerView.ViewHolder {
         private TextView singlemesssage, time;
 
         ResponseTextMessageHolder(View view) {
@@ -701,17 +727,19 @@ public class BotAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
         }
     }
 
-    class SingleMovieHolder extends RecyclerView.ViewHolder {
+    //Holder for Single Response Image Card
+    class SingleImageHolder extends RecyclerView.ViewHolder {
         ImageView movieposter;
         TextView time;
 
-        SingleMovieHolder(View view) {
+        SingleImageHolder(View view) {
             super(view);
             movieposter = view.findViewById(R.id.movieimage);
             time = view.findViewById(R.id.time);
         }
     }
 
+    //holder for List of Quick reply Messages
     class QuickReplyHolder extends RecyclerView.ViewHolder {
         public RecyclerView quickreplyrecyclerview;
 
@@ -721,6 +749,7 @@ public class BotAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
         }
     }
 
+    //Holder for Response Images
     class ResponseImagesHolder extends RecyclerView.ViewHolder {
         RecyclerView recyclerView;
 
@@ -730,6 +759,7 @@ public class BotAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
         }
     }
 
+    //holder for Available options for Given Chat
     class AvailableOPtionHolder extends RecyclerView.ViewHolder {
         RecyclerView recyclerView;
 
@@ -739,6 +769,7 @@ public class BotAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
         }
     }
 
+    //Holder forVisual Qna Card
     class VisualQnAHolder extends RecyclerView.ViewHolder {
         RecyclerView visualQna;
 
@@ -749,6 +780,7 @@ public class BotAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
     }
 
 
+    //holder for main option menu in chatbot messages
     class MainOptionMenuAdapter extends RecyclerView.Adapter<MainOptionMenuAdapter.ItemHolderOptionMenu> {
         List<String> menuNames;
 
@@ -793,7 +825,6 @@ public class BotAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
     }
 
     class ResponseImagesAdapter extends RecyclerView.Adapter<ResponseImagesAdapter.SingleImageHolder> {
-
         List<String> imageLinks, imageData, diseaseNames;
 
         ResponseImagesAdapter(List<String> imageLinks, List<String> imageData, List<String> diseaseNames) {
@@ -1012,7 +1043,6 @@ public class BotAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
     }
 
     class VisualQnaAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
-
         List vqNaList;
 
         VisualQnaAdapter(List vqNaList) {
@@ -1035,7 +1065,6 @@ public class BotAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
         @NonNull
         @Override
         public RecyclerView.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-
             RecyclerView.ViewHolder holder;
             switch (viewType) {
                 case 0:
@@ -1053,7 +1082,6 @@ public class BotAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
                 default:
                     view = LayoutInflater.from(context).inflate(R.layout.inputimagecard, parent, false);
                     holder = new InputImageHolder(view);
-
             }
             return holder;
         }

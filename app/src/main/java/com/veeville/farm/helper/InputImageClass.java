@@ -2,6 +2,7 @@ package com.veeville.farm.helper;
 
 /**
  * Created by user on 20-07-2017.
+ * this helper class used in ChatMesages and Cerebro Chat Section
  */
 
 public class InputImageClass {

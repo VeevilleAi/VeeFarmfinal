@@ -21,16 +21,19 @@ import java.util.List;
 
 /**
  * Created by Prashant C on 07/12/18.
+ * adpater for Contact list in FriendsFragment
+ * on click on each contact will move into one to one caht with text and image
  */
 public class FriendsListAdapter extends RecyclerView.Adapter<FriendsListAdapter.SingleContactHolder> {
 
     private List<ChatContact> farmerContacts;
     private Context context;
     private String fromAddress;
-    public FriendsListAdapter(List<ChatContact> farmerContacts, Context context,String fromAddress) {
+
+    public FriendsListAdapter(List<ChatContact> farmerContacts, Context context, String fromAddress) {
         this.farmerContacts = farmerContacts;
         this.context = context;
-        this.fromAddress =fromAddress;
+        this.fromAddress = fromAddress;
     }
 
     @NonNull
@@ -57,8 +60,8 @@ public class FriendsListAdapter extends RecyclerView.Adapter<FriendsListAdapter.
             public void onClick(View view) {
                 Intent intent = new Intent(context, OneToOneChatActivity.class);
                 intent.putExtra("name", contact.name);
-                intent.putExtra("to",contact.email);
-                intent.putExtra("from",fromAddress);
+                intent.putExtra("to", contact.email);
+                intent.putExtra("from", fromAddress);
                 context.startActivity(intent);
             }
         });
@@ -72,7 +75,7 @@ public class FriendsListAdapter extends RecyclerView.Adapter<FriendsListAdapter.
     }
 
     class SingleContactHolder extends RecyclerView.ViewHolder {
-        TextView name,mostRecentMessage;
+        TextView name, mostRecentMessage;
         CardView contactCard;
         ImageView profilePic;
 

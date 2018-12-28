@@ -46,9 +46,8 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.google.firebase.auth.FirebaseAuth;
 import com.veeville.farm.R;
-import com.veeville.farm.activity.ChatActivity;
 import com.veeville.farm.activity.ProcessBotResponse;
-import com.veeville.farm.adapter.BotAdapter;
+import com.veeville.farm.adapter.CerebroAdapter;
 import com.veeville.farm.adapter.QuickReplyAdapter;
 import com.veeville.farm.helper.AppSingletonClass;
 import com.veeville.farm.helper.ChatBotDatabase;
@@ -80,6 +79,12 @@ import ai.api.model.Result;
 
 import static android.app.Activity.RESULT_OK;
 
+/*
+* this fragments handle chatting between user and Cerebro
+* it can handle text audio ,image and video
+* capable of interacting with user in differnt language like kannada tamil , telugu
+* it works perfectly for different media types
+ */
 
 public class CerebroFragment extends Fragment implements QuickReplyAdapter.QuickReplyOption, ProcessBotResponse.ProcessedResult, ProcessBotResponse.UpdateMessageForRegistration {
 
@@ -87,10 +92,10 @@ public class CerebroFragment extends Fragment implements QuickReplyAdapter.Quick
     private RecyclerView chatrecyclerview;
     private FloatingActionButton actionButton;
     private EditText inputtextmessage;
-    private BotAdapter adapter;
+    private CerebroAdapter adapter;
     private static final int REQ_CODE_SPEECH_INPUT = 10;
     private List<Object> chatMessages = new ArrayList<>();
-    private final String TAG = ChatActivity.class.getSimpleName();
+    private final String TAG = CerebroFragment.class.getSimpleName();
     private FloatingActionButton captureImage;
 
     private static final int CAMERA_REQUEST = 1888;
@@ -110,6 +115,7 @@ public class CerebroFragment extends Fragment implements QuickReplyAdapter.Quick
     private String selectedlanguage_id_mic = "en-US", inputLanguageId = "en";
 
 
+    // selecting different language to chat with Cerebro
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
@@ -157,12 +163,14 @@ public class CerebroFragment extends Fragment implements QuickReplyAdapter.Quick
     }
 
 
+    //creating option menu for different languages
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         super.onCreateOptionsMenu(menu, inflater);
-        inflater.inflate(R.menu.languagemenu,menu);
+        inflater.inflate(R.menu.menu_language,menu);
     }
 
+    //initilzing UI elements here
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -171,7 +179,6 @@ public class CerebroFragment extends Fragment implements QuickReplyAdapter.Quick
         mFileName = context.getExternalCacheDir().getAbsolutePath();
         mFileName += "/audiorecordtest.3gp";
         AppSingletonClass.mFirebaseAuth = FirebaseAuth.getInstance();
-        setUpToolbar();
         setUpRecyclerview();
         loadAllMessages();
         handleSendindTextMesage();
@@ -203,6 +210,7 @@ public class CerebroFragment extends Fragment implements QuickReplyAdapter.Quick
         return view;
     }
 
+    //select Image from Galley and image will come on Activity Result Method
     void getImageFromGallery() {
 
         Intent intent = new Intent();
@@ -211,6 +219,7 @@ public class CerebroFragment extends Fragment implements QuickReplyAdapter.Quick
         startActivityForResult(Intent.createChooser(intent, "Select Picture"), SELECT_PICTURE);
     }
 
+    //load all messagefrom local database when this fragment oopen first time after launching app
     private void loadAllMessages() {
         ChatBotDatabase chatBotDatabase = new ChatBotDatabase(context.getApplicationContext());
         List list = chatBotDatabase.fetchAllMessages();
@@ -223,16 +232,18 @@ public class CerebroFragment extends Fragment implements QuickReplyAdapter.Quick
 
 
 
+    //setting up recycelrview for chat Messages
     void setUpRecyclerview() {
         chatrecyclerview = view.findViewById(R.id.chatrecyclerviewid);
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(context.getApplicationContext());
         linearLayoutManager.setOrientation(LinearLayoutManager.VERTICAL);
         chatrecyclerview.setLayoutManager(linearLayoutManager);
-        adapter = new BotAdapter(chatMessages, context.getApplicationContext(), this);
+        adapter = new CerebroAdapter(chatMessages, context.getApplicationContext(), this);
         chatrecyclerview.setAdapter(adapter);
     }
 
 
+    // add introduction messages in beginning when user not yet interacted with bot
     private void addIntroductionMessage() {
 
         String message = " Select one of the options below or ask me a question to get started ";
@@ -250,17 +261,7 @@ public class CerebroFragment extends Fragment implements QuickReplyAdapter.Quick
     }
 
 
-    void setUpToolbar() {
-//        toolbar = view.findViewById(R.id.my_toolbar);
-//        toolbar.setTitle("Cerebro");
-//        toolbar.setTitleTextColor(Color.WHITE);
-//        toolbar.setSubtitleTextColor(Color.WHITE);
-//        toolbar.setSubtitle("English");
-//        setSupportActionBar(toolbar);
-//        Objects.requireNonNull(getSupportActionBar()).setDisplayHomeAsUpEnabled(true);
-    }
-
-
+    //add text message to list when user clicks send button
     void handleSendindTextMesage() {
 
         inputtextmessage = view.findViewById(R.id.input_text_field);
@@ -329,6 +330,7 @@ public class CerebroFragment extends Fragment implements QuickReplyAdapter.Quick
 
 
 
+    // check permission for recording audio and external Storage
     private boolean checkPermissionRECORD_AUDIO() {
 
         int permissionaudio = ContextCompat.checkSelfPermission(context.getApplicationContext(), Manifest.permission.RECORD_AUDIO);
@@ -336,6 +338,7 @@ public class CerebroFragment extends Fragment implements QuickReplyAdapter.Quick
         return permissionaudio == PackageManager.PERMISSION_GRANTED && permissionStorage == PackageManager.PERMISSION_GRANTED;
     }
 
+    //when user dont have permission for audio record and stoage
     private void askPermissionRECORD_AUDIO() {
         String[] permissionarray = new String[]{Manifest.permission.RECORD_AUDIO, Manifest.permission.WRITE_EXTERNAL_STORAGE};
         if (ActivityCompat.shouldShowRequestPermissionRationale((Activity) context, Manifest.permission.RECORD_AUDIO) && ActivityCompat.shouldShowRequestPermissionRationale((Activity) context, Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
@@ -345,6 +348,7 @@ public class CerebroFragment extends Fragment implements QuickReplyAdapter.Quick
         }
     }
 
+    //sending query message to Visual QnA after sending image
     private void sendQuestionForUploadedImage(String userQuery) {
 
         String url = "http://54.201.152.162:5000/vqa";
@@ -381,6 +385,7 @@ public class CerebroFragment extends Fragment implements QuickReplyAdapter.Quick
 
     }
 
+    //Converting bitmap image to String
     private String getStringImage(Bitmap bmp) {
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         bmp.compress(Bitmap.CompressFormat.JPEG, 40, baos);
@@ -388,6 +393,7 @@ public class CerebroFragment extends Fragment implements QuickReplyAdapter.Quick
         return Base64.encodeToString(imageBytes, Base64.DEFAULT);
     }
 
+    //when user selects  message from list of messages in Chat Section
     @Override
     public void selectedMessage(String message) {
         chatMessages.remove(chatMessages.size() - 1);
@@ -412,6 +418,7 @@ public class CerebroFragment extends Fragment implements QuickReplyAdapter.Quick
 
     }
 
+    //inseting messages for any disease image choosen by user in chat section
     void insertResponseMessage(String disease) {
         HashMap<String, String> hashMap = new HashMap<>();
         hashMap.put("sun burn & Canker Diseases", "You have to cover the stem portion with Bordeaux paint after plants start shedding leaves.");
@@ -429,6 +436,7 @@ public class CerebroFragment extends Fragment implements QuickReplyAdapter.Quick
         insertTextMessage(hashMap.get(disease), false);
     }
 
+    //inseting image to Recyclerviewand send in to qna Maker
     @Override
     public void insertImage(String qNaQuesry, String imageLink) {
 
@@ -444,6 +452,7 @@ public class CerebroFragment extends Fragment implements QuickReplyAdapter.Quick
 
     }
 
+    //making request to QNA maker if Cerebro didint understand
     private void requestToQnAmaker(final String question) {
         logMesage("question sending to QnAMaker :" + question);
         String url = "https://appleqna.azurewebsites.net/qnamaker/knowledgebases/c59c0050-9297-4300-9f17-26f7ed0f7e1e/generateAnswer";
@@ -486,6 +495,7 @@ public class CerebroFragment extends Fragment implements QuickReplyAdapter.Quick
         AppSingletonClass.getInstance().addToRequestQueue(request);
     }
 
+    //ading rsult to ecyclerview like Image Selction , options from Header......
     @Override
     public void result(List list) {
 
@@ -502,6 +512,7 @@ public class CerebroFragment extends Fragment implements QuickReplyAdapter.Quick
     }
 
 
+    //adding registration messageto Recyclerview when user not yet provided Mobile Number
     private void addRegisterationMesageToRecyclerview(String message) {
 
         ChatBotDatabase database = new ChatBotDatabase(context.getApplicationContext());
@@ -514,6 +525,7 @@ public class CerebroFragment extends Fragment implements QuickReplyAdapter.Quick
 
     }
 
+    //adding message to Recyclerview for the first time
     private void addMessageFirstTime() {
         addRegisterationMesageToRecyclerview("We're trying to get your attention!\nnPlease tell which country you are in & we will set this straight. \uD83D\uDE01");
     }
@@ -522,11 +534,14 @@ public class CerebroFragment extends Fragment implements QuickReplyAdapter.Quick
     public void updateMessageForRegistrayion(String message, boolean showCard) {
     }
 
+    //changing messages to Normal from INVORTED Mesages
     @Override
     public void makeMessagesNormal(boolean shownormal) {
         adapter.changeDatasetMessage(shownormal);
     }
 
+
+    //translating Mesage to User Selected Language
     private void translateTextToInputLanguage(String translatingText, String targetLanguage) {
 
         LanguageTranslater translater = new LanguageTranslater();
@@ -541,6 +556,7 @@ public class CerebroFragment extends Fragment implements QuickReplyAdapter.Quick
         });
     }
 
+    // processing Result came from Cerebro
     private void processResult(Result result) {
 
         ProcessBotResponse processBotResponse = new ProcessBotResponse(result, context, this, inputLanguageId, this);
@@ -549,6 +565,7 @@ public class CerebroFragment extends Fragment implements QuickReplyAdapter.Quick
     }
 
 
+    // making requst to Dialogflow
     private void requestToDialogFlow(String query) {
 
         final AIConfiguration config = new AIConfiguration(ACCESS_TOKEN, AIConfiguration.SupportedLanguages.English, AIConfiguration.RecognitionEngine.System);
@@ -565,6 +582,7 @@ public class CerebroFragment extends Fragment implements QuickReplyAdapter.Quick
         this.context = context;
     }
 
+    // when user selects Mic to Speak show popup
     private void promptSpeechInput() {
 
         Intent intent = new Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH);
@@ -577,6 +595,7 @@ public class CerebroFragment extends Fragment implements QuickReplyAdapter.Quick
         }
     }
 
+    //sending Image to Visual Qna Service wth image and Text here given option to add comment on Message
     private void alertDialogForImageWithText(final String imageData) {
 
         AlertDialog.Builder builder = new AlertDialog.Builder(context.getApplicationContext());
@@ -693,6 +712,7 @@ public class CerebroFragment extends Fragment implements QuickReplyAdapter.Quick
     }
 
 
+    // checking camera permission
     private boolean checkCameraPermission() {
 
         int permissionlocation = ContextCompat.checkSelfPermission(context.getApplicationContext(), Manifest.permission.CAMERA);
@@ -700,6 +720,8 @@ public class CerebroFragment extends Fragment implements QuickReplyAdapter.Quick
         return permissionlocation == PackageManager.PERMISSION_GRANTED && permissionFileStorage == PackageManager.PERMISSION_GRANTED;
     }
 
+
+    //asking camera permission and external storage
     private void askCameraPermission() {
         String[] permissionarray = new String[]{Manifest.permission.CAMERA, Manifest.permission.WRITE_EXTERNAL_STORAGE};
         if (ActivityCompat.shouldShowRequestPermissionRationale((Activity) context, Manifest.permission.CAMERA)) {
@@ -709,6 +731,7 @@ public class CerebroFragment extends Fragment implements QuickReplyAdapter.Quick
         }
     }
 
+    //transling user selcted language to English for Ceebro becuase it understand only  english
     private void translateText(String translatingText) {
 
         String targetLanguage = "en";
@@ -745,6 +768,7 @@ public class CerebroFragment extends Fragment implements QuickReplyAdapter.Quick
         }
     }
 
+    //Converting Image to Bas64  string
     private String getBase64String() {
 
         Bitmap bitmap = BitmapFactory.decodeFile(filePathImage.toString());
@@ -763,6 +787,7 @@ public class CerebroFragment extends Fragment implements QuickReplyAdapter.Quick
         AppSingletonClass.logErrorMessage(TAG, errorMessage);
     }
 
+    //uploading  user selcted image to Qna Service With Query Text in Below Format
     private void uploadImageNew(final String encodedstring, final String question) {
         String url = "http://54.201.152.162:5000/vqa";
 
@@ -798,6 +823,7 @@ public class CerebroFragment extends Fragment implements QuickReplyAdapter.Quick
         AppSingletonClass.getInstance().addToRequestQueue(request);
     }
 
+    //Dialog to choose image for Qna or Weed detection, disease identification
     private void alertDialogForChoosingCameraOrGalleryForImage() {
 
         AlertDialog.Builder builder = new AlertDialog.Builder(context);
@@ -842,6 +868,7 @@ public class CerebroFragment extends Fragment implements QuickReplyAdapter.Quick
 
     }
 
+    //insrting text Mesages  into Recyclerview
     private void insertTextMessage(String textMessage, boolean isInputTextMessage) {
         long timestamp = System.currentTimeMillis();
         if (!isvQnaEnabled) {
@@ -881,6 +908,8 @@ public class CerebroFragment extends Fragment implements QuickReplyAdapter.Quick
 
 
 
+
+    //async task to Request to Cerebro an getting Response
     private class MyAsyncTask extends AsyncTask<AIRequest, Void, AIResponse> {
         @Override
         protected AIResponse doInBackground(AIRequest... requests) {

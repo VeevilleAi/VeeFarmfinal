@@ -21,6 +21,8 @@ import java.util.List;
 
 /**
  * Created by Prashant C on 11/10/18.
+ * adapter for farms
+ *
  */
 public class FarmAdapter extends RecyclerView.Adapter<FarmAdapter.SingleFarmHolder> {
 

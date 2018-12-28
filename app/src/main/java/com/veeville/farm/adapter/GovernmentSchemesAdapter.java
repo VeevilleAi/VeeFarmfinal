@@ -17,6 +17,7 @@ import java.util.List;
 
 /**
  * Created by Prashant C on 07/12/18.
+ * this adapter handles Government schems and handling its explanation listeners
  */
 public class GovernmentSchemesAdapter extends RecyclerView.Adapter<GovernmentSchemesAdapter.SingleNewsCardHolder> {
 

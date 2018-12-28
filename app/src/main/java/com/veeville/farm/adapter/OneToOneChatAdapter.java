@@ -16,6 +16,7 @@ import java.util.List;
 
 /**
  * Created by Prashant C on 10/12/18.
+ * this adapter maintain one to one chat
  */
 public class OneToOneChatAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>{
 
@@ -34,6 +35,8 @@ public class OneToOneChatAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
             return 2;
         }else if(messages.get(position) instanceof ChatmessageDataClasses.InputBitMapImage) {
             return 3;
+        }else if(messages.get(position) instanceof ChatmessageDataClasses.ResponseBitMapImage) {
+            return 4;
         }else {
             return -1;
         }
@@ -62,6 +65,11 @@ public class OneToOneChatAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
                 view = LayoutInflater.from(parent.getContext()).inflate(R.layout.inputimagecard, parent, false);
                 viewHolder = new InputImageHolder(view);
                 break;
+            case 4:
+                view = LayoutInflater.from(parent.getContext()).inflate(R.layout.response_images_card, parent, false);
+                viewHolder = new ResponseImageHolder(view);
+                break;
+
             default:
                 view = LayoutInflater.from(parent.getContext()).inflate(R.layout.simpletextresponse, parent, false);
                 viewHolder = new ResponseTextMessageHolder(view);
@@ -88,13 +96,32 @@ public class OneToOneChatAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
             case 3:
                 handleInputImage((InputImageHolder) holder,position);
                 break;
-
+            case 4:
+                handleResponseImage((ResponseImageHolder) holder,position);
+                break;
         }
+    }
+
+    private void handleResponseImage(ResponseImageHolder holder,int position){
+        ChatmessageDataClasses.ResponseBitMapImage bitMapImage = (ChatmessageDataClasses.ResponseBitMapImage) messages.get(position);
+        holder.input_imageview.setImageBitmap(bitMapImage.bitmap);
+        if(bitMapImage.isUploaded){
+            holder.imageUploadProgressbar.setVisibility(View.GONE);
+        }else {
+            holder.imageUploadProgressbar.setVisibility(View.GONE);
+        }
+
     }
 
     private void handleInputImage(InputImageHolder holder,int position){
         ChatmessageDataClasses.InputBitMapImage bitMapImage = (ChatmessageDataClasses.InputBitMapImage) messages.get(position);
         holder.input_imageview.setImageBitmap(bitMapImage.bitmap);
+        if(bitMapImage.isUploaded){
+            holder.imageUploadProgressbar.setVisibility(View.GONE);
+        }else {
+            holder.imageUploadProgressbar.setVisibility(View.GONE);
+        }
+
     }
 
     @Override
@@ -155,6 +182,18 @@ public class OneToOneChatAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
         TextView time;
 
         InputImageHolder(View view) {
+            super(view);
+            input_imageview = view.findViewById(R.id.imageinput);
+            imageUploadProgressbar = view.findViewById(R.id.image_upload_progressbar);
+            time = view.findViewById(R.id.time);
+        }
+    }
+    class ResponseImageHolder extends RecyclerView.ViewHolder {
+        ImageView input_imageview;
+        ProgressBar imageUploadProgressbar;
+        TextView time;
+
+        ResponseImageHolder(View view) {
             super(view);
             input_imageview = view.findViewById(R.id.imageinput);
             imageUploadProgressbar = view.findViewById(R.id.image_upload_progressbar);

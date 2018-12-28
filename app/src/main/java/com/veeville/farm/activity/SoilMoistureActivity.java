@@ -6,6 +6,7 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
+
 import com.veeville.farm.R;
 import com.veeville.farm.adapter.SoilMoistureActivityAapter;
 import com.veeville.farm.helper.AppSingletonClass;
@@ -17,6 +18,13 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Random;
 
+
+/*
+ * showing particular farm soil moisture details
+ * with graph and numbers
+ * as of now generating soil moisture values randomly
+ * later it should be replace with Fetching values from Server
+ */
 public class SoilMoistureActivity extends AppCompatActivity {
 
     private final String TAG = SoilMoistureActivity.class.getSimpleName();
@@ -28,6 +36,24 @@ public class SoilMoistureActivity extends AppCompatActivity {
         setUpUpToolbar();
         setUpSoilMoistureRecyclerview();
         logMessage("onCreate called");
+    }
+
+    //settingup custom toolbar
+    private void setUpUpToolbar() {
+        Toolbar toolbar;
+        toolbar = findViewById(R.id.my_toolbar);
+        toolbar.setTitle("Soil Moisture-Farm1");
+        setSupportActionBar(toolbar);
+        Objects.requireNonNull(getSupportActionBar()).setDisplayHomeAsUpEnabled(true);
+    }
+
+    //setting soil moisture values recyclerview
+    private void setUpSoilMoistureRecyclerview() {
+        LinearLayoutManager manager = new LinearLayoutManager(getApplicationContext());
+        RecyclerView soilMoistureRecyclerview = findViewById(R.id.soil_moisture_recyclerview);
+        soilMoistureRecyclerview.setLayoutManager(manager);
+        SoilMoistureActivityAapter adapter = new SoilMoistureActivityAapter(getApplicationContext(), formData());
+        soilMoistureRecyclerview.setAdapter(adapter);
     }
 
     @Override
@@ -60,23 +86,8 @@ public class SoilMoistureActivity extends AppCompatActivity {
         logMessage("onDestroy called");
     }
 
-    private void setUpUpToolbar() {
-        Toolbar toolbar;
-        toolbar = findViewById(R.id.my_toolbar);
-        toolbar.setTitle("Soil Moisture-Farm1");
-        setSupportActionBar(toolbar);
-        Objects.requireNonNull(getSupportActionBar()).setDisplayHomeAsUpEnabled(true);
 
-    }
-
-    private void setUpSoilMoistureRecyclerview() {
-        LinearLayoutManager manager = new LinearLayoutManager(getApplicationContext());
-        RecyclerView soilMoistureRecyclerview = findViewById(R.id.soil_moisture_recyclerview);
-        soilMoistureRecyclerview.setLayoutManager(manager);
-        SoilMoistureActivityAapter adapter = new SoilMoistureActivityAapter(getApplicationContext(), formData());
-        soilMoistureRecyclerview.setAdapter(adapter);
-    }
-
+    //when option menu item selected
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         onBackPressed();
@@ -84,8 +95,7 @@ public class SoilMoistureActivity extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
-
-
+    //farming random soil moisture values locally
     private List<Object> formData() {
 
         List<DashBoardDataClasses.SoilMoistureData.SoilMoistureValues> soilMoistureValues1 = new ArrayList<>();
@@ -112,6 +122,7 @@ public class SoilMoistureActivity extends AppCompatActivity {
         return soilMoistureDatas;
     }
 
+    //must use this methos to log message all over
     private void logMessage(String logMessage) {
         AppSingletonClass.logDebugMessage(TAG, logMessage);
     }

@@ -53,9 +53,6 @@
             android:value="false" />
 
         <activity
-            android:name=".activity.ChatActivity"
-            android:screenOrientation="portrait" />
-        <activity
             android:name=".activity.CropWorkFlow"
             android:screenOrientation="portrait" />
         <activity
@@ -100,7 +97,7 @@
             android:name=".farmer.FarmDescriptionActivity"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".farmer.FarmerRegistration"
+            android:name=".farmer.FarmerRegistrationActivity"
             android:screenOrientation="portrait" />
         <activity
             android:name=".farmer.FarmsActivity"
@@ -143,8 +140,10 @@
             android:exported="false" />
         <service
             android:name=".helper.AddContactToServerService"
-            android:exported="false"/>
-        <service android:name=".helper.UploadImageService"/>
+            android:exported="false" />
+        <service android:name=".helper.UploadImageService" />
+
+        <activity android:name=".activity.VerifyMobileNumberActivity"></activity>
     </application>
 
 </manifest>

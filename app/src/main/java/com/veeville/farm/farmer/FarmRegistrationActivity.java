@@ -21,7 +21,7 @@ import com.veeville.farm.R;
 import com.veeville.farm.helper.AppSingletonClass;
 
 import java.util.Objects;
-
+/*thi activity used to add new Farm or register new farm like name,area, drawing in google map etc...*/
 public class FarmRegistrationActivity extends AppCompatActivity {
 
     public static final int REQUEST_CODE = 1;
@@ -80,6 +80,8 @@ public class FarmRegistrationActivity extends AppCompatActivity {
         super.onDestroy();
         logMessage("onDestroy called");
     }
+
+    //setting up custom toolbar for this activity
     private void setUpToolbar() {
         Toolbar toolbar = findViewById(R.id.my_toolbar);
         toolbar.setTitle("Farm Registration");
@@ -101,12 +103,14 @@ public class FarmRegistrationActivity extends AppCompatActivity {
         });
     }
 
+    //when user done with filling all items update it to server
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         onBackPressed();
         return super.onOptionsItemSelected(item);
     }
 
+    //when user got all points(Lat and Lng) to calculate area
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
@@ -123,24 +127,24 @@ public class FarmRegistrationActivity extends AppCompatActivity {
         }
     }
 
+    //creating static google map using lat lng of user selected
     private void showFarmInStaticMap(double latitude, double longitude) {
-
         String url = "https://maps.googleapis.com/maps/api/staticmap?maptype=hybrid&size=600x300&zoom=16&center=" + latitude + "," + longitude + "&key=AIzaSyBeilqJcTJPyZ--59DXSsK1mWrWL3guh8k";
         ImageView imageView = findViewById(R.id.image);
         CardView cardView = findViewById(R.id.card);
         cardView.setVisibility(View.VISIBLE);
         Glide.with(getApplicationContext()).load(url).into(imageView);
-
     }
 
+    //updating area of farm
     private void updateArea(String area) {
         TextInputLayout textInputLayout = findViewById(R.id.area_id);
         textInputLayout.setVisibility(View.VISIBLE);
         EditText areaTemp = findViewById(R.id.area);
         areaTemp.setText(area);
-
     }
 
+    //use this method to log Debugg message
     private void logMessage(String logMessage) {
         AppSingletonClass.logDebugMessage(TAG, logMessage);
     }

@@ -5,6 +5,7 @@ import java.util.List;
 
 /**
  * Created by Prashant C on 26/09/18.
+ * this class contain different country name with its code which will used in mobile number verification
  */
 public class Countries {
     public String countryName;

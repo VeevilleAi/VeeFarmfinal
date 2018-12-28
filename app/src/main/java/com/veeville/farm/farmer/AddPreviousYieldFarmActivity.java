@@ -17,6 +17,10 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
+/*
+* activity to add Previous year yields
+* like in 2016 jawar 650 kg ............
+ */
 public class AddPreviousYieldFarmActivity extends AppCompatActivity {
 
     private final String TAG = AddPreviousYieldFarmActivity.class.getSimpleName();
@@ -57,6 +61,7 @@ public class AddPreviousYieldFarmActivity extends AppCompatActivity {
         super.onDestroy();
         logMessage("onDestroy called");
     }
+    //settingup custom toolbar
     private void setUpToolbar() {
         Toolbar toolbar = findViewById(R.id.my_toolbar);
         toolbar.setTitle("Previous Years Yield");
@@ -72,6 +77,7 @@ public class AddPreviousYieldFarmActivity extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
+    //setting up recyclerview for adding previous years yields
     private void setUpRecyclerview() {
         LinearLayoutManager manager = new LinearLayoutManager(getApplicationContext());
         manager.setOrientation(LinearLayoutManager.VERTICAL);
@@ -83,6 +89,7 @@ public class AddPreviousYieldFarmActivity extends AppCompatActivity {
 
     }
 
+    //as of now statically adding items for previous year yields
     private List<Yield> getPreviousYields() {
         List<Yield> yields = new ArrayList<>();
         yields.add(new Yield("2018", "Banana", "100 kg"));
@@ -95,6 +102,8 @@ public class AddPreviousYieldFarmActivity extends AppCompatActivity {
         return yields;
     }
 
+
+    //use this method to log debugg messages
     private void logMessage(String logMessage) {
         AppSingletonClass.logDebugMessage(TAG, logMessage);
     }

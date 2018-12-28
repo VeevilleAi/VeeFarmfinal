@@ -10,6 +10,7 @@ import android.support.annotation.NonNull;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -35,6 +36,8 @@ import java.util.List;
 
 /**
  * Created by Prashant C on 01/08/18.
+ * adapter for workflow
+ * here he can also set timer to alarm
  */
 public class WorkFlowAdapter extends RecyclerView.Adapter<WorkFlowAdapter.SingleCardWorkHolder> {
     private Context context;
@@ -144,6 +147,7 @@ public class WorkFlowAdapter extends RecyclerView.Adapter<WorkFlowAdapter.Single
         }
     }
 
+    //set reminder for particular work of a farmer
     private void setAlaram() {
 
         wantTRepeat = false;
@@ -216,13 +220,11 @@ public class WorkFlowAdapter extends RecyclerView.Adapter<WorkFlowAdapter.Single
 
                     @Override
                     public void onDateSet(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
-
-                        String date = dayOfMonth + "-" + (monthOfYear + 1) + "-" + year;
                         calendar.set(Calendar.DAY_OF_MONTH, dayOfMonth);
                         calendar.set(Calendar.MONTH, monthOfYear);
                         calendar.set(Calendar.YEAR, year);
                         calendar.set(Calendar.SECOND, 0);
-
+                        Log.d(TAG, "onDateSet: thank you");
                     }
                 }, mYear, mMonth, mDay);
                 datePickerDialog.show();
@@ -250,6 +252,7 @@ public class WorkFlowAdapter extends RecyclerView.Adapter<WorkFlowAdapter.Single
 
     }
 
+    //should use this method to log debugg messages
     private void logMessage(String logMessage) {
         AppSingletonClass.logDebugMessage(TAG, logMessage);
     }

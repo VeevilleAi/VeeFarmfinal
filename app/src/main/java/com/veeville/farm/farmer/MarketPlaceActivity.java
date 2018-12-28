@@ -17,6 +17,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
+
+/*market place for what farmer is growing like tomato,onion*/
 public class MarketPlaceActivity extends AppCompatActivity {
 
     private final String TAG = MarketPlaceActivity.class.getSimpleName();
@@ -27,6 +29,16 @@ public class MarketPlaceActivity extends AppCompatActivity {
         setContentView(R.layout.activity_market_place);
         setUpToolbar();
         setUpRecyclerview();
+    }
+
+    //settingup custom toolbar for Marketplace Activity
+    private void setUpToolbar() {
+        Toolbar toolbar = findViewById(R.id.my_toolbar);
+        toolbar.setTitle("Market Place");
+        toolbar.setTitleTextColor(Color.WHITE);
+        toolbar.setSubtitleTextColor(Color.WHITE);
+        setSupportActionBar(toolbar);
+        Objects.requireNonNull(getSupportActionBar()).setDisplayHomeAsUpEnabled(true);
     }
 
     @Override
@@ -59,21 +71,15 @@ public class MarketPlaceActivity extends AppCompatActivity {
         logMessage("onDestroy called");
     }
 
-    private void setUpToolbar() {
-        Toolbar toolbar = findViewById(R.id.my_toolbar);
-        toolbar.setTitle("Market Place");
-        toolbar.setTitleTextColor(Color.WHITE);
-        toolbar.setSubtitleTextColor(Color.WHITE);
-        setSupportActionBar(toolbar);
-        Objects.requireNonNull(getSupportActionBar()).setDisplayHomeAsUpEnabled(true);
-    }
 
+    //when user selects option menu item like back button
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         onBackPressed();
         return super.onOptionsItemSelected(item);
     }
 
+    //setting up marketplace activity Recyclerview to show market and vegetable
     private void setUpRecyclerview() {
         LinearLayoutManager manager = new LinearLayoutManager(getApplicationContext());
         manager.setOrientation(LinearLayoutManager.VERTICAL);
@@ -83,6 +89,7 @@ public class MarketPlaceActivity extends AppCompatActivity {
         recyclerView.setAdapter(adapter);
     }
 
+    //getting market place cards desc as of now generating locally later it should come from Server
     private List<MarketPlace> getMarketPlaceItems() {
         List<MarketPlace> marketPlaceList = new ArrayList<>();
         marketPlaceList.add(new MarketPlace("http://www.arrms.org/media/blogs/blog/banana.jpg?mtime=1417645870", "Banana", "60", "50", "Vijayapur", "600 Kg", "36000", "Bananas belong to the healthiest foods in the world. They contain potassium, which can lower your blood pressure, prevent heart diseases and reduce the risk of a stroke."));
@@ -92,6 +99,7 @@ public class MarketPlaceActivity extends AppCompatActivity {
         return marketPlaceList;
     }
 
+    //used to log Debugg message
     private void logMessage(String logMessage) {
         AppSingletonClass.logDebugMessage(TAG, logMessage);
     }

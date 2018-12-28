@@ -8,9 +8,12 @@ import java.util.Random;
 
 /**
  * Created by Prashant C on 25/09/18.
+ * getting randomly generated data to show in app
  */
 public class GetSensorDummyData {
 
+
+    //generating light values randomly
     public ChatmessageDataClasses.Light insertLight() {
         List<ChatmessageDataClasses.Light.LightValues> lightValues = new ArrayList<>();
         for (int j = 5; j < 20; j++) {
@@ -29,6 +32,7 @@ public class GetSensorDummyData {
         return new ChatmessageDataClasses.Light("Today", "beengaluru", lightValues, timestamp);
     }
 
+    //generating Humidity values randomly
     public ChatmessageDataClasses.Humidity insertHumidity() {
 
         List<ChatmessageDataClasses.Humidity.HumidityDataValues> values = new ArrayList<>();
@@ -53,6 +57,7 @@ public class GetSensorDummyData {
         return new ChatmessageDataClasses.SoilPH("Today", "Bengaluru", "6.5");
     }
 
+    //generating Soil temperature randomly
     public ChatmessageDataClasses.SoilTemperature insertSoilTemperature() {
 
         List<ChatmessageDataClasses.SoilTemperature.TempValue> soilMoistureValues2 = new ArrayList<>();
@@ -72,6 +77,7 @@ public class GetSensorDummyData {
         return new ChatmessageDataClasses.SoilTemperature("Today", "Bengaluru", soilMoistureValues2, timestamp);
     }
 
+    //generating soil moisture values randomly
     public ChatmessageDataClasses.SoilMoisture insertSoilMoisture() {
 
         List<ChatmessageDataClasses.SoilMoisture.SoilMoistureValues> soilMoistureValues2 = new ArrayList<>();

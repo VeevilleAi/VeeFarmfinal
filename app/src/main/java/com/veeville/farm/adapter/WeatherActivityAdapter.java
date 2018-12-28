@@ -20,6 +20,8 @@ import java.util.List;
 
 /**
  * Created by Prashant C on 29/06/18.
+ * adapter for weather activity
+ * also maintain listeners for each Card
  */
 public class WeatherActivityAdapter extends RecyclerView.Adapter<WeatherActivityAdapter.WeatherCardHolder> {
 
@@ -123,6 +125,7 @@ public class WeatherActivityAdapter extends RecyclerView.Adapter<WeatherActivity
         }
     }
 
+    // use this method to log debug message
     private void logMessage(String logMessage) {
         AppSingletonClass.logDebugMessage(TAG, logMessage);
     }

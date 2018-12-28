@@ -14,7 +14,9 @@ import com.veeville.farm.helper.ChatmessageDataClasses;
 import java.util.List;
 
 /**
- * Created by user on 12-07-2017.
+ * Created by user on 12-07-2018.
+ * adapter for quick reply and its listeners
+ *
  */
 
 public class QuickReplyAdapter extends RecyclerView.Adapter<QuickReplyAdapter.SingleQuickreplyholder> {

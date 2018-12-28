@@ -56,7 +56,6 @@ public class WeatherActivity extends AppCompatActivity {
         toolbar.setTitle("Weather-Farm1");
         setSupportActionBar(toolbar);
         Objects.requireNonNull(getSupportActionBar()).setDisplayHomeAsUpEnabled(true);
-
     }
 
 
@@ -114,6 +113,8 @@ public class WeatherActivity extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
+
+    //make network request for last 10 days weather for given city
     private void weatherApidata(final String city) {
         String url = "http://api.worldweatheronline.com/premium/v1/weather.ashx?key=4098d598f45746aca4c94017181311&q=" + city + "&format=json&num_of_days=10";
         AppSingletonClass.logDebugMessage(TAG, "weather request uri:" + url);
@@ -145,6 +146,7 @@ public class WeatherActivity extends AppCompatActivity {
         AppSingletonClass.getInstance().addToRequestQueue(request);
     }
 
+    //parse weather data and upate UI
     private void performWeatherData(JSONObject jsonObject, String city) {
 
         try {
@@ -204,10 +206,12 @@ public class WeatherActivity extends AppCompatActivity {
     }
 
 
+    //use this metho to log debugg message
     private void logMessage(String logMessage) {
         AppSingletonClass.logDebugMessage(TAG, logMessage);
     }
 
+    //this method to use debugg error message
     private void logErrorMessage(String logErrorMessage) {
         AppSingletonClass.logErrorMessage(TAG, logErrorMessage);
     }

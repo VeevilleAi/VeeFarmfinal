@@ -37,11 +37,11 @@ public class DashBoardActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_dashboard);
+        logMessage("onCreate Called");
         setUpToolbar();
         setupRecyclerview();
         checkDatabaseForPrice();
-        String logMessage = "onCreate Called";
-        logMessage(logMessage);
+
     }
 
     @Override
@@ -94,10 +94,12 @@ public class DashBoardActivity extends AppCompatActivity {
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.dash_board, menu);
+        getMenuInflater().inflate(R.menu.dash_board_menu, menu);
         return true;
     }
 
+
+    //setup custom toolbar
     private void setUpToolbar() {
         Toolbar toolbar = findViewById(R.id.my_toolbar);
         toolbar.setTitle("DashBoard");
@@ -193,6 +195,9 @@ public class DashBoardActivity extends AppCompatActivity {
         AppSingletonClass.logErrorMessage(TAG, logErrorMessage);
     }
 
+
+    //asynctask for downloading vegetable price list and inserting into database
+    // have to do web scrolling
     class AsyncTaskVegPrice extends AsyncTask<Void, Void, List<Fruit>> {
 
         @Override
@@ -233,6 +238,9 @@ public class DashBoardActivity extends AppCompatActivity {
         }
     }
 
+
+    //asynctask for downloading fruits price and inserting into database
+    // have to do web scrolling
     private class AsyncTaskFruitPrice extends AsyncTask<Void, Void, List<Fruit>> {
 
         @Override
@@ -275,4 +283,5 @@ public class DashBoardActivity extends AppCompatActivity {
 
         }
     }
+
 }

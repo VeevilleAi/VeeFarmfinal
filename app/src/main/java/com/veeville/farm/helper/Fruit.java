@@ -2,6 +2,7 @@ package com.veeville.farm.helper;
 
 /**
  * Created by Prashant C on 03/09/18.
+ * this helper class used to store Fruit details lik price, name,image link etc.....
  */
 public class Fruit {
     public String name, price, pieceOrKg, imageLink;

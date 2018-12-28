@@ -16,6 +16,7 @@ import java.util.List;
 
 /**
  * Created by Prashant C on 20/11/18.
+ * farm health card adapter which contain health crd of each farm
  */
 public class FarmHealthCardAdapter extends RecyclerView.Adapter<FarmHealthCardAdapter.SingleElementHealthCardHolder> {
 

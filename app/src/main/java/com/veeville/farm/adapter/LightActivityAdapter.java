@@ -34,6 +34,7 @@ import java.util.Random;
 
 /**
  * Created by Prashant C on 04/07/18.
+ * adapter for FarmLight Activity and has Graph and Numbers explanation
  */
 
 public class LightActivityAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {

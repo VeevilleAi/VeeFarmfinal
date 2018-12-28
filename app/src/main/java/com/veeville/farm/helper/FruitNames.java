@@ -5,6 +5,7 @@ import java.util.List;
 
 /**
  * Created by Prashant C on 03/09/18.
+ * this  class used to store fruits names which will help in further
  */
 public class FruitNames {
 

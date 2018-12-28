@@ -20,6 +20,7 @@ import java.util.List;
 
 /**
  * Created by Prashant C on 25/10/18.
+ * adapter for different crop markets like hubli bangalore , dharwad, Vijayapura
  */
 public class CropMarketDescAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 

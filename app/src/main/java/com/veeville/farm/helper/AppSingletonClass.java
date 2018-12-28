@@ -10,6 +10,9 @@ import com.google.firebase.auth.FirebaseAuth;
 
 /**
  * Created by user on 10-07-2017.
+ * application singlton class
+ * used to log debugg and erro Messages
+ * maintaining Volley RequestQueue here only
  */
 
 public class AppSingletonClass extends Application {
@@ -54,7 +57,5 @@ public class AppSingletonClass extends Application {
         getRequestQueue().add(req);
     }
 
-    public <T> void removeFromRequestQueue() {
-        getRequestQueue().cancelAll(TAG);
-    }
+
 }

@@ -21,6 +21,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
+/*this activity shows list farmer farms as Cards
+* with short desc, crop name,crop image and listeners*/
 public class FarmsActivity extends AppCompatActivity {
 
     private final String TAG = FarmsActivity.class.getSimpleName();
@@ -62,6 +64,8 @@ public class FarmsActivity extends AppCompatActivity {
         super.onDestroy();
         logMessage("onDestroy called");
     }
+
+    //function to add new Farm
     private void addNewFarm() {
         String logMessage = "add Farm Called";
         logMessage(logMessage);
@@ -76,6 +80,7 @@ public class FarmsActivity extends AppCompatActivity {
 
     }
 
+    //setting custom toolbar to FarmsActivty
     private void setUpToolbar() {
         String logMessage = "setting up toolbar";
         logMessage(logMessage);
@@ -87,6 +92,7 @@ public class FarmsActivity extends AppCompatActivity {
         Objects.requireNonNull(getSupportActionBar()).setDisplayHomeAsUpEnabled(true);
     }
 
+    //when user selected option menu item like back button
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         String logMessage = "Menu Item Selected";
@@ -95,8 +101,8 @@ public class FarmsActivity extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
+    //setting up farms recyclerview to show farms
     private void setUpRecyclerview() {
-
         LinearLayoutManager manager = new GridLayoutManager(getApplicationContext(), 2);
         manager.setOrientation(LinearLayoutManager.VERTICAL);
         RecyclerView recyclerView = findViewById(R.id.recyclerview);
@@ -107,6 +113,7 @@ public class FarmsActivity extends AppCompatActivity {
         logMessage(logMessage);
     }
 
+    //loading farms to showin UI later it should come from Server
     private List<Farm> getFarms() {
         List<Farm> farms = new ArrayList<>();
         Farm farm1 = new Farm("Farm1", "Banana", "https://image.shutterstock.com/image-photo/bunch-bananas-isolated-on-white-260nw-96162077.jpg", "growing");
@@ -124,6 +131,7 @@ public class FarmsActivity extends AppCompatActivity {
         return farms;
     }
 
+    //use below method to log debugg message
     private void logMessage(String logMessage) {
         AppSingletonClass.logDebugMessage(TAG, logMessage);
     }

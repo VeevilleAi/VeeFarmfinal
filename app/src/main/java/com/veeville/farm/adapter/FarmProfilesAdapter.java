@@ -17,6 +17,8 @@ import java.util.List;
 
 /**
  * Created by Prashant C on 18/10/18.
+ *
+ * contain many farms profile ,will get full profile each farm on click on each profile of farm
  */
 public class FarmProfilesAdapter extends RecyclerView.Adapter<FarmProfilesAdapter.SingleFarmProfileHolder> {
 
@@ -56,6 +58,7 @@ public class FarmProfilesAdapter extends RecyclerView.Adapter<FarmProfilesAdapte
     class SingleFarmProfileHolder extends RecyclerView.ViewHolder {
         TextView farmName, cropName, cropStatus, yield;
         ImageView cropImage;
+
         SingleFarmProfileHolder(View view) {
             super(view);
             farmName = view.findViewById(R.id.farm_name);

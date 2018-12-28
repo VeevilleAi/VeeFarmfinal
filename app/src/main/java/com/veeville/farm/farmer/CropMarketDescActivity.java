@@ -17,6 +17,11 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
+/*
+* this acivity shows available Mandi's near by based on Distance
+* here he can search mandis
+* it will be Having Prices of Particular Crop
+ */
 public class CropMarketDescActivity extends AppCompatActivity {
 
     private final String TAG = CropMarketDescActivity.class.getSimpleName();
@@ -28,6 +33,25 @@ public class CropMarketDescActivity extends AppCompatActivity {
         setUpRecyclerview();
     }
 
+    //setting up custom toolbar for Activity
+    private void setUpToolbar() {
+        Toolbar toolbar = findViewById(R.id.my_toolbar);
+        String cropName = getIntent().getStringExtra("cropName");
+        toolbar.setTitle("Market Price - " + cropName);
+        toolbar.setTitleTextColor(Color.WHITE);
+        toolbar.setSubtitleTextColor(Color.WHITE);
+        setSupportActionBar(toolbar);
+        Objects.requireNonNull(getSupportActionBar()).setDisplayHomeAsUpEnabled(true);
+    }
+
+    //setting up recyclerview for Price of Crop in different mandis based on distnace(arranged)
+    private void setUpRecyclerview() {
+        LinearLayoutManager manager = new LinearLayoutManager(getApplicationContext());
+        RecyclerView recyclerView = findViewById(R.id.recyclerview);
+        recyclerView.setLayoutManager(manager);
+        CropMarketDescAdapter adapter = new CropMarketDescAdapter(getApplicationContext(), getMarketPlaceDetails());
+        recyclerView.setAdapter(adapter);
+    }
     @Override
     protected void onStart() {
         super.onStart();
@@ -58,15 +82,6 @@ public class CropMarketDescActivity extends AppCompatActivity {
         logMessage("onDestroy called");
     }
 
-    private void setUpToolbar() {
-        Toolbar toolbar = findViewById(R.id.my_toolbar);
-        String cropName = getIntent().getStringExtra("cropName");
-        toolbar.setTitle("Market Price - " + cropName);
-        toolbar.setTitleTextColor(Color.WHITE);
-        toolbar.setSubtitleTextColor(Color.WHITE);
-        setSupportActionBar(toolbar);
-        Objects.requireNonNull(getSupportActionBar()).setDisplayHomeAsUpEnabled(true);
-    }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
@@ -74,14 +89,9 @@ public class CropMarketDescActivity extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
-    private void setUpRecyclerview() {
-        LinearLayoutManager manager = new LinearLayoutManager(getApplicationContext());
-        RecyclerView recyclerView = findViewById(R.id.recyclerview);
-        recyclerView.setLayoutManager(manager);
-        CropMarketDescAdapter adapter = new CropMarketDescAdapter(getApplicationContext(), getMarketPlaceDetails());
-        recyclerView.setAdapter(adapter);
-    }
 
+
+    //as of now generating Mandis with distance and prices statically later it should come from Server
     private List<Object> getMarketPlaceDetails() {
 
         List<Object> objects = new ArrayList<>();
@@ -99,6 +109,7 @@ public class CropMarketDescActivity extends AppCompatActivity {
         return objects;
     }
 
+    // use this method to log debugg messages
     private void logMessage(String logMessage) {
         AppSingletonClass.logDebugMessage(TAG, logMessage);
     }

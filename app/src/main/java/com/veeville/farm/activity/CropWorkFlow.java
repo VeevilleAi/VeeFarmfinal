@@ -19,6 +19,14 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Objects;
 
+/*
+    contain list of works for farmers
+    1 - finished
+    2 - pending
+    3 - upcoming
+    with setting alaram for each category
+ */
+
 public class CropWorkFlow extends AppCompatActivity {
 
     private final String TAG = CropWorkFlow.class.getSimpleName();
@@ -31,6 +39,25 @@ public class CropWorkFlow extends AppCompatActivity {
         setUpRecyclerview();
     }
 
+    //setup custom toolbar
+    private void setUpToolbar() {
+        Toolbar toolbar = findViewById(R.id.my_toolbar);
+        toolbar.setTitle("WorkFlow");
+        setSupportActionBar(toolbar);
+        Objects.requireNonNull(getSupportActionBar()).setDisplayHomeAsUpEnabled(true);
+        AppSingletonClass.logDebugMessage(TAG, " toolbar setup done");
+    }
+
+    //setup recyclerview for workflow
+    private void setUpRecyclerview() {
+        RecyclerView workFlowRecyclerview = findViewById(R.id.workflow_recyclerview);
+        LinearLayoutManager manager = new LinearLayoutManager(getApplicationContext());
+        manager.setOrientation(LinearLayoutManager.VERTICAL);
+        workFlowRecyclerview.setLayoutManager(manager);
+        WorkFlowAdapter adapter = new WorkFlowAdapter(formDataWorkFlow(), CropWorkFlow.this);
+        workFlowRecyclerview.setAdapter(adapter);
+        logMessage("workflow  recyclerview setup done");
+    }
 
     @Override
     protected void onStart() {
@@ -38,11 +65,11 @@ public class CropWorkFlow extends AppCompatActivity {
         logMessage("onStart called");
     }
 
+    //start syncing works from server
     @Override
     protected void onResume() {
         super.onResume();
         logMessage("onResume called");
-        logErrorMessage("onResume test");
     }
 
     @Override
@@ -51,17 +78,6 @@ public class CropWorkFlow extends AppCompatActivity {
         logMessage("onPause called");
     }
 
-    @Override
-    protected void onSaveInstanceState(Bundle outState) {
-        super.onSaveInstanceState(outState);
-        logMessage("onSaveInstanceState called");
-    }
-
-    @Override
-    protected void onRestoreInstanceState(Bundle savedInstanceState) {
-        super.onRestoreInstanceState(savedInstanceState);
-        logMessage("onRestoreInstanceState called");
-    }
 
     @Override
     protected void onStop() {
@@ -69,42 +85,24 @@ public class CropWorkFlow extends AppCompatActivity {
         logMessage("onStop called");
     }
 
+
+    //stop sync works from Server
     @Override
     protected void onDestroy() {
         super.onDestroy();
         logMessage("onDestroy called");
-        logErrorMessage("test example");
-    }
-
-    private void setUpToolbar() {
-
-        Toolbar toolbar = findViewById(R.id.my_toolbar);
-        toolbar.setTitle("WorkFlow");
-        setSupportActionBar(toolbar);
-        Objects.requireNonNull(getSupportActionBar()).setDisplayHomeAsUpEnabled(true);
-        AppSingletonClass.logDebugMessage(TAG, " toolbar setup done");
-
     }
 
 
-    private void setUpRecyclerview() {
-
-        RecyclerView workFlowRecyclerview = findViewById(R.id.workflow_recyclerview);
-        LinearLayoutManager manager = new LinearLayoutManager(getApplicationContext());
-        manager.setOrientation(LinearLayoutManager.VERTICAL);
-        workFlowRecyclerview.setLayoutManager(manager);
-        WorkFlowAdapter adapter = new WorkFlowAdapter(formDataWorkFlow(), CropWorkFlow.this);
-        workFlowRecyclerview.setAdapter(adapter);
-        AppSingletonClass.logDebugMessage(TAG, "recyclerview setup done");
-
-    }
-
+    //when option menu item selected
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         onBackPressed();
         return super.onOptionsItemSelected(item);
     }
 
+    //getting list of works like pending , upcoming and finished.
+    // presently workflows genarating manually, later it should come from server
     private List<DashBoardDataClasses.WorkFlowData> formDataWorkFlow() {
 
         List<DashBoardDataClasses.WorkFlowData> workFlowDataList = new ArrayList<>();
@@ -145,7 +143,6 @@ public class CropWorkFlow extends AppCompatActivity {
         List<String> description2 = new ArrayList<>();
         title2 = "Upcoming";
         date2 = getDate(1);
-//            date2= "03 August 2018";
 
         subtitle2.add("Check for weeds");
         subtitle2.add("Check water level");
@@ -163,6 +160,7 @@ public class CropWorkFlow extends AppCompatActivity {
 
     }
 
+    //getting date in dd MMM yyyy format by adding  no of days to current date
     private String getDate(int days) {
         String format = "dd MMM yyyy";
         SimpleDateFormat dateFormat = new SimpleDateFormat(format, Locale.getDefault());
@@ -171,11 +169,8 @@ public class CropWorkFlow extends AppCompatActivity {
         return dateFormat.format(calendar.getTime());
     }
 
+    //use this function everywhere for logging debug mesage
     private void logMessage(String logMessage) {
         AppSingletonClass.logDebugMessage(TAG, logMessage);
-    }
-
-    private void logErrorMessage(String logErrorMessage) {
-        AppSingletonClass.logErrorMessage(TAG, logErrorMessage);
     }
 }

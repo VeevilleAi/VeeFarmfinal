@@ -31,6 +31,12 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
+/*
+ * showing prices of all fruits and vegetable
+ * it has search option
+ * and also update new prices both in UI and local database
+ */
+
 public class PriceActivity extends AppCompatActivity {
 
     private final String TAG = PriceActivity.class.getSimpleName();
@@ -43,6 +49,32 @@ public class PriceActivity extends AppCompatActivity {
         setContentView(R.layout.activity_price);
         setUpToolbar();
         setUpRecycerview();
+    }
+
+    //settingup custom toolbar
+    private void setUpToolbar() {
+        Toolbar toolbar = findViewById(R.id.my_toolbar);
+        String city = getIntent().getStringExtra("city");
+        toolbar.setTitle(city);
+        setSupportActionBar(toolbar);
+        Objects.requireNonNull(getSupportActionBar()).setDisplayHomeAsUpEnabled(true);
+    }
+
+    //settingup prices of veg and fruit recyclerview
+    private void setUpRecycerview() {
+        LinearLayoutManager manager = new LinearLayoutManager(getApplicationContext());
+        manager.setOrientation(LinearLayoutManager.VERTICAL);
+        ChatBotDatabase database = new ChatBotDatabase(getApplicationContext());
+        List<Fruit> fruitList = database.getAllPrices();
+        if (fruitList.size() > 0) {
+            fruits.addAll(fruitList);
+        } else {
+            insertVegAndFruitToDatabase();
+        }
+        adapter = new VegPriceAdapter(fruits, getApplicationContext());
+        RecyclerView recyclerView = findViewById(R.id.recyclerview);
+        recyclerView.setLayoutManager(manager);
+        recyclerView.setAdapter(adapter);
     }
 
     @Override
@@ -75,36 +107,15 @@ public class PriceActivity extends AppCompatActivity {
         logMessage("onDestroy called");
     }
 
+    //perform action when option menu item selected
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         onBackPressed();
         return super.onOptionsItemSelected(item);
     }
 
-    private void setUpToolbar() {
-        Toolbar toolbar = findViewById(R.id.my_toolbar);
-        String city = getIntent().getStringExtra("city");
-        toolbar.setTitle(city);
-        setSupportActionBar(toolbar);
-        Objects.requireNonNull(getSupportActionBar()).setDisplayHomeAsUpEnabled(true);
-    }
 
-    private void setUpRecycerview() {
-        LinearLayoutManager manager = new LinearLayoutManager(getApplicationContext());
-        manager.setOrientation(LinearLayoutManager.VERTICAL);
-        ChatBotDatabase database = new ChatBotDatabase(getApplicationContext());
-        List<Fruit> fruitList = database.getAllPrices();
-        if (fruitList.size() > 0) {
-            fruits.addAll(fruitList);
-        } else {
-            insertVegAndFruitToDatabase();
-        }
-        adapter = new VegPriceAdapter(fruits, getApplicationContext());
-        RecyclerView recyclerView = findViewById(R.id.recyclerview);
-        recyclerView.setLayoutManager(manager);
-        recyclerView.setAdapter(adapter);
-    }
-
+    //setting search option menu and filturing logic
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.menu_main, menu);
@@ -133,6 +144,8 @@ public class PriceActivity extends AppCompatActivity {
         return super.onCreateOptionsMenu(menu);
     }
 
+
+    //show filtured prices of veg and fruit
     private void updateFilturedVeg(String query) {
         List<Fruit> fruitList = new ArrayList<>();
         for (Fruit fruit : fruits) {
@@ -146,6 +159,7 @@ public class PriceActivity extends AppCompatActivity {
 
     }
 
+    //use this method to log messages
     private void logMessage(String logMessage) {
         AppSingletonClass.logDebugMessage(TAG, logMessage);
     }
@@ -156,9 +170,8 @@ public class PriceActivity extends AppCompatActivity {
         updateRecyclerview();
     }
 
-
+    //async task to download new prices of vegetables and update that new price in to database
     class AsyncTaskVegPrice extends AsyncTask<Void, Void, List<Fruit>> {
-
 
         @Override
         protected List<Fruit> doInBackground(Void... voids) {
@@ -197,6 +210,7 @@ public class PriceActivity extends AppCompatActivity {
         }
     }
 
+    //update prices with new updated prices
     private void updateRecyclerview() {
         for (int i = 0; i < fruits.size(); i++) {
             fruits.remove(0);
@@ -212,6 +226,8 @@ public class PriceActivity extends AppCompatActivity {
         adapter.notifyDataSetChanged();
     }
 
+
+    //inserting new data to database
     private void insertVegAndFruitToDatabase() {
         //insert fruit names
         List<Fruit> names = FruitNames.getFruitNames();
@@ -223,6 +239,7 @@ public class PriceActivity extends AppCompatActivity {
         new AsyncTaskFruitPrice().execute();
     }
 
+    //async task to download new prices of fruits and update that new price in to local  database
     private class AsyncTaskFruitPrice extends AsyncTask<Void, Void, List<Fruit>> {
 
         @Override

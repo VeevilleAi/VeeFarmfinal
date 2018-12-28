@@ -5,6 +5,7 @@ import android.app.SearchManager;
 import android.content.Context;
 import android.os.Bundle;
 import android.os.Handler;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
@@ -14,8 +15,10 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import com.veeville.farm.R;
 import com.veeville.farm.adapter.FriendsListAdapter;
@@ -31,7 +34,6 @@ public class FriendFragment extends Fragment {
     private final String TAG = FriendFragment.class.getSimpleName();
     private List<ChatContact> farmerContacts;
     private FriendsListAdapter adapter;
-    private String fromAddress;
     private View view;
     RecyclerView recyclerView;
     private Handler handler;
@@ -42,7 +44,7 @@ public class FriendFragment extends Fragment {
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         view = inflater.inflate(R.layout.fragment_friend, container, false);
         return view;
     }
@@ -50,7 +52,7 @@ public class FriendFragment extends Fragment {
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         super.onCreateOptionsMenu(menu, inflater);
-        inflater.inflate(R.menu.menu_main, menu);
+        inflater.inflate(R.menu.friends_fragment_menu, menu);
         SearchManager searchManager = (SearchManager) Objects.requireNonNull(getActivity()).getSystemService(Context.SEARCH_SERVICE);
         SearchView searchView = (SearchView) menu.findItem(R.id.action_search)
                 .getActionView();
@@ -78,6 +80,7 @@ public class FriendFragment extends Fragment {
     @Override
     public void onStart() {
         super.onStart();
+        setHasOptionsMenu(true);
         setUpRecyclerview();
         handler = new Handler();
     }
@@ -116,10 +119,16 @@ public class FriendFragment extends Fragment {
 
     private List<ChatContact> getContacts() {
 
+        String fromAddress = getUserAddressAsEmail();
         ChatMessageDatabase database = new ChatMessageDatabase(Objects.requireNonNull(getActivity()).getApplicationContext());
-        List<ChatContact> farmerContacts = database.getChatContacts();
-        Log.d(TAG, "getContacts: "+farmerContacts.size());
-       return farmerContacts;
+        List<ChatContact> temp = database.getChatContacts();
+        List<ChatContact> chatContacts = new ArrayList<>();
+        for (ChatContact contact: temp) {
+            if(!contact.email.equals(fromAddress)){
+                chatContacts.add(contact);
+            }
+        }
+       return chatContacts;
     }
 
     private void updateContacts(){
@@ -155,5 +164,26 @@ public class FriendFragment extends Fragment {
     public void onDestroy() {
         super.onDestroy();
         handler = null;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        String selectedItem = item.getTitle().toString();
+        switch (selectedItem){
+            case "Suggest friends":
+                Toast.makeText(getActivity(), selectedItem, Toast.LENGTH_SHORT).show();
+                break;
+            case "Near By":
+                Toast.makeText(getActivity(), selectedItem, Toast.LENGTH_SHORT).show();
+                break;
+            case "Growing Same Crop":
+                Toast.makeText(getActivity(), selectedItem, Toast.LENGTH_SHORT).show();
+                break;
+            case "All":
+                Toast.makeText(getActivity(), selectedItem, Toast.LENGTH_SHORT).show();
+                break;
+
+        }
+        return super.onOptionsItemSelected(item);
     }
 }

@@ -19,9 +19,13 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
+/*
+* farmer profile with shorter farm profiles with short description
+* */
 public class FarmerProfileActivity extends AppCompatActivity {
 
     private final String TAG = FarmerProfileActivity.class.getSimpleName();
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -30,11 +34,8 @@ public class FarmerProfileActivity extends AppCompatActivity {
         setUpFarmsProfile();
         ImageView profilePic;
         String imgUrl = "https://wle.cgiar.org/sites/default/files/header%20images/Vietnamese%20farmer%20header%20format.jpg";
-
         profilePic = findViewById(R.id.profile_image);
         Picasso.with(getApplicationContext()).load(imgUrl).resize(500, 500).centerCrop().transform(new CircleTransform()).into(profilePic);
-        String logMessage = "onCreate method Called";
-        logMessage(logMessage);
     }
 
     @Override
@@ -95,6 +96,7 @@ public class FarmerProfileActivity extends AppCompatActivity {
 
     }
 
+    //getting farmer prfiles with farm profile later it should replaced with server details
     private List<FarmProfile> getFarmerProfile() {
 
         String logMessage = "getting Farmer profile details";
@@ -110,6 +112,7 @@ public class FarmerProfileActivity extends AppCompatActivity {
         return objects;
     }
 
+    //use this methos to log debugg messages
     private void logMessage(String logMessage) {
         AppSingletonClass.logDebugMessage(TAG, logMessage);
     }

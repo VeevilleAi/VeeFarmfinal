@@ -3,6 +3,7 @@ package com.veeville.farm.activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
@@ -16,12 +17,18 @@ import com.google.android.gms.common.SignInButton;
 import com.google.android.gms.common.api.ApiException;
 import com.google.android.gms.tasks.Task;
 import com.veeville.farm.R;
+import com.veeville.farm.farmer.FarmerRegistrationActivity;
 import com.veeville.farm.helper.AddContactToServerService;
 import com.veeville.farm.helper.AppSingletonClass;
 import com.veeville.farm.helper.ChatMessageDatabase;
 
 import java.util.Objects;
 
+
+/*
+ * this activity is used to login user through google Social login
+ * if success then proceed for farmer registration else stay him here only
+ */
 public class SignActivity extends AppCompatActivity implements View.OnClickListener {
 
     private final int RC_SIGN_IN = 108;
@@ -31,8 +38,9 @@ public class SignActivity extends AppCompatActivity implements View.OnClickListe
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        logMessage("onCreate called");
+        //making UI full screen
         requestWindowFeature(Window.FEATURE_NO_TITLE);
-
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
         setContentView(R.layout.activity_sign);
         GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
@@ -44,7 +52,7 @@ public class SignActivity extends AppCompatActivity implements View.OnClickListe
         SignInButton signInButton = findViewById(R.id.sign_in_button);
         signInButton.setSize(SignInButton.SIZE_STANDARD);
         findViewById(R.id.sign_in_button).setOnClickListener(this);
-        logMessage("onCreate called");
+
     }
 
 
@@ -78,16 +86,6 @@ public class SignActivity extends AppCompatActivity implements View.OnClickListe
         logMessage("onDestroy called");
     }
 
-    @Override
-    protected void onSaveInstanceState(Bundle outState) {
-        super.onSaveInstanceState(outState);
-
-    }
-
-    @Override
-    protected void onRestoreInstanceState(Bundle savedInstanceState) {
-        super.onRestoreInstanceState(savedInstanceState);
-    }
 
     @Override
     public void onClick(View v) {
@@ -99,6 +97,7 @@ public class SignActivity extends AppCompatActivity implements View.OnClickListe
         }
     }
 
+    //on selecting account for google signin
     private void signIn() {
         Intent signInIntent = mGoogleSignInClient.getSignInIntent();
         startActivityForResult(signInIntent, RC_SIGN_IN);
@@ -117,18 +116,27 @@ public class SignActivity extends AppCompatActivity implements View.OnClickListe
         }
     }
 
+    //handle the result after user selects account
     private void handleSignInResult(Task<GoogleSignInAccount> completedTask) {
         try {
             GoogleSignInAccount account = completedTask.getResult(ApiException.class);
             assert account != null;
             logMessage(account.getDisplayName());
             String email = account.getEmail();
-            String photoUrl = Objects.requireNonNull(account.getPhotoUrl().toString());
-            uploadContactToServer(account.getDisplayName(),email,photoUrl);
+            String photoUrl = null;
+            try {
+                photoUrl = Objects.requireNonNull(account.getPhotoUrl().toString());
+            } catch (Exception e) {
+                Log.e(TAG, "handleSignInResult: " + e.toString());
+            }
+            uploadContactToServer(account.getDisplayName(), email, photoUrl);
             logMessage(email);
             ChatMessageDatabase database = new ChatMessageDatabase(getApplicationContext());
             database.insertuserCredentials(email);
-            Intent intent = new Intent(getApplicationContext(), DashBoardActivity.class);
+            Intent intent = new Intent(getApplicationContext(), FarmerRegistrationActivity.class);
+            intent.putExtra("FarmerName", account.getDisplayName());
+            intent.putExtra("FarmerEmail", email);
+
             startActivity(intent);
             finish();
         } catch (ApiException e) {
@@ -137,19 +145,23 @@ public class SignActivity extends AppCompatActivity implements View.OnClickListe
         }
     }
 
+    //use this log method to log debugg error message everywhere
     private void logMessage(String logMessage) {
         AppSingletonClass.logDebugMessage(TAG, logMessage);
     }
 
+
+    //use this log method to log debugg message everywhere
     private void logErrorMessage(String logErrorMessage) {
         AppSingletonClass.logErrorMessage(TAG, logErrorMessage);
     }
 
-    private void uploadContactToServer(String name,String email,String photoUrl){
+    //upload contact details to AWS sql server
+    private void uploadContactToServer(String name, String email, String photoUrl) {
         Intent intent = new Intent(getApplicationContext(), AddContactToServerService.class);
-        intent.putExtra("name",name);
-        intent.putExtra("email",email);
-        intent.putExtra("photoUrl",photoUrl);
+        intent.putExtra("name", name);
+        intent.putExtra("email", email);
+        intent.putExtra("photoUrl", photoUrl);
         startService(intent);
     }
 

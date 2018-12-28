@@ -24,6 +24,9 @@ import java.util.List;
 
 /**
  * Created by Prashant C on 23/10/18.
+ *
+ * market adaptyer for market activity which card in DashBoardActivity
+ * shows all crops grown by farmer
  */
 public class MarketPlaceAdapter extends RecyclerView.Adapter<MarketPlaceAdapter.MarketPlaceHolder> {
 

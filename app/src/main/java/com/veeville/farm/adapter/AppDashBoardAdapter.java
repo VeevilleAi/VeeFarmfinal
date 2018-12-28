@@ -30,6 +30,7 @@ import java.util.List;
 
 /**
  * Created by Prashant C on 25/10/18.
+ * adapter for DashBoard cards
  */
 public class AppDashBoardAdapter extends RecyclerView.Adapter<AppDashBoardAdapter.SingleCardHolder> {
 
@@ -37,11 +38,13 @@ public class AppDashBoardAdapter extends RecyclerView.Adapter<AppDashBoardAdapte
     private List<DashBoardClass> dashBoardClasses;
     private Context context;
 
+    //intilize items like dashboard items and context
     public AppDashBoardAdapter(Context context, List<DashBoardClass> boardClasses) {
         this.dashBoardClasses = boardClasses;
         this.context = context;
     }
 
+    //creating items view and adding to adapter
     @NonNull
     @Override
     public SingleCardHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
@@ -49,6 +52,7 @@ public class AppDashBoardAdapter extends RecyclerView.Adapter<AppDashBoardAdapte
         return new SingleCardHolder(view);
     }
 
+    //setting data to each view
     @Override
     public void onBindViewHolder(@NonNull SingleCardHolder holder, int position) {
         final DashBoardClass aClass = dashBoardClasses.get(position);
@@ -63,11 +67,11 @@ public class AppDashBoardAdapter extends RecyclerView.Adapter<AppDashBoardAdapte
         });
     }
 
+    //based item selected starting that activity
     private void moveOnCardClick(String type) {
         Intent intent = null;
         switch (type) {
             case "Chat":
-//                intent = new Intent(context, ChatActivity.class);
                 intent = new Intent(context, ChatSectorActivity.class);
                 break;
             case "WorkFlow":
@@ -110,6 +114,8 @@ public class AppDashBoardAdapter extends RecyclerView.Adapter<AppDashBoardAdapte
         return dashBoardClasses.size();
     }
 
+
+    //hoder for each dash board item
     class SingleCardHolder extends RecyclerView.ViewHolder {
         CardView cardView;
         TextView title, subTitle;
@@ -124,9 +130,4 @@ public class AppDashBoardAdapter extends RecyclerView.Adapter<AppDashBoardAdapte
 
         }
     }
-
-    private void logMessage(String logMessage) {
-        AppSingletonClass.logDebugMessage(TAG, logMessage);
-    }
-
 }

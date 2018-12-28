@@ -18,6 +18,14 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Random;
 
+
+/*
+ * showing humidy with graph and numbers
+ * Humidity data should come from server
+ * as of now generating locally
+ */
+
+
 public class HumidityActivity extends AppCompatActivity {
 
     private final String TAG = HumidityActivity.class.getSimpleName();
@@ -26,9 +34,30 @@ public class HumidityActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_humidity);
+        logMessage("onCreate called");
         setUpToolbar();
         setUpHumidityRecyclerview();
-        logMessage("onCreate called");
+    }
+
+    //settingup custom toolbar
+    private void setUpToolbar() {
+        Toolbar toolbar;
+        toolbar = findViewById(R.id.my_toolbar);
+        toolbar.setTitle("Humidity-Farm1");
+        setSupportActionBar(toolbar);
+        Objects.requireNonNull(getSupportActionBar()).setDisplayHomeAsUpEnabled(true);
+    }
+
+    //setting up humidity cads recyclerview
+    private void setUpHumidityRecyclerview() {
+        RecyclerView humidityRecyclerview = findViewById(R.id.humidity_recyclerview);
+        LinearLayoutManager manager = new LinearLayoutManager(getApplicationContext());
+        humidityRecyclerview.setLayoutManager(manager);
+        List<Object> lists = new ArrayList<>();
+        lists.add(new DashBoardDataClasses.HumidityData("", "", getTodayValuesTillNow()));
+        lists.add(new DashBoardDataClasses.SensorGraph("1D", 0));
+        HumidityActivityAdapter temp = new HumidityActivityAdapter(getApplicationContext(), lists);
+        humidityRecyclerview.setAdapter(temp);
     }
 
     @Override
@@ -41,6 +70,13 @@ public class HumidityActivity extends AppCompatActivity {
     protected void onResume() {
         super.onResume();
         logMessage("onResume called");
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        onBackPressed();
+        AppSingletonClass.logDebugMessage(TAG, "Humidity activity finished");
+        return super.onOptionsItemSelected(item);
     }
 
     @Override
@@ -61,39 +97,10 @@ public class HumidityActivity extends AppCompatActivity {
         logMessage("onDestroy called");
     }
 
-    private void setUpToolbar() {
-        Toolbar toolbar;
-        toolbar = findViewById(R.id.my_toolbar);
-        toolbar.setTitle("Humidity-Farm1");
-        setSupportActionBar(toolbar);
-        Objects.requireNonNull(getSupportActionBar()).setDisplayHomeAsUpEnabled(true);
-    }
 
-
-    private void setUpHumidityRecyclerview() {
-
-        RecyclerView humidityRecyclerview = findViewById(R.id.humidity_recyclerview);
-        LinearLayoutManager manager = new LinearLayoutManager(getApplicationContext());
-        humidityRecyclerview.setLayoutManager(manager);
-        List<Object> lists = new ArrayList<>();
-        lists.add(new DashBoardDataClasses.HumidityData("", "", getTodayValuesTillNow()));
-        lists.add(new DashBoardDataClasses.SensorGraph("1D", 0));
-        HumidityActivityAdapter temp = new HumidityActivityAdapter(getApplicationContext(), lists);
-        humidityRecyclerview.setAdapter(temp);
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        onBackPressed();
-        AppSingletonClass.logDebugMessage(TAG, "Humidity activity finished");
-        return super.onOptionsItemSelected(item);
-    }
-
+    //generate random values for Humidity
     private List<DashBoardDataClasses.HumidityData.HumidityDataValues> getTodayValuesTillNow() {
-
-
         List<DashBoardDataClasses.HumidityData.HumidityDataValues> humidityDataValues = new ArrayList<>();
-
         Random random = new Random();
 
         Calendar calendar = Calendar.getInstance();
@@ -115,9 +122,9 @@ public class HumidityActivity extends AppCompatActivity {
 
     }
 
+    //use this method only  to log debug message
     private void logMessage(String logMessage) {
         AppSingletonClass.logDebugMessage(TAG, logMessage);
     }
-
 
 }
