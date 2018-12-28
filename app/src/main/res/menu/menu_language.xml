@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+
+        <item  android:id="@+id/hindi_id"
+            android:title="हिंदी"/>
+
+    <item  android:id="@+id/kannada_id"
+        android:title="ಕನ್ನಡ"/>
+
+
+    <item  android:id="@+id/marathi_id"
+        android:title="मराठी"/>
+
+    <item  android:id="@+id/tamil_id"
+        android:title="தமிழ்"/>
+
+    <item  android:id="@+id/telugu_id"
+        android:title="తెలుగు"/>
+
+    <item  android:id="@+id/bengali_id"
+        android:title="বাঙালি"/>
+
+    <item  android:id="@+id/gujarati_id"
+        android:title="ગુજરાતી"/>
+
+    <item  android:id="@+id/urdu_id"
+        android:title="Urdu"/>
+
+    <item  android:id="@+id/english_id"
+        android:title="English"/>
+
+    </menu>
