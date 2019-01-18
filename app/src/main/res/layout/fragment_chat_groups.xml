@@ -4,15 +4,21 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    tools:context=".fragment.ChatGroupsFragment">
+    tools:context="com.veevillefarm.vfarm.fragment.ChatGroupsFragment">
 
    <RelativeLayout
        android:layout_width="match_parent"
        android:layout_height="match_parent">
 
+       <android.support.v7.widget.RecyclerView
+           android:layout_width="match_parent"
+           android:layout_height="match_parent"
+           android:id="@+id/recyclerview"
+           />
        <android.support.design.widget.FloatingActionButton
            android:layout_width="wrap_content"
            android:layout_height="wrap_content"
+           android:id="@+id/create_group"
            android:layout_alignParentRight="true"
            android:layout_alignParentBottom="true"
            android:layout_margin="10dp"

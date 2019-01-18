@@ -3,20 +3,20 @@ apply plugin: 'io.fabric'
 android {
     compileSdkVersion 27
     defaultConfig {
-        applicationId "com.veeville.farm"
+        applicationId "com.veevillefarm.vfarm"
         minSdkVersion 21
         targetSdkVersion 27
-        versionCode 12
-        versionName "1.0.1"
+        versionCode 2
+        versionName "1.0.2"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
     }
 
-    buildTypes {
-        release {
-            minifyEnabled true
-            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
-        }
-    }
+//    buildTypes {
+//        release {
+//            minifyEnabled true
+//            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+//        }
+//    }
 }
 
 dependencies {
@@ -30,7 +30,8 @@ dependencies {
     androidTestImplementation 'com.android.support.test:runner:1.0.2'
     androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.2'
     implementation 'org.tensorflow:tensorflow-android:+' // tenserflow to run ML models
-    implementation 'com.android.support:recyclerview-v7:27.1.1' // creating and adding items to list dynamically
+    implementation 'com.android.support:recyclerview-v7:27.1.1'
+    // creating and adding items to list dynamically
     implementation 'com.android.support:cardview-v7:27.1.1' // to draw cards
     implementation 'com.android.volley:volley:1.0.0'// to make network requests
     implementation 'com.android.support:design:27.1.1'
@@ -40,15 +41,28 @@ dependencies {
     implementation 'ai.api:libai:1.6.12'
     testImplementation 'junit:junit:4.12'
     implementation 'org.jsoup:jsoup:1.11.3'
-    implementation 'com.google.firebase:firebase-auth:16.1.0' //firebase auth like fb, mobile number, google..
-    implementation 'com.google.firebase:firebase-core:16.0.6' // to use firebase services
-    implementation 'com.crashlytics.sdk.android:crashlytics:2.9.7'
+    implementation 'com.google.firebase:firebase-auth:16.1.0'
+    //firebase auth like fb, mobile number, google..
+    implementation 'com.crashlytics.sdk.android:crashlytics:2.9.8'
     implementation 'com.google.android.gms:play-services-maps:16.0.0' // for google map
     implementation 'com.google.maps.android:android-maps-utils:0.5+' // for google maps utilities
     implementation 'com.google.android.gms:play-services-location:16.0.0'//for location service
-    implementation 'com.google.android.gms:play-services-auth:16.0.1' //for authonticating google play services
+    implementation 'com.google.android.gms:play-services-auth:16.0.1'
+    //for authonticating google play services
     implementation 'com.github.PhilJay:MPAndroidChart:v2.2.4'// for drawing graph
 
+    //firebase
+    implementation 'com.google.firebase:firebase-core:16.0.6'
+    implementation 'com.google.firebase:firebase-messaging:17.3.4'
 
+//    //aws s3 service usage
+//    implementation 'com.amazonaws:aws-android-sdk-core:2.6.31'
+//
+//    implementation 'com.amazonaws:aws-android-sdk-ddb:2.2.13'
+
+
+    implementation ('com.amazonaws:aws-android-sdk-mobile-client:2.6.7@aar') { transitive = true }
+    implementation 'com.amazonaws:aws-android-sdk-cognito:2.6.31'
+    implementation 'com.amazonaws:aws-android-sdk-s3:2.6.31'
 }
 apply plugin: 'com.google.gms.google-services'

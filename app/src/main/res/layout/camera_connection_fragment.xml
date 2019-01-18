@@ -18,7 +18,7 @@
     android:layout_height="match_parent">
 
     <include layout="@layout/toolbar"/>
-    <com.veeville.farm.tensorflow.AutoFitTextureView
+    <com.veevillefarm.vfarm.tensorflow.AutoFitTextureView
         android:id="@+id/texture"
         android:layout_below="@+id/my_toolbar"
         android:layout_width="wrap_content"
@@ -26,14 +26,14 @@
 
         android:layout_alignParentBottom="true" />
 
-    <com.veeville.farm.tensorflow.RecognitionScoreView
+    <com.veevillefarm.vfarm.tensorflow.RecognitionScoreView
         android:id="@+id/results"
         android:layout_width="match_parent"
         android:layout_height="112dp"
         android:background="@color/white"
         android:layout_alignParentBottom="true" />
 
-    <com.veeville.farm.tensorflow.OverlayView
+    <com.veevillefarm.vfarm.tensorflow.OverlayView
         android:id="@+id/debug_overlay"
         android:layout_width="match_parent"
         android:layout_height="match_parent"

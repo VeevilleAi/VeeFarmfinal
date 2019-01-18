@@ -117,6 +117,58 @@
           "status": 2
         }
       }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:689443953968:android:6d4ec260e7871a97",
+        "android_client_info": {
+          "package_name": "com.veevillefarm.vfarm"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "689443953968-b19o2gl2k7r3kjmi9658coiealm26t2b.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.veevillefarm.vfarm",
+            "certificate_hash": "4dce69a39677f239e8cac96265dd9416b0a67f09"
+          }
+        },
+        {
+          "client_id": "689443953968-nura7hov676ieo0l1m9p163jgj4dt6r8.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.veevillefarm.vfarm",
+            "certificate_hash": "2fac590536eb3fb44c6a42e281166fe2fc728626"
+          }
+        },
+        {
+          "client_id": "689443953968-7snv060pq4orh1g2oan6htmb436n53h9.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDLJKpG1orpNBOKrlPm7ggaozD856mGkzA"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "689443953968-qnh5cf7bmv8umbof6t5ka2n77da0j8u3.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
     }
   ],
   "configuration_version": "1"

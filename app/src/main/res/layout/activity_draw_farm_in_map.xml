@@ -15,6 +15,6 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_below="@+id/description"
-        tools:context=".farmer.FarmDescriptionActivity" />
+        tools:context="com.veevillefarm.vfarm.farmer.FarmDescriptionActivity" />
 
 </RelativeLayout>

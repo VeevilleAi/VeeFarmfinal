@@ -30,6 +30,8 @@
     <string name="textview">TextView</string>
     <string name="repeat_daily">Repeat daily</string>
     <string name="set">Set</string>
+    <string name="channel_name">notifiation channel VeeFarm</string>
+    <string name="channel_description">veefarm channel description</string>
     <string name="fruits">Fruits</string>
     <string name="ip_address_ofsensg">Ip address ofSensG</string>
     <string name="submit">Submit</string>
